@@ -39,6 +39,18 @@ resource "hcloud_server" "nethub" {
   depends_on         = [hcloud_network_subnet.vm-net, hcloud_ssh_key.ftsell]
 }
 
+resource "hcloud_rdns" "nethub4" {
+  server_id  = hcloud_server.nethub.id
+  dns_ptr    = "nethub.srv.ftsell.de"
+  ip_address = hcloud_server.nethub.ipv4_address
+}
+
+resource "hcloud_rdns" "nethub6" {
+  server_id  = hcloud_server.nethub.id
+  dns_ptr    = "nethub.srv.ftsell.de"
+  ip_address = hcloud_server.nethub.ipv6_address
+}
+
 output "nethub_hcloud_link" {
   value = "https://console.hetzner.cloud/projects/1461749/servers/${hcloud_server.nethub.id}/overview"
 }
