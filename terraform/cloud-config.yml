@@ -1,0 +1,13 @@
+#cloud-config
+ssh_pwauth: false
+package_update: true
+packages:
+  - "zsh"
+  - "git"
+users:
+  - name: "ftsell"
+    sudo: "ALL=(ALL) ALL"
+    shell: "/usr/bin/zsh"
+    passwd: "$6$rounds=4096$WcJMuRaS1TwE22Gj$3.Z4SA09Sx0p3RA3C4khqE9B6YQ9vrvQWDeFaV6fWexSnzMrP9nMqTmJVo98OaoxqRmhRj9sz34Hr9QJy.4ch0"
+    ssh_authorized_keys:
+      - "${ ftsell_pubkey }"
