@@ -15,7 +15,7 @@ resource "hcloud_server" "nethub" {
   user_data          = data.template_file.hetzner_vm_config.rendered
   delete_protection  = var.hcloud_protections
   rebuild_protection = var.hcloud_protections
-  depends_on         = [hcloud_network_subnet.vm-net, hcloud_ssh_key.ftsell]
+  depends_on         = [hcloud_network_subnet.vm-net]
 }
 
 resource "hcloud_rdns" "nethub4" {
