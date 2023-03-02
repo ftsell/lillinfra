@@ -1,24 +1,3 @@
-// Hetzner Cloud setup
-
-resource "hcloud_network" "finn-net" {
-  name              = "finn-net"
-  ip_range          = "10.0.0.0/16"
-  delete_protection = var.hcloud_protections
-}
-
-resource "hcloud_network_subnet" "vm-net" {
-  ip_range     = "10.0.0.0/24"
-  network_id   = hcloud_network.finn-net.id
-  network_zone = "eu-central"
-  type         = "cloud"
-  depends_on   = [hcloud_network.finn-net]
-}
-
-resource "hcloud_ssh_key" "ftsell" {
-  name       = "ftsell"
-  public_key = data.local_file.ftsell_pubkey.content
-}
-
 resource "hcloud_server" "nethub" {
   name = "nethub"
   labels = {
@@ -49,6 +28,24 @@ resource "hcloud_rdns" "nethub6" {
   server_id  = hcloud_server.nethub.id
   dns_ptr    = "nethub.srv.ftsell.de"
   ip_address = hcloud_server.nethub.ipv6_address
+}
+
+data "hetznerdns_zone" "ftsell_de" {
+  name = "ftsell.de"
+}
+
+resource "hetznerdns_record" "nethub_srv_ftsell_de-ipv4" {
+  zone_id = data.hetznerdns_zone.ftsell_de.id
+  type    = "A"
+  name    = "nethub.srv"
+  value   = hcloud_server.nethub.ipv4_address
+}
+
+resource "hetznerdns_record" "nethub_srv_ftsell_de-ipv6" {
+  zone_id = data.hetznerdns_zone.ftsell_de.id
+  type    = "AAAA"
+  name    = "nethub.srv"
+  value   = hcloud_server.nethub.ipv6_address
 }
 
 output "nethub_hcloud_link" {
