@@ -1,0 +1,32 @@
+- tags: [ openssh, sshd, ssh_server ]
+  block:
+    - name: install openssh server
+      become: true
+      apt:
+        name: openssh-server
+
+    - name: start and enable openssh server
+      become: true
+      systemd:
+        name: sshd.service
+        state: started
+        enabled: true
+
+    - name: harden ssh server config
+      become: true
+      notify: reload ssh server
+      loop_control:
+        label: "{{ item.key }} {{ item.value }}"
+      with_items:
+        - { key: PermitRootLogin, value: "no" }
+        - { key: PasswordAuthentication, value: "no" }
+        - { key: X11Forwarding, value: "no" }
+        - { key: MaxAuthTries, value: "2" }
+        - { key: AllowTcpForwarding, value: "no" }
+        - { key: AllowAgentForwarding, value: "no" }
+        - { key: AuthorizedKeysFile, value: ".ssh/authorized_keys" }
+        - { key: AllowUsers, value: "{{ allowed_ssh_users | join(' ') }}" }
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "^{{ item.key }}.*$"
+        line: "{{ item.key }} {{ item.value }}"

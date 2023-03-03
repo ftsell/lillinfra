@@ -1,0 +1,31 @@
+- tags: [ user_account_ftsell, ftsell, users, accounts ]
+  block:
+    - name: Install packages I usually want
+      become: true
+      apt:
+        name:
+          - git
+          - git-crypt
+          - git-lfs
+          - gpg
+          - htop
+          - iftop
+          - iotop
+          - openssh-client
+          - tmux
+          - zsh
+
+    - name: Create user account with correct data
+      become: true
+      register: user_account
+      user:
+        name: ftsell
+        shell: "{{ ftsell_shell }}"
+        comment: "{{ ftsell_gecos }}"
+
+    - name: Ensure authorized ssh key is present
+      authorized_key:
+        user: ftsell
+        comment: ftsell
+        exclusive: true
+        key: "{{ lookup('file', '../../terraform/resources/id_rsa.pub') }}"

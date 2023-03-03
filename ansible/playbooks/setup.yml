@@ -1,3 +1,5 @@
 - hosts: all
   roles:
     - linux_base
+    - ssh_server
+    - user_account_ftsell

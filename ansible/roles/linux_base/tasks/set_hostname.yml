@@ -1,0 +1,6 @@
+- tags: [ linux_base, base, linux, hostname ]
+  block:
+    - name: Set hostname to ansible inventory name
+      become: true
+      hostname:
+        name: "{{ inventory_hostname }}"

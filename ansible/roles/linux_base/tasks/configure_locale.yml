@@ -1,10 +1,17 @@
 - tags: [ locale ]
   block:
     - name: Ensure locale.conf exists
-      become: true
-      file:
-        path: /etc/locale.conf
-        state: touch
+      block:
+        - name: Stat locale.conf
+          file:
+            path: /etc/locale.conf
+            state: file
+      rescue:
+        - name: Create locale.conf
+          become: true
+          file:
+            path: /etc/locale.conf
+            state: touch
 
     - name: Configure locale
       become: true
