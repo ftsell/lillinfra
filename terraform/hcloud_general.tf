@@ -3,7 +3,7 @@
 resource "hcloud_network" "finn-net" {
   name              = "finn-net"
   ip_range          = "10.0.0.0/16"
-  delete_protection = var.hcloud_protections
+  delete_protection = true
 }
 
 resource "hcloud_network_subnet" "vm-net" {
@@ -16,5 +16,5 @@ resource "hcloud_network_subnet" "vm-net" {
 
 resource "hcloud_ssh_key" "ftsell" {
   name       = "ftsell"
-  public_key = data.local_file.ftsell_pubkey.content
+  public_key = file("${path.root}/resources/id_rsa.pub")
 }
