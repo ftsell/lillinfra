@@ -1,0 +1,18 @@
+- tags: [ linux_base, base, linux ]
+  block:
+    - name: Verify expected linux distribution
+      assert:
+        that:
+          - "ansible_distribution | lower == expected_dist | lower"
+          - "ansible_distribution_version == expected_dist_version | string"
+
+    - name: Install some base packages
+      become: true
+      apt:
+        name:
+          - git
+          - git-crypt
+          - gpg
+
+    - import_tasks: configure_locale.yml
+    - import_tasks: configure_networking.yml

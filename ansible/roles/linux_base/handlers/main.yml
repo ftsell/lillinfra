@@ -1,0 +1,9 @@
+- tags: [ linux_base, base, linux ]
+  name: reboot
+  become: true
+  reboot: { }
+
+- tags: [ linux_base, base, systemd, systemd_networkd ]
+  name: reload systemd-networkd
+  become: true
+  command: networkctl reload

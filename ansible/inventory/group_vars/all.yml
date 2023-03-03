@@ -1,0 +1,2 @@
+primary_ipv4: "{{ lookup('community.general.dig', inventory_hostname + '.srv.ftsell.de', '@hydrogen.ns.hetzner.com', 'qtype=A', 'fail_on_error=True') }}"
+primary_ipv6: "{{ lookup('community.general.dig', inventory_hostname + '.srv.ftsell.de', '@hydrogen.ns.hetzner.com', 'qtype=AAAA', 'fail_on_error=True') }}"

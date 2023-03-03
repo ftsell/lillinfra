@@ -1,0 +1,17 @@
+systemd_networkd_configs:
+  10-eth0.network: |
+    [Match]
+    Name=eth0
+    [Network]
+    DHCP=yes
+    Address={{ primary_ipv4 }}
+    Address={{ primary_ipv6 }}
+    Gateway=fe80::1
+    DNS=2a01:4ff:ff00::add:1
+    DNS=2a01:4ff:ff00::add:2
+
+  99-dhcp.network: |
+    [Match]
+    Name=ens*
+    [Network]
+    DHCP=yes

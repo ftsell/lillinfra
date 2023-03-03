@@ -1,0 +1,15 @@
+- tags: [ locale ]
+  block:
+    - name: Ensure locale.conf exists
+      become: true
+      file:
+        path: /etc/locale.conf
+        state: touch
+
+    - name: Configure locale
+      become: true
+      notify: reboot
+      lineinfile:
+        path: /etc/locale.conf
+        regexp: "^LANG=.*$"
+        line: "LANG={{ locale }}"

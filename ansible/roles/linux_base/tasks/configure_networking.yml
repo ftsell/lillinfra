@@ -1,0 +1,51 @@
+- tags: [ networking, systemd, systemd-networkd, systemd_networkd ]
+  block:
+    - name: Remove unwanted networking tools
+      become: true
+      apt:
+        state: absent
+        name:
+          - isc-dhcp-client
+          - resolvconf
+
+    - name: Disable and stop unwanted systemd services
+      become: true
+      with_items:
+        - hc-net-scan.service
+      systemd:
+        name: "{{ item }}"
+        state: stopped
+        enabled: false
+
+    - name: Start and enable wanted systemd services
+      become: true
+      with_items:
+        - systemd-networkd.service
+        - systemd-resolved.service
+      systemd:
+        name: "{{ item }}"
+        state: started
+        enabled: true
+
+    - name: Configure dns resolution via systemd-resolved
+      become: true
+      file:
+        path: /etc/resolv.conf
+        state: link
+        src: /run/systemd/resolve/stub-resolv.conf
+        force: true
+
+    - name: Configure networking via systemd-networkd
+      become: true
+      notify: reload systemd-networkd
+      with_items: "{{ systemd_networkd_configs | dict2items }}"
+      loop_control:
+        label: "{{ item.key }}"
+      vars:
+        file_content: "{{ item.value }}"
+      template:
+        src: systemd-file-template
+        dest: /etc/systemd/network/{{ item.key }}
+        mode: u=rw,g=r,o=
+        owner: systemd-network
+        group: systemd-network
