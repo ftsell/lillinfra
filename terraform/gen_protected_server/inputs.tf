@@ -24,3 +24,7 @@ variable "root_ssh_key_ids" {
 variable "bastion_server_id" {
   type = string
 }
+
+variable "enable_delete_protection" {
+  type = bool
+}

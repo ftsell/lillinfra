@@ -1,5 +1,7 @@
 enable_ip_forwarding: true
 
+private_iface_name: enp7s0
+
 # this is only the basic network config to make the server reachable via its public ip addresses
 # the specific bastion routing is configured via its own role and not via the generic systemd-networkd configs
 systemd_networkd_configs:
@@ -11,8 +13,8 @@ systemd_networkd_configs:
     Address={{ public_ipv4 }}/32
     IPv4ProxyARP=true
 
-  20-ens10.network: |
+  20-private_iface.network: |
     [Match]
-    Name=ens10
+    Name={{ private_iface_name }}
     [Network]
     DHCP=yes

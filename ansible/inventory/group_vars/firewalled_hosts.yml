@@ -1,9 +1,11 @@
 bastion_private_address: "{{ hostvars['bastion']['private_ipv4'] }}"
 
+private_iface_name: ens10
+
 systemd_networkd_configs:
-  20-ens10.network: |
+  20-private_iface.network: |
     [Match]
-    Name=ens10
+    Name={{ private_iface_name }}
     [Network]
     DHCP=yes
     Tunnel=ensOvl

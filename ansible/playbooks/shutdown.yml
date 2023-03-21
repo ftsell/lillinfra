@@ -1,0 +1,11 @@
+- hosts: hcloud,!bastion
+  tasks:
+    - name: shutdown protected servers
+      become: true
+      shutdown: {}
+
+- hosts: bastion
+  tasks:
+    - name: shutdown bastion
+      become: true
+      shutdown: {}

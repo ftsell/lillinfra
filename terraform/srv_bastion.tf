@@ -5,7 +5,7 @@ resource "hcloud_server" "bastion-srv" {
     "ftsell.de/public_dns" : "bastion.srv.${data.hetznerdns_zone.ftsell_de.name}"
     "ftsell.de/is_firewalled" = false
   }
-  server_type = "cx11"
+  server_type = "cpx11"
   backups     = true
   location    = "fsn1" # frankfurt
   image       = "debian-11"
@@ -15,8 +15,8 @@ resource "hcloud_server" "bastion-srv" {
   }
   ssh_keys = [ hcloud_ssh_key.ftsell.id ]
   user_data          = data.template_file.cloud-init-config.rendered
-  delete_protection  = true
-  rebuild_protection = true
+  delete_protection  = var.enable_delete_protection
+  rebuild_protection = var.enable_delete_protection
 
   depends_on = [hcloud_network_subnet.vm-net]
   lifecycle {
