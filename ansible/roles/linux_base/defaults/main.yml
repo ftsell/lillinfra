@@ -2,3 +2,5 @@ locale: en_US
 
 # map of <file-name> -> <file-content>
 systemd_networkd_configs: {}
+
+enable_ip_forwarding: false

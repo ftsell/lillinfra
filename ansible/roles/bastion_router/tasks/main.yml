@@ -1,0 +1,38 @@
+- tags: [ bastion_router, router, routing, network, networking ]
+  block:
+    - name: Create drop in directory for tunnel activation
+      become: true
+      file:
+        path: /etc/systemd/network/20-ens10.network.d
+        state: directory
+        owner: systemd-network
+        group: systemd-network
+
+    - with_items: "{{ bastion_router_peers }}"
+      loop_control:
+        extended: true
+        loop_var: peer
+      include_tasks: configure_peering.yml
+
+    - name: Configure networking on top of the virtual tunnel devices
+      become: true
+      notify: reload systemd-networkd
+      template:
+        src: overlay.network
+        dest: /etc/systemd/network/30-ensOvl.network
+        mode: u=rw,g=r,o=
+        owner: systemd-network
+        group: systemd-network
+
+    - name: Configure tunnel activation on top of ens10
+      become: true
+      notify: reload systemd-networkd
+      template:
+        src: ens10-dropin.conf
+        dest: /etc/systemd/network/20-ens10.network.d/ensOvl-activation.conf
+        mode: u=rw,g=r,o=
+        owner: systemd-network
+        group: systemd-network
+
+    - import_tasks: configure_firewall.yml
+    - import_tasks: configure_bgp.yml

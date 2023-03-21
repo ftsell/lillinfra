@@ -1,0 +1,17 @@
+# These are nftables rules directly inserted into the nftables.conf file.
+# They are evaluated whenever a package is intended for the bastion arrives at its public (eth0) interface.
+# Any packet that is not accepted via one of these rules is rejected.
+#
+# See the nftables wiki for syntax: https://wiki.nftables.org/wiki-nftables/index.php/Main_Page
+public_input_firewall: |
+  tcp dport 22 accept
+
+# These rules are evaluated whenever a package intended for the bastion arrives at one if its private interfaces meaning
+# that it must have originated from one our protected servers.
+private_input_firewall: |
+  # allow kubernetes to announce routes via BGP
+  tcp dport 179 accept
+
+# These rules are evaluated whenever a package is intended for one of the protected servers but needs to pass through the bastion.
+# Any packet that is not accepted via one of these rules is rejected.
+forward_firewall: |

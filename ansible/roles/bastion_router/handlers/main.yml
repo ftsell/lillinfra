@@ -1,0 +1,18 @@
+- tags: [ network, networking, systemd, systemd_networkd ]
+  name: reload systemd-networkd
+  become: true
+  command: networkctl reload
+
+- tags: [ network, networking, firewall, nftables ]
+  name: reload nftables
+  become: true
+  systemd:
+    name: nftables.service
+    state: reloaded
+
+- tags: [ network, networking, bird, bgp ]
+  name: reload bird
+  become: true
+  systemd:
+    name: bird.service
+    state: reloaded

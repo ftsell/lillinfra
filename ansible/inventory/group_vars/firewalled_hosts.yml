@@ -1,0 +1,27 @@
+bastion_private_address: "{{ hostvars['bastion']['private_ipv4'] }}"
+
+systemd_networkd_configs:
+  20-ens10.network: |
+    [Match]
+    Name=ens10
+    [Network]
+    DHCP=yes
+    Tunnel=ensOvl
+
+  30-ovl.netdev: |
+    [NetDev]
+    Name=ensOvl
+    Kind=ipip
+
+    [Tunnel]
+    Remote={{ bastion_private_address }}
+
+  30-ovl.network: |
+    [Match]
+    Name=ensOvl
+    [Network]
+    Address={{ public_ipv4 }}/32
+    DNS=185.12.64.2
+    DNS=185.12.64.1
+    [Route]
+    Destination=0.0.0.0/0

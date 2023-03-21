@@ -49,3 +49,16 @@
         mode: u=rw,g=r,o=
         owner: systemd-network
         group: systemd-network
+
+    - name: Configure IP Forwarding
+      become: true
+      with_items:
+        - net.ipv4.ip_forward
+        - net.ipv6.conf.all.forwarding
+      sysctl:
+        key: "{{ item }}"
+        value: "{{ 1 if enable_ip_forwarding else 0 }}"
+        sysctl_set: true
+
+    - name: Flush Handlers
+      meta: flush_handlers

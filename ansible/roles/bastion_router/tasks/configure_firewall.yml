@@ -1,0 +1,32 @@
+- tags: [ nftables ]
+  block:
+    - name: Install nftables
+      become: true
+      apt:
+        name: nftables
+
+    - name: Configure nftables as iptables backend
+      become: true
+      with_items:
+        - arptables
+        - ebtables
+        - ip6tables
+        - iptables
+      alternatives:
+        name: "{{ item }}"
+        path: "/usr/sbin/{{ item }}-nft"
+
+    - name: Deploy nftables configuration
+      become: true
+      notify: reload nftables
+      template:
+        src: nftables.conf
+        dest: /etc/nftables.conf
+        validate: "nft --check --file %s"
+
+    - name: Make sure nftables are loaded on system start
+      become: true
+      systemd:
+        name: nftables.service
+        state: started
+        enabled: true

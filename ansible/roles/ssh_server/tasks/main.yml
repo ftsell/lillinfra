@@ -1,11 +1,11 @@
 - tags: [ openssh, sshd, ssh_server ]
   block:
-    - name: install openssh server
+    - name: Install openssh server
       become: true
       apt:
         name: openssh-server
 
-    - name: start and enable openssh server
+    - name: Start and enable openssh server
       become: true
       systemd:
         name: sshd.service
@@ -22,7 +22,6 @@
         - { key: PasswordAuthentication, value: "no" }
         - { key: X11Forwarding, value: "no" }
         - { key: MaxAuthTries, value: "2" }
-        - { key: AllowTcpForwarding, value: "no" }
         - { key: AllowAgentForwarding, value: "no" }
         - { key: AuthorizedKeysFile, value: ".ssh/authorized_keys" }
         - { key: AllowUsers, value: "{{ allowed_ssh_users | join(' ') }}" }

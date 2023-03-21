@@ -1,0 +1,6 @@
+public_input_firewall: |
+  tcp dport 22 accept
+
+private_input_firewall: "{{ public_input_firewall }}"
+
+forward_firewall: |

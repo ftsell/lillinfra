@@ -1,5 +1,11 @@
-- hosts: all
+# bastion networking needs to be configured before everything else so that the other hosts have internet connectivity
+- hosts: bastion
   roles:
     - linux_base
-    - ssh_server
-    - user_account_ftsell
+    - bastion_router
+    - user_accounts
+
+- hosts: all,!bastion
+  roles:
+    - linux_base
+    - user_accounts
