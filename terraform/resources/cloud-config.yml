@@ -7,7 +7,7 @@ packages:
 users:
   - name: "ftsell"
     sudo: "ALL=(ALL) ALL"
-    shell: "/usr/bin/zsh"
+    shell: "/usr/bin/bash"
     lock_passwd: false
     passwd: "${ ftsell_pwhash }"
     ssh_authorized_keys:

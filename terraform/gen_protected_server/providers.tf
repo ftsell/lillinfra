@@ -1,3 +1,4 @@
+// General terraform configuration
 terraform {
   required_version = ">=1.3.9"
   required_providers {
@@ -8,6 +9,9 @@ terraform {
     hetznerdns = {
       source  = "timohirt/hetznerdns"
       version = ">=2.2.0"
+    }
+    cloudinit = {
+      version = ">=2.3.2"
     }
     template = {
       version = ">=2.2.0"
