@@ -1,3 +1,4 @@
 secret.* filter=git-crypt diff=git-crypt
 *.secret filter=git-crypt diff=git-crypt
 *.secret.* filter=git-crypt diff=git-crypt
+ansible/kubespray/** -filter -diff
