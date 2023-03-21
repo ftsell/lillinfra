@@ -1,11 +1,11 @@
-# bastion networking needs to be configured before everything else so that the other hosts have internet connectivity
-- hosts: bastion
+# router networking needs to be configured before everything else so that the other hosts have internet connectivity
+- hosts: router
   roles:
     - linux_base
-    - bastion_router
+    - router
     - user_accounts
 
-- hosts: all,!bastion
+- hosts: all,!router
   roles:
     - linux_base
     - user_accounts

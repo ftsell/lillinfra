@@ -1,0 +1,11 @@
+- hosts: hcloud,!router
+  tasks:
+    - name: shutdown protected servers
+      become: true
+      community.general.shutdown: {}
+
+- hosts: router
+  tasks:
+    - name: shutdown router
+      become: true
+      community.general.shutdown: {}

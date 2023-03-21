@@ -1,9 +1,13 @@
 // Hetzner Cloud setup
+variable "enable_delete_protection" {
+  type = bool
+  default = true
+}
 
 resource "hcloud_network" "main-net" {
-  name              = "finn-net"
+  name              = "main-net"
   ip_range          = "10.0.0.0/16"
-  delete_protection = true
+  delete_protection = var.enable_delete_protection
 }
 
 resource "hcloud_network_subnet" "vm-net" {

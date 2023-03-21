@@ -20,8 +20,8 @@ resource "hcloud_server" "server" {
   }
   ssh_keys           = var.root_ssh_key_ids
   user_data          = data.cloudinit_config.cloud-config.rendered
-  delete_protection  = false
-  rebuild_protection = false
+  delete_protection  = var.enable_delete_protection
+  rebuild_protection = var.enable_delete_protection
 
   lifecycle {
     ignore_changes = [image, user_data]

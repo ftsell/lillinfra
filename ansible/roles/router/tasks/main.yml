@@ -1,9 +1,9 @@
-- tags: [ bastion_router, router, routing, network, networking ]
+- tags: [ router, router, routing, network, networking ]
   block:
     - name: Create drop in directory for tunnel activation
       become: true
       file:
-        path: /etc/systemd/network/20-ens10.network.d
+        path: /etc/systemd/network/20-private-iface.network.d
         state: directory
         owner: systemd-network
         group: systemd-network
@@ -24,12 +24,12 @@
         owner: systemd-network
         group: systemd-network
 
-    - name: Configure tunnel activation on top of ens10
+    - name: Configure tunnel activation on top of private network
       become: true
       notify: reload systemd-networkd
       template:
-        src: ens10-dropin.conf
-        dest: /etc/systemd/network/20-ens10.network.d/ensOvl-activation.conf
+        src: "private-iface-dropin.conf"
+        dest: /etc/systemd/network/20-private-iface.network.d/ensOvl-activation.conf
         mode: u=rw,g=r,o=
         owner: systemd-network
         group: systemd-network
