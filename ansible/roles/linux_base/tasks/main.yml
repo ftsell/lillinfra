@@ -20,3 +20,4 @@
 
     - import_tasks: configure_locale.yml
     - import_tasks: set_hostname.yml
+    - import_tasks: configure_unattended_upgrades.yml
