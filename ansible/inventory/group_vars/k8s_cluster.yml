@@ -1,9 +1,9 @@
 # networking config
-ip: "{{ private_ip }}"
-access_ip: "{{ private_ip }}"
+ip: "{{ private_ipv4 }}"
+access_ip: "{{ private_ipv4 }}"
 enable_nodelocaldns: false
 kube_network_plugin: kube-router
-kube_router_cluster_asn: 64512  # same as in router router bird.conf so that iBGP is used
+kube_router_cluster_asn: 64512  # same as in router bird.conf so that iBGP is used
 kube_router_peer_router_asns: [ "{{ kube_router_cluster_asn }}" ]
 kube_router_peer_router_ips: [ "{{ hostvars['router'].private_ipv4 }}" ]
 
@@ -12,9 +12,9 @@ container_manager: crio
 crio_pids_limit: 4096
 
 # add custom domain to generated ssl certs so that we can easily address the cluster from the outside
-supplementary_addresses_in_ssl_keys: [ k8s-ctl.ftsell.de ]
+supplementary_addresses_in_ssl_keys: [ "{{ hostvars['k8s-api'].public_dns }}" ]
 
 # disable kubespray on-host proxy to the api server because we don't need it, and it's very kubespray specific and
 # non-standard when compared to other kubernetes distributions
-apiserver_loadbalancer_domain_name: k8s-ctl.ftsell.de
+#apiserver_loadbalancer_domain_name: "{{ hostvars['k8s-api'].public_dns }}"
 loadbalancer_apiserver: {}

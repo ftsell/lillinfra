@@ -1,1 +1,0 @@
-bastion_router_peers: "{{ query('inventory_hostnames', 'firewalled_hosts') }}"

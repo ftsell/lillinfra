@@ -1,0 +1,22 @@
+private_iface_name: "{{ ansible_interfaces | select('match', '^(enp\\d+s\\d+)|(ens\\d+)$') | first }}"
+
+systemd_networkd_configs:
+  10-eth0.network: |
+    [Match]
+    Name=eth0
+    
+    [Network]
+    DHCP=yes
+    Address={{ public_ipv4 }}/32
+    
+    Address={{ public_ipv6 }}/64
+    Gateway=fe80::1
+    DNS=2a01:4ff:ff00::add:1
+    DNS=2a01:4ff:ff00::add:2
+
+  20-private_iface.network: |
+    [Match]
+    Name={{ private_iface_name }}
+    
+    [Network]
+    DHCP=yes

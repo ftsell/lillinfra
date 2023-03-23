@@ -1,11 +1,11 @@
-- hosts: hcloud,!router
+- hosts: all,!lb1
   tasks:
-    - name: shutdown protected servers
+    - name: shutdown all servers except lb1
       become: true
       community.general.shutdown: {}
 
-- hosts: router
+- hosts: lb1
   tasks:
-    - name: shutdown router
+    - name: shutdown lb1
       become: true
       community.general.shutdown: {}

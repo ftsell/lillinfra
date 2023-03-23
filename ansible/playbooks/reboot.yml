@@ -1,0 +1,11 @@
+- hosts: all,!lb1
+  tasks:
+    - name: reboot all servers except lb1
+      become: true
+      reboot: {}
+
+- hosts: lb1
+  tasks:
+    - name: reboot lb1
+      become: true
+      reboot: {}

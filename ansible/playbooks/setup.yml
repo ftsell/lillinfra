@@ -1,11 +1,5 @@
-# router networking needs to be configured before everything else so that the other hosts have internet connectivity
-- hosts: router
+- hosts: all
   roles:
     - linux_base
-    - router
-    - user_accounts
-
-- hosts: all,!router
-  roles:
-    - linux_base
+    - ssh_server
     - user_accounts

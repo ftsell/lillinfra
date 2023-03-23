@@ -1,7 +1,0 @@
-# {{ ansible_managed }}
-[NetDev]
-Name=ensOvl{{ peer_i }}
-Kind=ipip
-
-[Tunnel]
-Remote={{ peer_private_address }}
