@@ -1,0 +1,6 @@
+- tags: [ network, networking, bird, bgp ]
+  name: reload bird
+  become: true
+  systemd:
+    name: bird.service
+    state: reloaded

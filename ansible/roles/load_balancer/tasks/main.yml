@@ -1,0 +1,21 @@
+- tags: [ load_balancer, load_balancers, lb, bird ]
+  block:
+    - name: install BIRD
+      become: true
+      apt:
+        name: bird2
+
+    - name: configure BIRD
+      become: true
+      notify: reload bird
+      template:
+        src: bird.conf
+        dest: /etc/bird/bird.conf
+        validate: "bird -p -c %s"
+
+    - name: start and enable BIRD
+      become: true
+      systemd:
+        name: bird.service
+        state: started
+        enabled: true

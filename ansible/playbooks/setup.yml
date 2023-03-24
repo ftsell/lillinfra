@@ -3,3 +3,7 @@
     - linux_base
     - ssh_server
     - user_accounts
+
+- hosts: purpose_load_balancer
+  roles:
+    - load_balancer
