@@ -4,9 +4,10 @@ access_ip: "{{ private_ipv4 }}"
 enable_nodelocaldns: false
 kube_network_plugin: kube-router
 kube_router_run_service_proxy: true
-kube_router_cluster_asn: 64512  # same as in router bird.conf so that iBGP is used
-kube_router_peer_router_asns: "{{ kube_router_cluster_asn }}"
-kube_router_peer_router_ips: "{{ hostvars['lb1'].private_ipv4 }}"
+
+# don't use stub resolver to prevent issues with coredns.
+# coredns gets this file mounted into its pod and if it contains the 127.0.0.53 stub resolver, coredns runs into a loop
+systemd_resolved_file: resolv.conf
 
 # container runtime config
 container_manager: crio
@@ -18,4 +19,3 @@ supplementary_addresses_in_ssl_keys: [ "{{ hostvars['k8s-api'].public_dns }}" ]
 # disable kubespray on-host proxy to the api server because we don't need it, and it's very kubespray specific and
 # non-standard when compared to other kubernetes distributions
 loadbalancer_apiserver_localhost: false
-#apiserver_loadbalancer_domain_name: "{{ hostvars['k8s-api'].public_dns }}"

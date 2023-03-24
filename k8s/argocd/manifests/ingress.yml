@@ -1,0 +1,50 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-server-http
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http
+spec:
+  ingressClassName: nginx
+  tls:
+    - secretName: ssl-argocd-server-http
+      hosts:
+        - argocd.ftsell.de
+  rules:
+    - host: argocd.ftsell.de
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: argocd-server
+                port:
+                  name: http
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-server-grpc
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+    cert-manager.io/cluster-issuer: letsencrypt-http
+spec:
+  ingressClassName: nginx
+  tls:
+    - secretName: ssl-argocd-server-grpc
+      hosts:
+        - grpc.argocd.ftsell.de
+  rules:
+    - host: grpc.argocd.ftsell.de
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: argocd-server
+                port:
+                  name: https

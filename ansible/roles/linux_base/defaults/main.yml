@@ -3,4 +3,6 @@ locale: en_US
 # map of <file-name> -> <file-content>
 systemd_networkd_configs: {}
 
+systemd_resolved_file: stub-resolv.conf
+
 enable_ip_forwarding: false

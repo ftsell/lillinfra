@@ -1,0 +1,59 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+commonLabels:
+  app.kubernetes.io/part-of: argocd
+namespace: argocd
+
+resources:
+  - https://raw.githubusercontent.com/argoproj/argo-cd/v2.6.7/manifests/install.yaml
+  - manifests/namespace.yml
+  - manifests/ingress.yml
+
+images:
+  - name: quay.io/argoproj/argocd
+    newName: ghcr.io/ftsell/argocd-git-crypt
+
+replicas:
+  - name: argocd-dex-server
+    count: 0
+
+patches:
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: argocd-server
+    path: manifests/deployment.patch.yml
+
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: argocd-repo-server
+    path: manifests/repo-server.patch.yml
+
+  - path: config/config.yml
+    target:
+      name: argocd-cm
+
+  - path: config/rbac.yml
+    target:
+      name: argocd-rbac-cm
+
+  - path: config/ssh-known-hosts.yml
+    target:
+      name: argocd-ssh-known-hosts-cm
+
+generatorOptions:
+  disableNameSuffixHash: true
+secretGenerator:
+  - name: argocd-secret
+    envs:
+      - config/secret.env
+  - name: argocd-gpg-secret-keys
+    files:
+      - 5B71FE8CB6A76D49=config/gpg.key
+  - name: argocd-ssh-key
+    namespace: argocd
+    files:
+      - "sshPrivateKey=config/argocd.id_rsa"

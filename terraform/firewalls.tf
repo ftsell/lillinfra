@@ -43,4 +43,25 @@ resource "hcloud_firewall" "protected_servers" {
     protocol  = "icmp"
     source_ips = [ "0.0.0.0/0", "::/0" ]
   }
+
+  rule {
+    direction = "in"
+    protocol = "tcp"
+    port = "22"
+    source_ips = [ "${hcloud_server.lb1.ipv4_address}/32", "${hcloud_server.lb1.ipv6_address}/128"]
+  }
+}
+
+resource "hcloud_firewall" "k8s-api" {
+  name = "k8s-api"
+  apply_to {
+    label_selector = "ftsell.de/purpose=k8s-api-server"
+  }
+
+  rule {
+    direction = "in"
+    protocol  = "tcp"
+    port = "6443"
+    source_ips = [ "0.0.0.0/0", "::/0" ]
+  }
 }

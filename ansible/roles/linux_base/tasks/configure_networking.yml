@@ -32,7 +32,7 @@
       file:
         path: /etc/resolv.conf
         state: link
-        src: /run/systemd/resolve/stub-resolv.conf
+        src: /run/systemd/resolve/{{ systemd_resolved_file }}
         force: true
 
     - name: Configure networking via systemd-networkd
