@@ -1,10 +1,12 @@
 - hosts: all,!lb1
+  gather_facts: false
   tasks:
     - name: shutdown all servers except lb1
       become: true
       community.general.shutdown: {}
 
 - hosts: lb1
+  gather_facts: false
   tasks:
     - name: shutdown lb1
       become: true

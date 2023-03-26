@@ -1,10 +1,12 @@
 - hosts: all,!lb1
+  gather_facts: false
   tasks:
     - name: reboot all servers except lb1
       become: true
       reboot: {}
 
 - hosts: lb1
+  gather_facts: false
   tasks:
     - name: reboot lb1
       become: true
