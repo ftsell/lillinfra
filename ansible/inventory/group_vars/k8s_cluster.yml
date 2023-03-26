@@ -3,7 +3,6 @@ ip: "{{ private_ipv4 }}"
 access_ip: "{{ private_ipv4 }}"
 enable_nodelocaldns: false
 kube_network_plugin: kube-router
-kube_router_run_service_proxy: true
 
 # don't use stub resolver to prevent issues with coredns.
 # coredns gets this file mounted into its pod and if it contains the 127.0.0.53 stub resolver, coredns runs into a loop

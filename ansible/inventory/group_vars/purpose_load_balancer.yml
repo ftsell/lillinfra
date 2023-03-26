@@ -1,0 +1,2 @@
+node_taints:
+    - "ftsell.de/load-balancer=true:NoSchedule"

@@ -4,5 +4,3 @@ locale: en_US
 systemd_networkd_configs: {}
 
 systemd_resolved_file: stub-resolv.conf
-
-enable_ip_forwarding: false
