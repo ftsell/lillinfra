@@ -27,5 +27,5 @@
         - { key: AllowUsers, value: "{{ allowed_ssh_users | join(' ') }}" }
       lineinfile:
         path: /etc/ssh/sshd_config
-        regexp: "^{{ item.key }}.*$"
+        regexp: "^#?{{ item.key }}.*$"
         line: "{{ item.key }} {{ item.value }}"

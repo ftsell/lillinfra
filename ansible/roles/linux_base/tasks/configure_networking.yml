@@ -4,6 +4,7 @@
       become: true
       apt:
         state: absent
+        purge: true
         name:
           - isc-dhcp-client
           - resolvconf
@@ -21,19 +22,10 @@
       become: true
       with_items:
         - systemd-networkd.service
-        - systemd-resolved.service
       systemd:
         name: "{{ item }}"
         state: started
         enabled: true
-
-    - name: Configure dns resolution via systemd-resolved
-      become: true
-      file:
-        path: /etc/resolv.conf
-        state: link
-        src: /run/systemd/resolve/{{ systemd_resolved_file }}
-        force: true
 
     - name: Configure networking via systemd-networkd
       become: true
@@ -49,6 +41,17 @@
         mode: u=rw,g=r,o=
         owner: systemd-network
         group: systemd-network
+
+    - name: Configure DNS Servers
+      become: true
+      with_items:
+        - 2a01:4ff:ff00::add:1
+        - 2a01:4ff:ff00::add:2
+        - 185.12.64.1
+      lineinfile:
+        path: /etc/resolv.conf
+        regexp: "^nameserver {{ item }}$"
+        line: "nameserver {{ item }}"
 
     - name: Flush Handlers
       meta: flush_handlers
