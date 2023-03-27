@@ -7,3 +7,11 @@ resources:
   - github.com/metallb/metallb/config/native?ref=v0.13.9
   - address_pools.yml
   - announcement.yml
+
+patches:
+  - target:
+      group: apps
+      version: v1
+      kind: DaemonSet
+      name: speaker
+    path: speaker.patch.yml
