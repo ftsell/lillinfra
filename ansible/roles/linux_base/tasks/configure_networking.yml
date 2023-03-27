@@ -45,8 +45,6 @@
     - name: Configure DNS Servers
       become: true
       with_items:
-        - 2a01:4ff:ff00::add:1
-        - 2a01:4ff:ff00::add:2
         - 185.12.64.1
       lineinfile:
         path: /etc/resolv.conf
