@@ -1,0 +1,21 @@
+# allow these pods to be scheduled on the load balancer
+- op: add
+  path: /spec/template/spec/tolerations
+  value:
+    - key: ftsell.de/load-balancer
+      effect: NoSchedule
+      operator: Exists
+
+# prefer scheduling these pods directly on the load balancer
+- op: add
+  path: /spec/template/spec/affinity
+  value:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - preference:
+            matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                  - lb1
+          weight: 50
