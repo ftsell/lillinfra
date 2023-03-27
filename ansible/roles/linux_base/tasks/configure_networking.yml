@@ -45,11 +45,14 @@
     - name: Configure DNS Servers
       become: true
       with_items:
-        - 185.12.64.1
+        - { server: 185.12.64.1, state: present }
+        - { server: 2a01:4ff:ff00::add:1, state: absent }
+        - { server: 2a01:4ff:ff00::add:2, state: absent}
       lineinfile:
         path: /etc/resolv.conf
-        regexp: "^nameserver {{ item }}$"
-        line: "nameserver {{ item }}"
+        regexp: "^nameserver {{ item.server }}$"
+        line: "nameserver {{ item.server }}"
+        state: "{{ item.state }}"
 
     - name: Flush Handlers
       meta: flush_handlers

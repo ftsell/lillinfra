@@ -3,10 +3,7 @@ ip: "{{ private_ipv4 }}"
 access_ip: "{{ private_ipv4 }}"
 enable_nodelocaldns: false
 kube_proxy_strict_arp: true
-kube_network_plugin: kube-router
-kube_router_run_router: true
-kube_router_run_firewall: false
-kube_router_run_service_proxy: false
+kube_network_plugin: calico
 
 # container runtime config
 container_manager: crio
