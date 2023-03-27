@@ -1,11 +1,11 @@
 // Hetzner Cloud setup
 variable "enable_delete_protection" {
-  type = bool
+  type    = bool
   default = true
 }
 
 variable "main_location" {
-  type = string
+  type    = string
   default = "fsn1" # frankfurt
 }
 

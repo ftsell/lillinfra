@@ -3,7 +3,7 @@ resource "hcloud_server" "lb1" {
   labels = {
     "ftsell.de/purpose" : "load_balancer"
     "ftsell.de/public_dns" : "lb1.srv.${data.hetznerdns_zone.ftsell_de.name}"
-    "ftsell.de/firewall": "load-balancers"
+    "ftsell.de/firewall" : "load-balancers"
   }
   server_type = "cpx11"
   backups     = true
@@ -13,7 +13,7 @@ resource "hcloud_server" "lb1" {
     network_id = hcloud_network.main-net.id
     ip         = "10.0.0.2"
   }
-  ssh_keys = [ hcloud_ssh_key.ftsell.id ]
+  ssh_keys           = [hcloud_ssh_key.ftsell.id]
   user_data          = data.template_file.cloud-init-config.rendered
   delete_protection  = var.enable_delete_protection
   rebuild_protection = var.enable_delete_protection

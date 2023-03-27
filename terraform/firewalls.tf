@@ -5,30 +5,30 @@ resource "hcloud_firewall" "lb" {
   }
 
   rule {
-    direction = "in"
-    protocol  = "icmp"
-    source_ips = [ "0.0.0.0/0", "::/0" ]
+    direction  = "in"
+    protocol   = "icmp"
+    source_ips = ["0.0.0.0/0", "::/0"]
   }
 
   rule {
-    direction = "in"
-    protocol = "tcp"
-    port = "22"
-    source_ips = [ "0.0.0.0/0", "::/0" ]
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "22"
+    source_ips = ["0.0.0.0/0", "::/0"]
   }
 
   rule {
-    direction = "in"
-    protocol  = "tcp"
-    port = "80"
-    source_ips = [ "0.0.0.0/0", "::/0" ]
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "80"
+    source_ips = ["0.0.0.0/0", "::/0"]
   }
 
   rule {
-    direction = "in"
-    protocol  = "tcp"
-    port = "443"
-    source_ips = [ "0.0.0.0/0", "::/0" ]
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "443"
+    source_ips = ["0.0.0.0/0", "::/0"]
   }
 }
 
@@ -39,16 +39,16 @@ resource "hcloud_firewall" "protected_servers" {
   }
 
   rule {
-    direction = "in"
-    protocol  = "icmp"
-    source_ips = [ "0.0.0.0/0", "::/0" ]
+    direction  = "in"
+    protocol   = "icmp"
+    source_ips = ["0.0.0.0/0", "::/0"]
   }
 
   rule {
-    direction = "in"
-    protocol = "tcp"
-    port = "22"
-    source_ips = [ "${hcloud_server.lb1.ipv4_address}/32", "${hcloud_server.lb1.ipv6_address}/128"]
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "22"
+    source_ips = ["${hcloud_server.lb1.ipv4_address}/32", "${hcloud_server.lb1.ipv6_address}/128"]
   }
 }
 
@@ -59,9 +59,9 @@ resource "hcloud_firewall" "k8s-api" {
   }
 
   rule {
-    direction = "in"
-    protocol  = "tcp"
-    port = "6443"
-    source_ips = [ "0.0.0.0/0", "::/0" ]
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "6443"
+    source_ips = ["0.0.0.0/0", "::/0"]
   }
 }

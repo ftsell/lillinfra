@@ -8,8 +8,10 @@ module "k8s-api-srv" {
     network_id = hcloud_network.main-net.id
     ip         = "10.0.0.9"
   }
-  root_ssh_key_ids = [ hcloud_ssh_key.ftsell.id ]
+  root_ssh_key_ids         = [hcloud_ssh_key.ftsell.id]
   enable_delete_protection = var.enable_delete_protection
+
+  depends_on = [hcloud_network_subnet.vm-net]
 }
 
 module "k8s-worker" {
@@ -22,8 +24,10 @@ module "k8s-worker" {
     network_id = hcloud_network.main-net.id
     ip         = "10.0.0.${10 + count.index}"
   }
-  root_ssh_key_ids = [ hcloud_ssh_key.ftsell.id ]
+  root_ssh_key_ids         = [hcloud_ssh_key.ftsell.id]
   enable_delete_protection = var.enable_delete_protection
+
+  depends_on = [hcloud_network_subnet.vm-net]
 
   count = 2
 }
