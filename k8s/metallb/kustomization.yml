@@ -4,6 +4,6 @@ commonLabels:
   app.kubernetes.io/part-of: metallb
 
 resources:
-  #- github.com/metallb/metallb/config/native?ref=v0.13.9
+  - github.com/metallb/metallb/config/native?ref=v0.13.9
   - address_pools.yml
-#  - announcement.yml
+  - announcement.yml

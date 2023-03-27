@@ -8,12 +8,13 @@ spec:
   addresses:
     - 116.202.0.235/32
 
-#---
-#apiVersion: metallb.io/v1beta1
-#kind: IPAddressPool
-#metadata:
-#  name: mail
-#  namespace: metallb-system
-#spec:
-#  addresses:
-#    - 116.202.6.114/32
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: mail
+  namespace: metallb-system
+spec:
+  autoAssign: false
+  addresses:
+    - 116.202.6.114/32
