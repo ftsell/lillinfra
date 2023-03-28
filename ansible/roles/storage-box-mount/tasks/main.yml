@@ -1,0 +1,15 @@
+- tags: [ storage-box, storage-box-mount, k8s ]
+  block:
+    - name: install cifs
+      become: true
+      apt:
+        name: cifs-utils
+
+    - name: configure fstab entry for auto-mounting
+      become: true
+      ansible.posix.mount:
+        src: //u343701.your-storagebox.de/u343701-sub1
+        path: /opt/k8s/storage-box/
+        fstype: smb3
+        opts: iocharset=utf8,rw,uid=0,gid=0,file_mode=0660,dir_mode=0770,user={{ storage_box_k8s_user | mandatory }},pass={{ storage_box_k8s_pass | mandatory }},cache=none,seal
+        state: mounted

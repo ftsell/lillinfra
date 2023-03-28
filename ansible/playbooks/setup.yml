@@ -3,3 +3,7 @@
     - linux_base
     - ssh_server
     - user_accounts
+
+- hosts: k8s_cluster
+  roles:
+    - storage-box-mount
