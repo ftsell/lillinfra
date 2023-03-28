@@ -23,7 +23,7 @@ patches:
       version: v1
       kind: Deployment
       name: argocd-server
-    path: manifests/deployment.patch.yml
+    path: manifests/argocd-server.patch.yml
 
   - target:
       group: apps
@@ -32,27 +32,37 @@ patches:
       name: argocd-repo-server
     path: manifests/repo-server.patch.yml
 
-  - path: config/config.yml
-    target:
+  - target:
+      kind: ConfigMap
       name: argocd-cm
-
-  - path: config/rbac.yml
-    target:
-      name: argocd-rbac-cm
-
-  - path: config/ssh-known-hosts.yml
-    target:
-      name: argocd-ssh-known-hosts-cm
+    path: config/config.yml
 
 generatorOptions:
   disableNameSuffixHash: true
+
+configMapGenerator:
+  - name: argocd-ssh-known-hosts-cm
+    behavior: replace
+    files:
+      - ssh_known_hosts=config/known_hosts
+
+  - name: argocd-rbac-cm
+    behavior: replace
+    literals:
+      - "policy.default=none"
+    files:
+      - "policy.csv=config/rbac_policy.csv"
+
 secretGenerator:
   - name: argocd-secret
+    behavior: replace
     envs:
       - config/secret.env
+
   - name: argocd-gpg-secret-keys
     files:
-      - 5B71FE8CB6A76D49=config/gpg.key
+      - 019EC8A22D1A788E=config/gpg.key
+
   - name: argocd-ssh-key
     namespace: argocd
     files:

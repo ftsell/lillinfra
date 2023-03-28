@@ -5,9 +5,12 @@ namespace: local-path-storage
 resources:
   - github.com/rancher/local-path-provisioner/deploy?ref=v0.0.24
 
-images:
-  - name: rancher/local-path-provisioner
-    newName: docker.io/rancher/local-path-provisioner
+patches:
+  - target:
+      group: storage.k8s.io
+      kind: StorageClass
+      name: local-path
+    path: storage-class.patch.yml
 
 generatorOptions:
   disableNameSuffixHash: true

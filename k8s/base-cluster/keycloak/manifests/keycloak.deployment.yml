@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  labels: &labels
+    app.kubernetes.io/name: keycloak
+    app.kubernetes.io/component: webserver
+spec:
+  selector:
+    matchLabels: *labels
+  template:
+    metadata:
+      labels: *labels
+    spec:
+      priorityClassName: sharedsrv-high-priority
+
+      volumes:
+        - name: secrets
+          secret:
+            secretName: keycloak
+
+      containers:
+        - name: keycloak
+          image: quay.io/keycloak/keycloak
+          imagePullPolicy: Always
+          args: [ start, --auto-build ]
+          envFrom:
+            - configMapRef:
+                name: keycloak
+            - secretRef:
+                name: keycloak
+          env:
+            - name: KC_DB_URL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: keycloak-postgres
+                  key: POSTGRES_DB
+            - name: KC_DB_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: keycloak-postgres
+                  key: POSTGRES_USER
+            - name: KC_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-postgres
+                  key: POSTGRES_PASSWORD
+            - name: JAVA_OPTS
+              value: "-Djava.net.preferIPv4Stack=false -Djava.net.preferIPv6Addresses=true -Djboss.bind.address.private=::1 -Djboss.bind.address=::"
+          ports:
+            - name: http
+              containerPort: 8080
+          volumeMounts:
+            - name: secrets
+              mountPath: "/opt/jboss/secrets"
+          readinessProbe:
+            httpGet:
+              port: http
+              path: /health/ready

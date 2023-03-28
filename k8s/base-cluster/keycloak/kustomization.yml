@@ -1,0 +1,28 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: keycloak
+commonLabels:
+  app.kubernetes.io/part-of: keycloak
+
+resources:
+  - manifests/namespace.yml
+#  - manifests/keycloak.deployment.yml
+#  - manifests/keycloak.service.yml
+  - manifests/database.yml
+#  - manifests/ingress.yml
+
+#images:
+#  - name: quay.io/keycloak/keycloak
+#    newTag: "20.0.2"
+#  - name: docker.io/postgres
+#    newTag: "13"
+#
+#configMapGenerator:
+#  - name: keycloak
+#    envs:
+#      - config/keycloak.env
+#
+#secretGenerator:
+#  - name: keycloak
+#    envs:
+#      - config/keycloak.secret.env
