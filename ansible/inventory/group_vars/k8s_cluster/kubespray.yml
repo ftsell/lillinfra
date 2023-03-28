@@ -8,6 +8,12 @@ kube_network_plugin: calico
 # container runtime config
 container_manager: crio
 crio_pids_limit: 4096
+crio_registries:
+  - prefix: docker.io
+    insecure: false
+    blocked: false
+    location: registry-1.docker.io
+    unqualified: true
 
 # add custom domain to generated ssl certs so that we can easily address the cluster from the outside
 supplementary_addresses_in_ssl_keys: [ "{{ hostvars['k8s-api'].public_dns }}" ]
