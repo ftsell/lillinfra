@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: local-path-storage
+
+resources:
+  - github.com/rancher/local-path-provisioner/deploy?ref=v0.0.24
+
+images:
+  - name: rancher/local-path-provisioner
+    newName: docker.io/rancher/local-path-provisioner
+
+generatorOptions:
+  disableNameSuffixHash: true
+configMapGenerator:
+  - name: local-path-config
+    namespace: local-path-storage
+    behavior: merge
+    files:
+      - config.json
