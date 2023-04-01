@@ -7,8 +7,6 @@ metadata:
     app.kubernetes.io/component: webserver
 spec:
   selector: *labels
-  ipFamilies:
-    - IPv6
   ports:
     - name: http
       port: 8080

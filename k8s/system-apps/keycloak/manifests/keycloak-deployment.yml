@@ -12,7 +12,6 @@ spec:
     metadata:
       labels: *labels
     spec:
-      priorityClassName: sharedsrv-high-priority
 
       volumes:
         - name: secrets
@@ -29,24 +28,6 @@ spec:
                 name: keycloak
             - secretRef:
                 name: keycloak
-          env:
-            - name: KC_DB_URL_DATABASE
-              valueFrom:
-                configMapKeyRef:
-                  name: keycloak-postgres
-                  key: POSTGRES_DB
-            - name: KC_DB_USERNAME
-              valueFrom:
-                configMapKeyRef:
-                  name: keycloak-postgres
-                  key: POSTGRES_USER
-            - name: KC_DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: keycloak-postgres
-                  key: POSTGRES_PASSWORD
-            - name: JAVA_OPTS
-              value: "-Djava.net.preferIPv4Stack=false -Djava.net.preferIPv6Addresses=true -Djboss.bind.address.private=::1 -Djboss.bind.address=::"
           ports:
             - name: http
               containerPort: 8080
