@@ -1,3 +1,6 @@
+# general
+node_labels: "{{ labels }}"
+
 # networking config
 ip: "{{ private_ipv4 }}"
 access_ip: "{{ private_ipv4 }}"

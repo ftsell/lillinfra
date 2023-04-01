@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-local-provisioner
+  labels: &labels
+    app.kubernetes.io/name: local-path-provisioner
+    app.kubernetes.io/instance: node-local
+spec:
+  replicas: 1
+  selector:
+    matchLabels: *labels
+  template:
+    metadata:
+      labels: *labels
+    spec:
+
+      serviceAccountName: local-path-provisioner
+      volumes:
+        - configMap:
+            name: node-local-config
+          name: config-volume
+
+      containers:
+        - name: local-path-provisioner
+          image: rancher/local-path-provisioner
+          command:
+            - local-path-provisioner
+            - --debug
+            - start
+            - --config
+            - /etc/config/config.json
+            - --provisioner-name
+            - rancher.io/local-path-node-local
+            - --service-account-name
+            - local-path-provisioner
+            - --configmap-name
+            - node-local-config
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          volumeMounts:
+            - mountPath: /etc/config/
+              name: config-volume
