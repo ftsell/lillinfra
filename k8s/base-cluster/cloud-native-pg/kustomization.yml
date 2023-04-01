@@ -3,3 +3,4 @@ kind: Kustomization
 
 resources:
   - https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.19/releases/cnpg-1.19.1.yaml
+  - main-cluster.yml
