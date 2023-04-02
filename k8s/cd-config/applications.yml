@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: base-cluster
+spec:
+  generators:
+    - git:
+        repoURL: git@github.com:ftsell/finnfrastructure.git
+        revision: main
+        directories:
+          - path: "k8s/*/*"
+          - path: "k8s/cd-config"
+            exclude: true
+  template:
+    metadata:
+      name: "{{ path.basenameNormalized }}"
+      namespace: argocd
+    spec:
+      project: "{{ path[1] }}"
+      source:
+        repoURL: git@github.com:ftsell/finnfrastructure.git
+        targetRevision: main
+        path: "{{ path }}"
+      destination:
+        name: in-cluster
