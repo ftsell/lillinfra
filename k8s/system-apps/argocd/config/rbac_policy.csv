@@ -1,0 +1,2 @@
+g, argocd-admin, role:admin
+g, argocd-readonly, role:readonly

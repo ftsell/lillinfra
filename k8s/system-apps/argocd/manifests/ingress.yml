@@ -8,9 +8,10 @@ metadata:
 spec:
   ingressClassName: nginx
   tls:
-    - secretName: ssl-argocd-server-http
+    - secretName: tls-argocd-server
       hosts:
         - argocd.ftsell.de
+        - grpc.argocd.ftsell.de
   rules:
     - host: argocd.ftsell.de
       http:
@@ -23,6 +24,8 @@ spec:
                 port:
                   name: http
 
+
+
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -30,13 +33,10 @@ metadata:
   name: argocd-server-grpc
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
-    cert-manager.io/cluster-issuer: letsencrypt-http
 spec:
   ingressClassName: nginx
   tls:
-    - secretName: ssl-argocd-server-grpc
-      hosts:
-        - grpc.argocd.ftsell.de
+    - secretName: tls-argocd-server
   rules:
     - host: grpc.argocd.ftsell.de
       http:

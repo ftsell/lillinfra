@@ -6,15 +6,15 @@ metadata:
 
 data:
   # Argo CD's externally facing base URL (optional). Required when configuring SSO
-  url: "https://argocd.finn-thorben.me"
+  url: "https://argocd.ftsell.de"
   # disables admin user. Admin is enabled by default
   admin.enabled: "false"
   oidc.config: |
     name: Keycloak
-    issuer: https://keycloak.finn-thorben.me/realms/sharedsrv
+    issuer: https://auth.ftsell.de/realms/master
     clientID: argocd
     clientSecret: $oidc.keycloak.clientSecret
-    requestedScopes: ["openid", "profile", "email"]
+    requestedScopes: ["openid", "profile", "email", "roles"]
   repository.credentials: |
     - url: git@git.finn-thorben.me
       sshPrivateKeySecret:
