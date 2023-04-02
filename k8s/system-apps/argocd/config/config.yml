@@ -29,7 +29,7 @@ data:
         name: argocd-ssh-key
         key: sshPrivateKey
   repositories: |
-    - url: git@git.finn-thorben.me:sharedsrv/orchestration.git
-      name: orchestration
+    - url: git@github.com:ftsell/finnfrastructure.git
+      name: finnfrastructure
     - url: git@git.mafiasi.de:17engelke/kino.git
       name: kino.timonengelke.de
