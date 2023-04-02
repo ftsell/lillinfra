@@ -1,6 +1,15 @@
+# change service type to load-balancer
 - op: replace
   path: /spec/type
   value: LoadBalancer
+
+# define externalTrafficPolicy to Local so that source ip addresses are not obfuscated (see metallb docs)
 - op: add
   path: /spec/externalTrafficPolicy
   value: Local
+
+# set sharing key so that the IP can be reused
+- op: add
+  path: /metadata/annotations
+  value:
+    metallb.universe.tf/allow-shared-ip: main-sharing-key
