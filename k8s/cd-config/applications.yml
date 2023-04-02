@@ -23,3 +23,8 @@ spec:
         path: "{{ path }}"
       destination:
         name: in-cluster
+      ignoreDifferences:
+        - group: apiextensions.k8s.io
+          kind: CustomResourceDefinition
+          managedFieldsManagers:
+            - controller
