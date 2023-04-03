@@ -1,0 +1,5 @@
+- tags: [ storage-box, storage-box-mount, k8s ]
+  name: add ftsell to storage-box group
+  become: true
+  failed_when: false
+  command: usermod -aG storage-box ftsell

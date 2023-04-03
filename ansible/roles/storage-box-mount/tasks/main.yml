@@ -1,5 +1,23 @@
 - tags: [ storage-box, storage-box-mount, k8s ]
   block:
+    - name: create local storage group
+      become: true
+      notify: add ftsell to storage-box group
+      group:
+        name: storage-box
+        gid: 2000
+
+    - name: create local storage user
+      become: true
+      user:
+        name: storage-box
+        uid: 2000
+        group: storage-box
+        home: /opt/k8s/storage-box
+        create_home: false
+        password_lock: true
+        shell: /usr/sbin/nologin
+
     - name: install cifs
       become: true
       apt:
@@ -11,5 +29,11 @@
         src: //u343701.your-storagebox.de/u343701-sub1
         path: /opt/k8s/storage-box/
         fstype: smb3
-        opts: iocharset=utf8,rw,uid=0,gid=0,file_mode=0660,dir_mode=0770,user={{ storage_box_k8s_user | mandatory }},pass={{ storage_box_k8s_pass | mandatory }},cache=none,seal
+        opts: iocharset=utf8,rw,uid=2000,gid=2000,file_mode=0660,dir_mode=0770,user={{ storage_box_k8s_user | mandatory }},pass={{ storage_box_k8s_pass | mandatory }},cache=none,seal
         state: mounted
+
+    - name: configure setuid/setgid bits on storage-box mount
+      become: true
+      file:
+        path: /opt/k8s/storage-box
+        mode: u+s,g+s
