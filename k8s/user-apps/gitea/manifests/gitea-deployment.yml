@@ -34,7 +34,7 @@ spec:
             - mountPath: /data
               name: data
           ports:
-            - containerPort: 22
+            - containerPort: 3022
               name: ssh
             - containerPort: 3000
               name: http
