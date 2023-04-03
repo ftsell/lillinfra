@@ -14,7 +14,7 @@ data:
     issuer: https://auth.ftsell.de/realms/master
     clientID: argocd
     clientSecret: $oidc.keycloak.clientSecret
-    requestedScopes: ["openid", "profile", "email", "roles"]
+    requestedScopes: ["openid", "profile", "email"]
   repository.credentials: |
     - url: git@git.finn-thorben.me
       sshPrivateKeySecret:
