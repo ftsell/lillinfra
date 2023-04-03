@@ -11,10 +11,11 @@
   path: /spec/template/spec/affinity
   value:
     nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-          - matchExpressions:
-              - key: kubernetes.io/hostname
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - preference:
+            matchExpressions:
+              - key: ftsell.de/purpose
                 operator: In
                 values:
-                  - lb1
+                  - load_balancer
+          weight: 10
