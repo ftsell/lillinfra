@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitea-ssh
+  labels: &labels
+    app.kubernetes.io/name: gitea
+    app.kubernetes.io/component: gitea-server
+  annotations:
+    metallb.universe.tf/allow-shared-ip: main-sharing-key
+spec:
+  selector: *labels
+  type: LoadBalancer
+  ports:
+    - name: ssh
+      port: 22
+      targetPort: ssh

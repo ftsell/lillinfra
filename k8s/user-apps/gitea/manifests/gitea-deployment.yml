@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitea
+  labels: &labels
+    app.kubernetes.io/name: gitea
+    app.kubernetes.io/component: gitea-server
+spec:
+  selector:
+    matchLabels: *labels
+  template:
+    metadata:
+      labels: *labels
+    spec:
+
+      securityContext:
+        fsGroup: 2000
+
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: gitea-data
+
+      containers:
+        - name: gitea
+          image: docker.io/gitea/gitea
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: gitea
+            - secretRef:
+                name: gitea
+          volumeMounts:
+            - mountPath: /data
+              name: data
+          ports:
+            - containerPort: 22
+              name: ssh
+            - containerPort: 3000
+              name: http
+          readinessProbe:
+            httpGet:
+              path: /api/healthz
+              port: http
