@@ -1,0 +1,2 @@
+swap_size: "8G"
+nfs_server_listen_address: "{{ private_ipv4 }}"

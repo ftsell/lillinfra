@@ -1,0 +1,6 @@
+- tags: [ storage-server, storage-box ]
+  block:
+    - import_tasks: setup-storage-box-mount.yml
+    - import_tasks: configure-swap.yml
+    - import_tasks: automount-qcow-image.yml
+    - import_tasks: setup-nfs-server.yml

@@ -6,4 +6,8 @@
 
 - hosts: k8s_cluster
   roles:
-    - storage-box-mount
+    - shared-storage-mount
+
+- hosts: storage
+  roles:
+    - storage-server

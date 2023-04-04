@@ -1,0 +1,36 @@
+- tags: [ nfs, nfs-server ]
+  block:
+    - name: install nfs kernel server
+      become: true
+      apt:
+        name: nfs-kernel-server
+
+    - name: configure nfs kernel server
+      become: true
+      notify: restart nfs server
+      loop_control:
+        label: "{{ item.key }}"
+      with_items:
+        - { key: "NEED_STATD", value: "no", file: nfs-common }
+        - { key: "NEED_IDMAPD", value: "no", file: nfs-common }
+        - { key: "RPCNFSDOPTS", value: "-N 2 -N 3 -H {{ nfs_server_listen_address }}", file: nfs-kernel-server }
+        - { key: "RPCMOUNTDOPTS", value: "--manage-gids -N 2 -N 3", file: nfs-kernel-server }
+      lineinfile:
+        path: "/etc/default/{{ item.file }}"
+        regexp: "^#?{{ item.key }}=.*$"
+        line: "{{ item.key }}={{ item.value }}"
+
+    - name: ensure nfs kernel server is running and enabled
+      become: true
+      systemd:
+        name: nfs-server.service
+        state: started
+        enabled: true
+
+    - name: configure nfs export of /srv/storage-box-virt
+      become: true
+      notify: re-export from config
+      lineinfile:
+        path: /etc/exports
+        regexp: "^/srv/storage-box-virt.*$"
+        line: "/srv/storage-box-virt 10.0.0.0/24(rw,sync,mountpoint=/srv/storage-box-virt,no_root_squash,no_subtree_check)"

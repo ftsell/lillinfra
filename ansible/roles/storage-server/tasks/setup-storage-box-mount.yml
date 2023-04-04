@@ -1,8 +1,7 @@
-- tags: [ storage-box, storage-box-mount, k8s ]
+- tags: [ storage-box, shared-storage-mount, k8s ]
   block:
     - name: create local storage group
       become: true
-      notify: add ftsell to storage-box group
       group:
         name: storage-box
         gid: 2000
@@ -23,17 +22,11 @@
       apt:
         name: cifs-utils
 
-    - name: configure fstab entry for auto-mounting
+    - name: configure fstab entry for auto-mounting storage box via samba
       become: true
       ansible.posix.mount:
         src: //u343701.your-storagebox.de/u343701-sub1
-        path: /opt/k8s/storage-box/
+        path: /srv/storage-box/
         fstype: smb3
-        opts: iocharset=utf8,rw,uid=2000,gid=2000,file_mode=0660,dir_mode=0770,user={{ storage_box_k8s_user | mandatory }},pass={{ storage_box_k8s_pass | mandatory }},cache=none,seal
+        opts: iocharset=utf8,rw,uid=2000,gid=2000,file_mode=06666,dir_mode=06777,user={{ storage_box_k8s_user | mandatory }},pass={{ storage_box_k8s_pass | mandatory }},cache=none,vers=default
         state: mounted
-
-    - name: configure setuid/setgid bits on storage-box mount
-      become: true
-      file:
-        path: /opt/k8s/storage-box
-        mode: u+s,g+s
