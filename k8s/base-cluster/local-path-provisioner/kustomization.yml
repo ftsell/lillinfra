@@ -7,8 +7,8 @@ commonLabels:
 resources:
   - namespace.yml
   - rbac.yml
-  - storage-box-deployment.yml
-  - storage-box-storage-class.yml
+  - shared-storage-deployment.yml
+  - shared-storage-storage-class.yml
   - node-local-deployment.yml
   - node-local-storage-class.yml
 
@@ -19,9 +19,9 @@ images:
 generatorOptions:
   disableNameSuffixHash: true
 configMapGenerator:
-  - name: storage-box-config
+  - name: shared-storage-config
     files:
-      - config.json=storage-box-config.json
+      - config.json=shared-storage-config.json
       - helperPod.yaml=upstream-config/helper-pod.yml
       - setup=upstream-config/setup.sh
       - teardown=upstream-config/teardown.sh

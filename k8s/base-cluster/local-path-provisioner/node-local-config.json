@@ -3,7 +3,7 @@
     {
       "node": "DEFAULT_PATH_FOR_NON_LISTED_NODES",
       "paths": [
-        "/opt/k8s/node-local-storage"
+        "/srv/node-local-storage"
       ]
     }
   ]

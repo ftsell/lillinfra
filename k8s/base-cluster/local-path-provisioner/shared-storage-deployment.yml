@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: storage-box-provisioner
+  name: shared-storage-provisioner
   labels: &labels
     app.kubernetes.io/name: local-path-provisioner
-    app.kubernetes.io/instance: storage-box
+    app.kubernetes.io/instance: shared-storage
 spec:
   replicas: 1
   selector:
@@ -17,7 +17,7 @@ spec:
       serviceAccountName: local-path-provisioner
       volumes:
         - configMap:
-            name: storage-box-config
+            name: shared-storage-config
           name: config-volume
 
       containers:
@@ -30,11 +30,11 @@ spec:
             - --config
             - /etc/config/config.json
             - --provisioner-name
-            - rancher.io/local-path-storage-box
+            - rancher.io/local-path-shared-storage
             - --service-account-name
             - local-path-provisioner
             - --configmap-name
-            - storage-box-config
+            - shared-storage-config
           env:
             - name: POD_NAMESPACE
               valueFrom:
