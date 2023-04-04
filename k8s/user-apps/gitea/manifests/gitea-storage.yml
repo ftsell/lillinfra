@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: gitea-data
 spec:
-  storageClassName: storage-box
+  storageClassName: shared-storage
   accessModes:
     - ReadWriteMany
   resources:
