@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nextcloud
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http
+spec:
+  tls:
+    - secretName: tls-cloud.ftsell.de
+      hosts:
+        - cloud.ftsell.de
+  rules:
+    - host: cloud.ftsell.de
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nextcloud
+                port:
+                  name: http

@@ -1,0 +1,27 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nextcloud-data
+spec:
+  storageClassName: shared-storage
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50G
+
+
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nextcloud-installation
+spec:
+  storageClassName: node-local
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10G
