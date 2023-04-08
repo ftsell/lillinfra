@@ -10,6 +10,8 @@ resources:
   - manifests/service.yml
   - manifests/storage.yml
   - manifests/ingress.yml
+  - manifests/redis-service.yml
+  - manifests/redis-deployment.yml
 
 images:
   - name: docker.io/nextcloud
