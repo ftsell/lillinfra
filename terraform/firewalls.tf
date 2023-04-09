@@ -65,3 +65,31 @@ resource "hcloud_firewall" "k8s-api" {
     source_ips = ["0.0.0.0/0", "::/0"]
   }
 }
+
+resource "hcloud_firewall" "monitoring" {
+  name = "monitoring"
+  apply_to {
+    label_selector = "ftsell.de/purpose=monitoring"
+  }
+
+  rule {
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "22"
+    source_ips = ["0.0.0.0/0", "::/0"]
+  }
+
+  rule {
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "80"
+    source_ips = ["0.0.0.0/0", "::/0"]
+  }
+
+  rule {
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "443"
+    source_ips = ["0.0.0.0/0", "::/0"]
+  }
+}
