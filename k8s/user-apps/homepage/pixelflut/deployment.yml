@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pixelflut
+  labels: &labels
+    app.kubernetes.io/name: pixelflut
+    app.kubernetes.io/component: pixelflut-server
+spec:
+  selector:
+    matchLabels: *labels
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels: *labels
+
+    spec:
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: pixelflut-data
+
+      containers:
+        - name: pixelflut
+          image: ghcr.io/ftsell/pixelflut
+          args:
+            - server
+            - --tcp
+            - "9876"
+            - --udp
+            - "9876"
+            - --ws
+            - "9875"
+            - --width
+            - $(WIDTH)
+            - --height
+            - $(HEIGHT)
+            - --file
+            - /app/data/snapshot.pxmap
+          envFrom:
+            - configMapRef:
+                name: pixelflut
+          ports:
+            - name: tcp
+              containerPort: 9876
+              protocol: TCP
+            - name: udp
+              containerPort: 9876
+              protocol: UDP
+            - name: websocket
+              containerPort: 9875
+          volumeMounts:
+            - mountPath: /app/data
+              name: data

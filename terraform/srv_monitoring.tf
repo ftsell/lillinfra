@@ -1,8 +1,8 @@
 resource "hcloud_server" "monitoring" {
-  name   = "monitoring"
+  name = "monitoring"
   labels = {
     "ftsell.de/purpose" : "monitoring"
-    "ftsell.de/public_dns" : "monitoring.srv.${ data.hetznerdns_zone.ftsell_de.name }"
+    "ftsell.de/public_dns" : "monitoring.srv.${data.hetznerdns_zone.ftsell_de.name}"
     "ftsell.de/firewall" : "monitoring"
   }
   server_type = "cpx11"
@@ -26,26 +26,26 @@ resource "hcloud_server" "monitoring" {
 
 resource "hcloud_rdns" "monitoring-ipv4" {
   server_id  = hcloud_server.monitoring.id
-  dns_ptr    = "${ hcloud_server.monitoring.name }.srv.${ data.hetznerdns_zone.ftsell_de.name }"
+  dns_ptr    = "${hcloud_server.monitoring.name}.srv.${data.hetznerdns_zone.ftsell_de.name}"
   ip_address = hcloud_server.monitoring.ipv4_address
 }
 
 resource "hcloud_rdns" "monitoring-ipv6" {
   server_id  = hcloud_server.monitoring.id
-  dns_ptr    = "${ hcloud_server.monitoring.name }.srv.${ data.hetznerdns_zone.ftsell_de.name }"
+  dns_ptr    = "${hcloud_server.monitoring.name}.srv.${data.hetznerdns_zone.ftsell_de.name}"
   ip_address = hcloud_server.monitoring.ipv6_address
 }
 
 resource "hetznerdns_record" "monitoring-ipv4" {
   zone_id = data.hetznerdns_zone.ftsell_de.id
   type    = "A"
-  name    = "${ hcloud_server.monitoring.name }.srv"
+  name    = "${hcloud_server.monitoring.name}.srv"
   value   = hcloud_server.monitoring.ipv4_address
 }
 
 resource "hetznerdns_record" "monitoring-ipv6" {
   zone_id = data.hetznerdns_zone.ftsell_de.id
   type    = "AAAA"
-  name    = "${ hcloud_server.monitoring.name }.srv"
+  name    = "${hcloud_server.monitoring.name}.srv"
   value   = hcloud_server.monitoring.ipv6_address
 }

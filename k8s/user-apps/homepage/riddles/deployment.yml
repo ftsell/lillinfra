@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: website-riddles
+  labels: &labels
+    app.kubernetes.io/name: website-riddles
+    app.kubernetes.io/component: riddles-server
+spec:
+  selector:
+    matchLabels: *labels
+  template:
+    metadata:
+      labels: *labels
+    spec:
+      imagePullSecrets:
+        - name: github-packages-creds
+      containers:
+        - name: riddles
+          image: ghcr.io/ftsell/homepage-riddles
+          envFrom:
+            - configMapRef:
+                name: website-riddles
+          ports:
+            - name: http
+              containerPort: 80
+          readinessProbe:
+            tcpSocket:
+              port: http
