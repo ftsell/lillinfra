@@ -2,8 +2,6 @@
 node_labels: "{{ labels }}"
 
 # networking config
-ip: "{{ private_ipv4 }}"
-access_ip: "{{ private_ipv4 }}"
 enable_nodelocaldns: false
 kube_proxy_strict_arp: true
 kube_network_plugin: calico
@@ -19,7 +17,7 @@ crio_registries:
     unqualified: true
 
 # add custom domain to generated ssl certs so that we can easily address the cluster from the outside
-supplementary_addresses_in_ssl_keys: [ "{{ hostvars['k8s-api'].public_dns }}" ]
+supplementary_addresses_in_ssl_keys: [ "{{ hostvars['main'].public_dns }}" ]
 
 # disable kubespray on-host proxy to the api server because we don't need it, and it's very kubespray specific and
 # non-standard when compared to other kubernetes distributions
