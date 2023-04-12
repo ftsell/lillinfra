@@ -5,20 +5,15 @@ resource "hcloud_server" "monitoring" {
     "ftsell.de/public_dns" : "monitoring.srv.${data.hetznerdns_zone.ftsell_de.name}"
     "ftsell.de/firewall" : "monitoring"
   }
-  server_type = "cpx11"
-  location    = "hel1"
-  backups     = true
-  image       = "debian-11"
-  network {
-    network_id = hcloud_network.main-net.id
-    ip         = "10.0.0.3"
-  }
+  server_type        = "cpx11"
+  location           = var.offsite_location
+  backups            = true
+  image              = data.hcloud_image.debian.id
   ssh_keys           = [hcloud_ssh_key.ftsell.id]
   user_data          = data.template_file.cloud-init-config.rendered
   delete_protection  = var.enable_delete_protection
   rebuild_protection = var.enable_delete_protection
 
-  depends_on = [hcloud_network_subnet.vm-net]
   lifecycle {
     ignore_changes = [image, user_data]
   }

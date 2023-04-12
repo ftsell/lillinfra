@@ -9,3 +9,9 @@ data "template_file" "cloud-init-config" {
     ftsell_pwhash = trimspace(file("${path.root}/resources/password_hash.secret.txt"))
   }
 }
+
+data "hcloud_image" "debian" {
+  name        = "debian-11"
+  with_status = ["available"]
+  most_recent = true
+}

@@ -1,4 +1,4 @@
-variable "lb_srv_id" {
+variable "srv_id" {
   type = number
 }
 
@@ -13,7 +13,7 @@ data "hetznerdns_zone" "ftsell_de" {
 resource "hcloud_floating_ip" "main" {
   name      = var.service_name
   type      = "ipv4"
-  server_id = var.lb_srv_id
+  server_id = var.srv_id
   labels = {
     "ftsell.de/dns" : "${var.service_name}.svc.${data.hetznerdns_zone.ftsell_de.name}"
   }
