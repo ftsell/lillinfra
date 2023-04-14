@@ -6,6 +6,6 @@ metadata:
 spec:
   nodeSelectors:
     - matchLabels:
-        ftsell.de/purpose: load_balancer
+        kubernetes.io/hostname: main
   interfaces:
     - eth0
