@@ -2,6 +2,7 @@
 node_labels: "{{ labels }}"
 
 # networking config
+enable_dual_stack_networks: true
 enable_nodelocaldns: false
 kube_proxy_strict_arp: true
 kube_network_plugin: calico
