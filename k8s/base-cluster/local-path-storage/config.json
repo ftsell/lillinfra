@@ -1,0 +1,10 @@
+{
+  "nodePathMap": [
+    {
+      "node": "main",
+      "paths": [
+        "/srv/k8s/node-local-storage"
+      ]
+    }
+  ]
+}
