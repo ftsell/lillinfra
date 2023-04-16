@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: pixelflut-data
 spec:
-  storageClassName: shared-storage
+  storageClassName: local-path
   accessModes:
     - ReadWriteOnce
   resources:
