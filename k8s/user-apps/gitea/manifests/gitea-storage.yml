@@ -3,9 +3,9 @@ kind: PersistentVolumeClaim
 metadata:
   name: gitea-data
 spec:
-  storageClassName: shared-storage
+  storageClassName: local-path
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
-      storage: 50G
+      storage: 10G
