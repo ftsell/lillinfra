@@ -6,5 +6,5 @@ systemd_networkd_configs:
     [Network]
     DHCP=yes
     Address={{ ipv4 }}/32
-    Address={{ ipv6 }}/64
+    Address={{ ipv6 }}/96
     Gateway=fe80::1

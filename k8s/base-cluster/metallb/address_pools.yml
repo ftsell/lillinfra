@@ -8,6 +8,7 @@ spec:
   autoAssign: true
   addresses:
     - 116.202.6.114/32
+    - 2a01:4f9:c012:5522:affe::/96
 
 ---
 apiVersion: metallb.io/v1beta1
@@ -19,3 +20,4 @@ spec:
   autoAssign: false
   addresses:
     - 116.202.0.235/32
+    - 2a01:4f9:c012:5522:bffe::/96
