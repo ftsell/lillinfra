@@ -18,6 +18,18 @@
         state: stopped
         enabled: false
 
+    - name: Disable cloud-init based network configuration
+      become: true
+      template:
+        src: cloud-init-disable-network.yml
+        dest: /etc/cloud/cloud.cfg.d/95-disable-network-config.cfg
+
+    - name: Remove existing cloud-init based network device config
+      become: true
+      file:
+        path: /etc/network/interfaces.d/50-cloud-init
+        state: absent
+
     - name: Start and enable wanted systemd services
       become: true
       with_items:
