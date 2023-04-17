@@ -19,10 +19,7 @@ spec:
       volumes:
         - name: installation
           persistentVolumeClaim:
-            claimName: nextcloud-installation
-        - name: data
-          persistentVolumeClaim:
-            claimName: nextcloud-data
+            claimName: nextcloud
 
       containers:
         - name: php-fpm
@@ -36,8 +33,6 @@ spec:
           volumeMounts:
             - name: installation
               mountPath: /var/www/html
-            - name: data
-              mountPath: /var/www/html/data
           ports:
             - name: http
               containerPort: 80
