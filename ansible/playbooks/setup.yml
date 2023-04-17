@@ -3,3 +3,8 @@
     - linux_base
     - ssh_server
     - user_accounts
+
+- hosts: monitoring
+  roles:
+    - monitoring_server
+

@@ -1,0 +1,65 @@
+# {{ ansible_managed }}
+
+# See https://prometheus.io/docs/prometheus/latest/configuration/configuration/
+
+global:
+  scrape_interval: 30s
+
+scrape_configs:
+
+  ###
+  # Main Config
+  #
+  - job_name: local-node-exporter
+    static_configs:
+      - targets: [ localhost:9100 ]
+        labels:
+          instance: monitoring.srv.ftsell.de
+
+  - job_name: ping4
+    metrics_path: /probe
+    static_configs:
+      - targets: &ping_targets
+          - "monitoring.srv.ftsell.de"
+          - "main.srv.ftsell.de"
+          - "main.svc.ftsell.de"
+          - "mail.svc.ftsell.de"
+    params:
+      module: [ icmp4 ]
+    relabel_configs: &blackbox_relabel_config
+      - source_labels: [ __address__ ]
+        target_label: __param_target
+      - source_labels: [ __param_target ]
+        target_label: instance
+      - target_label: __address__
+        replacement: 127.0.0.1:9115
+
+  - job_name: http4
+    metrics_path: /probe
+    static_configs:
+      - targets: &http_targets
+          - "https://ftsell.de"
+          - "https://git.ftsell.de"
+          - "https://cloud.ftsell.de"
+    params:
+      module: [ http4 ]
+    relabel_configs: *blackbox_relabel_config
+
+  ###
+  # Config repetitions for IPv6
+  #
+  - job_name: ping6
+    metrics_path: /probe
+    static_configs:
+      - targets: *ping_targets
+    params:
+      module: [ icmp6 ]
+    relabel_configs: *blackbox_relabel_config
+
+  - job_name: http6
+    metrics_path: /probe
+    static_configs:
+      - targets: *http_targets
+    params:
+      module: [ http6 ]
+    relabel_configs: *blackbox_relabel_config

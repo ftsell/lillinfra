@@ -1,0 +1,39 @@
+- tags: [ prometheus ]
+  block:
+    - name: create prometheus config directory
+      become: true
+      file:
+        path: /etc/prometheus
+        state: directory
+
+    - name: create prometheus state directory
+      become: true
+      file:
+        path: /srv/prometheus
+        state: directory
+        mode: u=rwX,g=rX,o=rX
+        owner: nobody
+        group: nogroup
+
+    - name: configure prometheus systemd unit
+      become: true
+      notify: restart prometheus
+      template:
+        src: prometheus.service
+        dest: /etc/systemd/system/prometheus.service
+        mode: u=rw,g=r,a=r
+
+    - name: configure prometheus itself
+      become: true
+      notify: restart prometheus
+      template:
+        src: prometheus.yml
+        dest: /etc/prometheus/prometheus.yml
+
+    - name: ensure prometheus is running and enabled
+      become: true
+      systemd:
+        name: prometheus.service
+        state: started
+        enabled: true
+        daemon_reload: true

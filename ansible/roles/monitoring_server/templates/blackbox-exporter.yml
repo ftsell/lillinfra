@@ -1,0 +1,93 @@
+# {{ ansible_managed }}
+
+modules:
+  http4:
+    prober: http
+    timeout: 5s
+    http:
+      method: GET
+      follow_redirects: true
+      fail_if_not_ssl: true
+      preferred_ip_protocol: "ip4"
+      ip_protocol_fallback: false
+
+  http6:
+    prober: http
+    timeout: 5s
+    http:
+      method: GET
+      follow_redirects: true
+      fail_if_not_ssl: true
+      preferred_ip_protocol: "ip6"
+      ip_protocol_fallback: false
+
+  tls_connect4:
+    prober: tcp
+    timeout: 5s
+    tcp:
+      tls: true
+      preferred_ip_protocol: "ip4"
+      ip_protocol_fallback: false
+
+  tlc_connect6:
+    prober: tcp
+    timeout: 5s
+    tcp:
+      tls: true
+      preferred_ip_protocol: "ip6"
+      ip_protocol_fallback: false
+
+  tcp_connect4:
+    prober: tcp
+    timeout: 5s
+    tcp:
+      preferred_ip_protocol: "ip4"
+      ip_protocol_fallback: false
+
+  tcp_connect6:
+    prober: tcp
+    timeout: 5s
+    tcp:
+      preferred_ip_protocol: "ip6"
+      ip_protocol_fallback: false
+
+  imap_starttls:
+    prober: tcp
+    timeout: 5s
+    tcp:
+      query_response:
+        - expect: "OK.*STARTTLS"
+        - send: ". STARTTLS"
+        - expect: "OK"
+        - starttls: true
+        - send: ". capability"
+        - expect: "CAPABILITY IMAP4rev1"
+
+  smtp_starttls:
+    prober: tcp
+    timeout: 5s
+    tcp:
+      query_response:
+        - expect: "^220 ([^ ]+) ESMTP (.+)$"
+        - send: "EHLO prober\r"
+        - expect: "^250-STARTTLS"
+        - send: "STARTTLS\r"
+        - expect: "^220"
+        - starttls: true
+        - send: "EHLO prober\r"
+        - expect: "^250-AUTH"
+        - send: "QUIT\r"
+
+  icmp4:
+    prober: icmp
+    timeout: 5s
+    icmp:
+      preferred_ip_protocol: "ip4"
+      ip_protocol_fallback: false
+
+  icmp6:
+    prober: icmp
+    timeout: 5s
+    icmp:
+      preferred_ip_protocol: "ip6"
+      ip_protocol_fallback: false

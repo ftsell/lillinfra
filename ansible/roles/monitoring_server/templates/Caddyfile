@@ -1,0 +1,19 @@
+# {{ ansible_managed }}
+
+# See https://caddyserver.com/docs/caddyfile
+
+prometheus.monitoring.ftsell.de {
+    basicauth * bcrypt monitoring.ftsell.de {
+        ftsell $2a$14$YnX6dhwU5bzN7lU17MRee.BPfpvT.DpdtZRzjuZmbT7kjHwFAjoda
+    }
+    reverse_proxy localhost:9090
+}
+
+monitoring.ftsell.de {
+   basicauth * bcrypt monitoring.ftsell.de {
+        ftsell $2a$14$YnX6dhwU5bzN7lU17MRee.BPfpvT.DpdtZRzjuZmbT7kjHwFAjoda
+    }
+    reverse_proxy localhost:3000 {
+        header_up X-GRAFANA-USER {http.auth.user.id}
+    }
+}
