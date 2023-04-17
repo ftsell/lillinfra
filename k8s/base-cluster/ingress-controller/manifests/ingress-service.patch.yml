@@ -8,3 +8,11 @@
   path: /metadata/annotations
   value:
     metallb.universe.tf/allow-shared-ip: main-sharing-key
+
+# change ip family to allow IPv6 traffic
+- op: replace
+  path: /spec/ipFamilyPolicy
+  value: RequireDualStack
+- op: add
+  path: /spec/ipFamilies/-
+  value: IPv6
