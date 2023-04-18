@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: kino-timonengelke-de
+commonLabels:
+  app.kubernetes.io/part-of: kino-timonengelke.de
+
+resources:
+  - git::git@git.mafiasi.de:17engelke/kino.git
+  - service_account.yml
+
+secretGenerator:
+  - name: django-config
+    behavior: merge
+    envs:
+      - secret.env
+
+  - name: github-packages-creds
+    type: kubernetes.io/dockerconfigjson
+    options:
+      disableNameSuffixHash: true
+    files:
+      - ".dockerconfigjson=dockerconfig.secret.json"
