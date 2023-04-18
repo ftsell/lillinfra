@@ -19,11 +19,7 @@ scrape_configs:
   - job_name: ping4
     metrics_path: /probe
     static_configs:
-      - targets: &ping_targets
-          - "monitoring.srv.ftsell.de"
-          - "main.srv.ftsell.de"
-          - "main.svc.ftsell.de"
-          - "mail.svc.ftsell.de"
+      - targets: &ping_targets {{ monitored_icmp_targets | mandatory | to_yaml }}
     params:
       module: [ icmp4 ]
     relabel_configs: &blackbox_relabel_config
@@ -37,10 +33,7 @@ scrape_configs:
   - job_name: http4
     metrics_path: /probe
     static_configs:
-      - targets: &http_targets
-          - "https://ftsell.de"
-          - "https://git.ftsell.de"
-          - "https://cloud.ftsell.de"
+      - targets: &http_targets {{ monitored_http_targets | mandatory | to_yaml }}
     params:
       module: [ http4 ]
     relabel_configs: *blackbox_relabel_config
