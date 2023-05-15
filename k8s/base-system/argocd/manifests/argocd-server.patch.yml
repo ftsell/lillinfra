@@ -1,7 +1,0 @@
-# make argocd run on http (not https) and serve assets from its own internal server
-- op: add
-  path: /spec/template/spec/containers/0/args
-  value:
-    - "--staticassets"
-    - "/shared/app"
-    - "--insecure"
