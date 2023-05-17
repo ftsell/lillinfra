@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: diun
+  labels: &labels
+    app.kubernetes.io/name: diun
+spec:
+  selector:
+    matchLabels: *labels
+  template:
+    metadata:
+      labels: *labels
+      annotations:
+        diun.enable: "true"
+    spec:
+      serviceAccountName: diun
+
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: diun-data
+
+      containers:
+        - name: diun
+          image: docker.io/crazymax/diun
+          imagePullPolicy: Always
+          args: ["serve"]
+          envFrom:
+            - configMapRef:
+                name: diun
+          volumeMounts:
+            - mountPath: /data
+              name: data
