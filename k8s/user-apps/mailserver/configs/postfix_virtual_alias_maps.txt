@@ -1,9 +1,9 @@
-@no-reply.ftsell.de             no-reply
+noreply@ftsell.de               noreply
 
-contact@ftsell.de               ftsell
+hi@ftsell.de                    ftsell
 wg@ftsell.de                    contact@ftsell.de;contact@oleb.it
-@ftsell.de                      contact@ftsell.de
-@finn-thorben.me                contact@ftsell.de
+@ftsell.de                      hi@ftsell.de
+@finn-thorben.me                hi@ftsell.de
 
 contact@timonengelke.de         tengelke
 @timonengelke.de                tengelke

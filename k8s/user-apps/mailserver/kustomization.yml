@@ -22,6 +22,7 @@ configMapGenerator:
       - postfix_sender_login_maps.txt=configs/postfix_sender_login_maps.txt
       - rspamd_worker_controller.inc=configs/rspamd_worker_controller.inc
       - opendkim_domains.txt=configs/opendkim_domains.txt
+      - dovecot-extra.passwd=configs/dovecot-extra.passwd
 
 secretGenerator:
   - name: mailserver
