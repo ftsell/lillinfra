@@ -1,0 +1,9 @@
+@no-reply.finn-thorben.me   no-reply
+@ftsell.de                  ftsell
+@finn-thorben.me            ftsell
+@timonengelke.de            tengelke
+@sheaksadi.me               ssheak
+
+finn@bit-bots.de            ftsell
+jasper@bit-bots.de          bitbots-jasper
+info@bit-bots.de            ftsell,bitbots-jasper

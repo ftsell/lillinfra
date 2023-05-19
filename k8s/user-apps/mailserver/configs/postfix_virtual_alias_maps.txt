@@ -1,0 +1,30 @@
+@no-reply.ftsell.de             no-reply
+
+contact@ftsell.de               ftsell
+wg@ftsell.de                    contact@ftsell.de;contact@oleb.it
+@ftsell.de                      contact@ftsell.de
+@finn-thorben.me                contact@ftsell.de
+
+contact@timonengelke.de         tengelke
+@timonengelke.de                tengelke
+
+@sheaksadi.me                   ssheak
+
+@bit-bots.de                    finn@bit-bots.de
+press@bit-bots.de               info@bit-bots.de
+presse@bit-bots.de              info@bit-bots.de
+info@bit-bots.de                finn@bit-bots.de;
+    niklas@bit-bots.de;
+    bestmann@informatik.uni-hamburg.de;
+    jan@bit-bots.de;
+    7engelke@informatik.uni-hamburg.de;
+    6stelter@informatik.uni-hamburg.de;
+    jasper.gueldenstein@uni-hamburg.de;
+    valerie.bartel@uni-hamburg.de
+finn@bit-bots.de                bit-bots@ftsell.de
+jasper@bit-bots.de              bitbots-jasper
+jessica.jobski@bit-bots.de      Jessica.jobski.rc@dualj.de
+niklas@bit-bots.de              5fiedler@informatik.uni-hamburg.de
+timon@bit-bots.de               bitbots-timon
+nils@bit-bots.de                bitbots-nils
+jan@bit-bots.de                 bitbots@jaagut.de

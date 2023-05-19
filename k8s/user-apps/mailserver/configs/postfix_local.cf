@@ -1,0 +1,6 @@
+###########################
+# Local config overrides
+#
+
+mydomain = ftsell.de
+myhostname = mail.$mydomain
