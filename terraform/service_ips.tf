@@ -7,3 +7,12 @@ module "main_ip" {
 output "main_ip" {
   value = module.main_ip.ip_address
 }
+
+module "mail_ip" {
+  source       = "./service_ip"
+  service_name = "mail"
+  srv_id       = hcloud_server.main.id
+}
+output "mail_ip" {
+  value = module.mail_ip.ip_address
+}

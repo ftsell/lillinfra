@@ -1,3 +1,4 @@
+---
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
@@ -8,3 +9,17 @@ spec:
   addresses:
     - 116.202.6.114/32
     - 2a01:4f8:c17:24e4:affe::0/128
+
+
+
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: mail
+  namespace: metallb-system
+spec:
+  autoAssign: false
+  addresses:
+    - 159.69.100.237/32
+    - 2a01:4f8:c17:24e4:affe::1/128
