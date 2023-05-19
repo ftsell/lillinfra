@@ -38,6 +38,22 @@ scrape_configs:
       module: [ http4 ]
     relabel_configs: *blackbox_relabel_config
 
+  - job_name: smtp4
+    metrics_path: /probe
+    static_configs:
+      - targets: &smtp_targets {{ monitored_smtp_targets | mandatory | to_yaml }}
+    params:
+      module: [ smtp4 ]
+    relabel_configs: *blackbox_relabel_config
+
+  - job_name: imap4
+    metrics_path: /probe
+    static_configs:
+      - targets: &imap_targets {{ monitored_imap_targets | mandatory | to_yaml }}
+    params:
+      module: [ tls_connect4 ]
+    relabel_configs: *blackbox_relabel_config
+
   ###
   # Config repetitions for IPv6
   #
@@ -55,4 +71,20 @@ scrape_configs:
       - targets: *http_targets
     params:
       module: [ http6 ]
+    relabel_configs: *blackbox_relabel_config
+
+  - job_name: smtp6
+    metrics_path: /probe
+    static_configs:
+      - targets: *smtp_targets
+    params:
+      module: [ smtp4 ]
+    relabel_configs: *blackbox_relabel_config
+
+  - job_name: imap6
+    metrics_path: /probe
+    static_configs:
+      - targets: *imap_targets
+    params:
+      module: [ tls_connect6 ]
     relabel_configs: *blackbox_relabel_config

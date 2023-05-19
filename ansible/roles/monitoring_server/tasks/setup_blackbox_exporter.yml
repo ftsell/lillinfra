@@ -8,6 +8,7 @@
 
     - name: configure blackbox-exporter
       become: true
+      notify: restart blackbox-exporter
       template:
         src: blackbox-exporter.yml
         dest: /etc/blackbox-exporter/config.yml
