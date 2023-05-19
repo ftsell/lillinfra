@@ -5,4 +5,10 @@ commonLabels:
 
 resources:
   - https://github.com/cert-manager/cert-manager/releases/download/v1.11.2/cert-manager.yaml
+  - ./hetzner-webhook
   - http-issuer.yml
+  - dns-issuer.secret.yml
+
+images:
+  - name: docker.io/mecodia/cert-manager-webhook-hetzner
+    newTag: "0.3.0"

@@ -1,0 +1,15 @@
+# Deployment of a webhook server which can manage Hetzner DNS for cert-manager
+#
+# See https://github.com/mecodia/cert-manager-webhook-hetzner
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+commonLabels:
+  app.kubernetes.io/name: cert-manager-webhook-hetzner
+  app.kubernetes.io/component: webhook-hetzner
+
+resources:
+  - rbac.yml
+  - service.yml
+  - deployment.yml
+  - internal-tls.yml
+  - api-service.yml
