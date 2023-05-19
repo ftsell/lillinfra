@@ -10,7 +10,7 @@ resources:
   - rbac.yml
   - pvc.yml
 
-configMapGenerator:
+secretGenerator:
   - name: diun
     envs:
-      - diun.env
+      - diun.secret.env
