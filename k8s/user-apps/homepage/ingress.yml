@@ -10,6 +10,8 @@ spec:
       hosts:
         - ftsell.de
         - www.ftsell.de
+        - finn-thorben.me
+        - www.finn-thorben.me
   rules:
     - host: ftsell.de
       http: &http
@@ -36,4 +38,8 @@ spec:
                 port:
                   name: http
     - host: www.ftsell.de
+      http: *http
+    - host: finn-thorben.me
+      http: *http
+    - host: www.finn-thorben.me
       http: *http
