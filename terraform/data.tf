@@ -10,8 +10,16 @@ data "template_file" "cloud-init-config" {
   }
 }
 
-data "hcloud_image" "debian" {
-  name        = "debian-11"
-  with_status = ["available"]
-  most_recent = true
+data "hcloud_image" "debian_x86" {
+  name              = "debian-11"
+  with_status       = ["available"]
+  with_architecture = "x86"
+  most_recent       = true
+}
+
+data "hcloud_image" "debian_arm" {
+  name              = "debian-11"
+  with_status       = ["available"]
+  with_architecture = "arm"
+  most_recent       = true
 }

@@ -8,7 +8,7 @@ resource "hcloud_server" "monitoring" {
   server_type        = "cpx11"
   location           = var.offsite_location
   backups            = true
-  image              = data.hcloud_image.debian.id
+  image              = data.hcloud_image.debian_x86.id
   ssh_keys           = [hcloud_ssh_key.ftsell.id]
   user_data          = data.template_file.cloud-init-config.rendered
   delete_protection  = var.enable_delete_protection
