@@ -136,4 +136,20 @@ resource "hcloud_firewall" "vpn" {
     protocol   = "icmp"
     source_ips = ["0.0.0.0/0", "::/0"]
   }
+
+  rule {
+    description = "SSH"
+    direction   = "in"
+    protocol    = "tcp"
+    port        = "22"
+    source_ips  = ["0.0.0.0/0", "::/0"]
+  }
+
+  rule {
+    description = "WireGuard"
+    direction   = "in"
+    protocol    = "udp"
+    port        = "51820"
+    source_ips  = ["0.0.0.0/0", "::/0"]
+  }
 }
