@@ -5,100 +5,89 @@ resource "hcloud_firewall" "main" {
   }
 
   rule {
-    direction       = "in"
-    protocol        = "icmp"
-    source_ips      = ["0.0.0.0/0", "::/0"]
-    destination_ips = ["0.0.0.0/0", "::/0"]
+    direction  = "in"
+    protocol   = "icmp"
+    source_ips = ["0.0.0.0/0", "::/0"]
   }
 
   rule {
-    description     = "SSH"
-    direction       = "in"
-    protocol        = "tcp"
-    port            = "22"
-    source_ips      = ["0.0.0.0/0", "::/0"]
-    destination_ips = ["${hcloud_server.main.ipv4_address}/32", "${hcloud_server.main.ipv6_address}/128"]
+    description = "SSH"
+    direction   = "in"
+    protocol    = "tcp"
+    port        = "22"
+    source_ips  = ["0.0.0.0/0", "::/0"]
   }
 
   rule {
-    description     = "Kubernetes API-Server"
-    direction       = "in"
-    protocol        = "tcp"
-    port            = "6443"
-    source_ips      = ["0.0.0.0/0", "::/0"]
-    destination_ips = ["${hcloud_server.main.ipv4_address}/32", "${hcloud_server.main.ipv6_address}/128"]
+    description = "Kubernetes API-Server"
+    direction   = "in"
+    protocol    = "tcp"
+    port        = "6443"
+    source_ips  = ["0.0.0.0/0", "::/0"]
   }
 
   rule {
-    description     = "HTTP"
-    direction       = "in"
-    protocol        = "tcp"
-    port            = "80"
-    source_ips      = ["0.0.0.0/0", "::/0"]
-    destination_ips = ["${module.main_ip.ip_address}/32", hcloud_server.main.ipv6_network]
+    description = "HTTP"
+    direction   = "in"
+    protocol    = "tcp"
+    port        = "80"
+    source_ips  = ["0.0.0.0/0", "::/0"]
   }
 
   rule {
-    description     = "HTTPS"
-    direction       = "in"
-    protocol        = "tcp"
-    port            = "443"
-    source_ips      = ["0.0.0.0/0", "::/0"]
-    destination_ips = ["${module.main_ip.ip_address}/32", hcloud_server.main.ipv6_network]
+    description = "HTTPS"
+    direction   = "in"
+    protocol    = "tcp"
+    port        = "443"
+    source_ips  = ["0.0.0.0/0", "::/0"]
   }
 
   rule {
-    description     = "Pixelflut"
-    direction       = "in"
-    protocol        = "tcp"
-    port            = "9876"
-    source_ips      = ["0.0.0.0/0", "::/0"]
-    destination_ips = ["${module.main_ip.ip_address}/32", hcloud_server.main.ipv6_network]
+    description = "Pixelflut"
+    direction   = "in"
+    protocol    = "tcp"
+    port        = "9876"
+    source_ips  = ["0.0.0.0/0", "::/0"]
   }
 
   rule {
-    description     = "Pixelflut"
-    direction       = "in"
-    protocol        = "udp"
-    port            = "9876"
-    source_ips      = ["0.0.0.0/0", "::/0"]
-    destination_ips = ["${module.main_ip.ip_address}/32", hcloud_server.main.ipv6_network]
+    description = "Pixelflut"
+    direction   = "in"
+    protocol    = "udp"
+    port        = "9876"
+    source_ips  = ["0.0.0.0/0", "::/0"]
   }
 
   rule {
-    description     = "SMTP"
-    direction       = "in"
-    protocol        = "tcp"
-    port            = "25"
-    source_ips      = ["0.0.0.0/0", "::/0"]
-    destination_ips = ["${module.mail_ip.ip_address}/32", hcloud_server.main.ipv6_network]
+    description = "SMTP"
+    direction   = "in"
+    protocol    = "tcp"
+    port        = "25"
+    source_ips  = ["0.0.0.0/0", "::/0"]
   }
 
   rule {
-    description     = "SMTP Submission"
-    direction       = "in"
-    protocol        = "tcp"
-    port            = "587"
-    source_ips      = ["0.0.0.0/0", "::/0"]
-    destination_ips = ["${module.mail_ip.ip_address}/32", hcloud_server.main.ipv6_network]
+    description = "SMTP Submission"
+    direction   = "in"
+    protocol    = "tcp"
+    port        = "587"
+    source_ips  = ["0.0.0.0/0", "::/0"]
   }
 
   rule {
-    description     = "IMAPs"
-    direction       = "in"
-    protocol        = "tcp"
-    port            = "993"
-    source_ips      = ["0.0.0.0/0", "::/0"]
-    destination_ips = ["${module.mail_ip.ip_address}/32", hcloud_server.main.ipv6_network]
+    description = "IMAPs"
+    direction   = "in"
+    protocol    = "tcp"
+    port        = "993"
+    source_ips  = ["0.0.0.0/0", "::/0"]
   }
 
   rule {
-    description     = "ManageSieve"
-    direction       = "in"
-    protocol        = "tcp"
-    port            = "4190"
-    source_ips      = ["0.0.0.0/0", "::/0"]
-    destination_ips = ["${module.mail_ip.ip_address}/32", hcloud_server.main.ipv6_network]
+    description = "ManageSieve"
+    direction   = "in"
+    protocol    = "tcp"
+    port        = "4190"
+    source_ips  = ["0.0.0.0/0", "::/0"]
   }
 }
 
@@ -109,10 +98,9 @@ resource "hcloud_firewall" "monitoring" {
   }
 
   rule {
-    direction       = "in"
-    protocol        = "icmp"
-    source_ips      = ["0.0.0.0/0", "::/0"]
-    destination_ips = ["0.0.0.0/0", "::/0"]
+    direction  = "in"
+    protocol   = "icmp"
+    source_ips = ["0.0.0.0/0", "::/0"]
   }
 
   rule {
@@ -147,6 +135,5 @@ resource "hcloud_firewall" "vpn" {
     direction  = "in"
     protocol   = "icmp"
     source_ips = ["0.0.0.0/0", "::/0"]
-    #destination_ips = ["0.0.0.0/0", "::/0"]
   }
 }
