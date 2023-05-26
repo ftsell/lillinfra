@@ -1,0 +1,3 @@
+- tags: [ vpn, vpn_server, vpn-server ]
+  block:
+    - import_tasks: setup_wireguard.yml

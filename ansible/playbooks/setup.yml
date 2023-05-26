@@ -8,3 +8,6 @@
   roles:
     - monitoring_server
 
+- hosts: vpn
+  roles:
+    - vpn_server

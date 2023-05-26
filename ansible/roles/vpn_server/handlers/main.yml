@@ -1,0 +1,6 @@
+- tags: [ vpn, vpn_server, vpn-server, wireguard ]
+  name: reconfigure wg_vpn interface
+  become: true
+  systemd:
+    name: wg-quick@wg_vpn.service
+    state: reloaded
