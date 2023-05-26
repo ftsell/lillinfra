@@ -1,11 +1,13 @@
 monitored_icmp_targets:
   - "monitoring.srv.ftsell.de"
   - "main.srv.ftsell.de"
+  - "vpn.srv.ftsell.de"
   - "main.svc.ftsell.de"
   - "mail.svc.ftsell.de"
 
 monitored_http_targets:
   - "https://ftsell.de"
+  - "https://finn-thorben.me"
   - "https://argocd.ftsell.de"
   - "https://auth.ftsell.de"
   - "https://budget.ftsell.de"
