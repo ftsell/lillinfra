@@ -4,7 +4,7 @@
       assert:
         that:
           - "ansible_distribution | lower == expected_dist | lower"
-          - "ansible_distribution_version == expected_dist_version | string"
+          - "ansible_distribution_major_version == expected_dist_version | string"
 
     - import_tasks: configure_networking.yml
 
