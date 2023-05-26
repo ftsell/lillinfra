@@ -38,14 +38,14 @@
     - name: Pull newest dotfiles content
       ignore_errors: true
       git:
-        repo: https://git.finn-thorben.me/ftsell/dotfiles.git
+        repo: https://git.ftsell.de/ftsell/dotfiles.git
         dest: "~"
 
   rescue:
     - name: Clone and checkout my dotfiles repo
       ignore_errors: true
       shell: |
-        git clone https://git.finn-thorben.me/ftsell/dotfiles.git dotfiles
+        git clone https://git.ftsell.de/ftsell/dotfiles.git dotfiles
         mv dotfiles/.git ./
         rm -rf dotfiles
         git checkout .
