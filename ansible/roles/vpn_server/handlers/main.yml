@@ -11,3 +11,10 @@
   systemd:
     name: named.service
     state: reloaded
+
+- tags: [ vpn, vpn_server, vpn-server, nftables, firewall ]
+  name: reload nftables
+  become: true
+  systemd:
+    name: nftables.service
+    state: reloaded

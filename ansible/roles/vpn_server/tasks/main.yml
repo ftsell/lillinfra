@@ -2,3 +2,4 @@
   block:
     - import_tasks: setup_wireguard.yml
     - import_tasks: setup_named.yml
+    - import_tasks: setup_firewall.yml
