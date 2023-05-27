@@ -3,4 +3,11 @@
   become: true
   systemd:
     name: wg-quick@wg_vpn.service
+    state: restarted
+
+- tags: [ vpn, vpn_server, vpn-server, bind9, named, dns_server, dns-server ]
+  name: reload bind9 name server
+  become: true
+  systemd:
+    name: named.service
     state: reloaded

@@ -1,0 +1,24 @@
+// {{ ansible_managed }}
+// Config reference: https://bind9.readthedocs.io/en/latest/reference.html
+
+// Domain Management of vpn.private
+// ------------------------------
+//  - The server is defined as the master on the domain.
+//  - There are no forwarders for this domain.
+zone "vpn.private" {
+        type primary;
+        file "/etc/bind/db.vpn.private";
+        forwarders {};
+        // If we do not comment the ''forwarders'' "empty" clients of the local subnet in my case don't have access to the upstream DNS ?
+};
+zone "30.20.10.in-addr.arpa" {
+        type primary;
+        file "/etc/bind/db.vpn.private.inv";
+        //see comment below (zone "example.com")
+        //forwarders {};
+        //allow-update { key ns-example-com_rndc-key; };
+        allow-update { key rndc-key; };
+};
+
+// Serve reverse lookups for other private networks as empty zones
+include "/etc/bind/zones.rfc1918";

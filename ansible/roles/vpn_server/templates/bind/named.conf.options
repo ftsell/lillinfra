@@ -1,0 +1,18 @@
+// {{ ansible_managed }}
+// Config reference: https://bind9.readthedocs.io/en/latest/reference.html#options-block-definition-and-usage
+
+options {
+    // where to store runtime data
+    directory "/var/cache/bind";
+
+    // enable dnssec validation with public key management
+    dnssec-validation auto;
+
+    // listen on vpn addresses only
+    listen-on {
+        10.20.30.2;
+    };
+    listen-on-v6 {
+        fc10:20:30::2;
+    };
+};
