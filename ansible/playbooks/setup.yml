@@ -1,4 +1,6 @@
-- hosts: all
+# This playbook configures all server that are always reachable via the internet
+
+- hosts: hcloud
   roles:
     - linux_base
     - ssh_server

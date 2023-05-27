@@ -1,0 +1,6 @@
+- tags: [ vpn, vpn_client, wireguard ]
+  name: reconfigure vpn interface
+  become: true
+  systemd:
+    name: wg-quick@{{ vpn_iface }}.service
+    state: restarted

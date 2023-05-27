@@ -1,0 +1,4 @@
+# This playbook can only be executed from home because it requires local network access
+- hosts: home
+  roles:
+    - vpn_client
