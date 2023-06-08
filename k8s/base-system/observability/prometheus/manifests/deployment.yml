@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  labels: &labels
+    app.kubernetes.io/name: prometheus
+spec:
+  selector:
+    matchLabels: *labels
+  replicas: 1   # high availability is not configured so this must be 1
+
+  template:
+    metadata:
+      labels: *labels
+      annotations:
+        prometheus.io/scrape: "true"
+    spec:
+      serviceAccountName: prometheus-scraper
+      volumes:
+        - name: config
+          configMap:
+            name: prometheus
+        - name: secret-config
+          secret:
+            secretName: prometheus
+        - name: data
+          emptyDir: {}
+      containers:
+        - name: prometheus
+          image: docker.io/prom/prometheus
+          ports:
+            - name: http
+              containerPort: 9090
+          volumeMounts:
+            - name: config
+              mountPath: /etc/prometheus/prometheus.yml
+              subPath: prometheus.yml
+            - name: secret-config
+              mountPath: /etc/prometheus/remote_access.passwd.txt
+              subPath: remote_access.passwd.txt
+
+            - name: data
+              mountPath: /prometheus
+          readinessProbe:
+            httpGet:
+              port: http
+              path: /-/ready
+          livenessProbe:
+            httpGet:
+              port: http
+              path: /-/healthy

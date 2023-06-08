@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+commonLabels:
+  app.kubernetes.io/part-of: postgres-exporter
+
+resources:
+  - deployment.yml
+  - service.yml
+
+configMapGenerator:
+  - name: postgres-exporter
+    envs:
+      - config.env
+
+secretGenerator:
+  - name: postgres-exporter
+    envs:
+      - secret.env
