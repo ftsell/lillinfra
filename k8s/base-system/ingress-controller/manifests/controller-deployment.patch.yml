@@ -19,3 +19,16 @@
                 values:
                   - load_balancer
           weight: 10
+
+# add prometheus.io annotations for metric collections
+- op: add
+  path: /spec/template/metadata/annotations
+  value:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "10254"
+# add port definition to pod manifest
+- op: add
+  path: /spec/template/spec/containers/0/ports/-
+  value:
+    name: prometheus
+    containerPort: 10254
