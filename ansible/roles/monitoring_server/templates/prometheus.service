@@ -21,7 +21,12 @@ ExecStart=/usr/bin/podman run \
     -v /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml \
     -v /srv/prometheus:/prometheus \
     --net=host \
-    docker.io/prom/prometheus
+    docker.io/prom/prometheus \
+    --config.file=/etc/prometheus/prometheus.yml \
+    --storage.tsdb.path=/prometheus \
+    --web.console.libraries=/usr/share/prometheus/console_libraries \
+    --web.console.templates=/usr/share/prometheus/consoles \
+    --web.enable-remote-write-receiver
 ExecStop=/usr/bin/podman stop \
     --ignore \
     -t 10 \
