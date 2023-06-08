@@ -1,0 +1,45 @@
+# {{ ansible_managed }}
+
+auth_enabled: false
+analytics:
+  reporting_enabled: false
+
+common:
+  instance_addr: loki.monitoring.ftsell.de
+  path_prefix: /tmp/loki
+  storage:
+    filesystem:
+      chunks_directory: /srv/loki/chunks
+      rules_directory: /srv/loki/rules
+  replication_factor: 1
+  ring:
+    kvstore:
+      store: inmemory
+
+query_range:
+  results_cache:
+    cache:
+      embedded_cache:
+        enabled: true
+        max_size_mb: 200
+
+schema_config:
+  configs:
+    - from: 2023-06-09
+      store: boltdb-shipper
+      object_store: filesystem
+      schema: v11
+      index:
+        prefix: index_
+        period: 24h
+
+# configure compactor
+#   this means that the compactor regularly runs to compact index tables and to delete them if they are older than the
+#   defined retention period. Effectively this reduces the required amount of storage too
+compactor:
+  working_directory: /srv/loki/compactor
+  shared_store: filesystem
+  retention_enabled: true
+limits_config:
+  retention_period: 336h  # two weeks
+

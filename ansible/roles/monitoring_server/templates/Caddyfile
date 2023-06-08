@@ -10,6 +10,14 @@ prometheus.monitoring.ftsell.de {
     reverse_proxy localhost:9090
 }
 
+loki.monitoring.ftsell.de {
+    basicauth * bcrypt monitoring.ftsell.de {
+        ftsell $2a$14$YnX6dhwU5bzN7lU17MRee.BPfpvT.DpdtZRzjuZmbT7kjHwFAjoda
+        k8s-prometheus $2a$14$AIc9yPTgHOEDlxUYZMW.iuPDNRQndFDCP6Lm8eWNBPcNH4NBgRX0K
+    }
+    reverse_proxy localhost:3100
+}
+
 blackbox-exporter.monitoring.ftsell.de {
     basicauth * bcrypt monitoring.ftsell.de {
         ftsell $2a$14$YnX6dhwU5bzN7lU17MRee.BPfpvT.DpdtZRzjuZmbT7kjHwFAjoda

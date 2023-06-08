@@ -20,7 +20,7 @@
 
     - import_tasks: setup_prometheus.yml
     - import_tasks: setup_grafana.yml
-    - import_tasks: setup_alertmanager.yml
     - import_tasks: setup_node_exporter.yml
     - import_tasks: setup_blackbox_exporter.yml
+    - import_tasks: setup_log_collection.yml
     - import_tasks: setup_webserver.yml

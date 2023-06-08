@@ -30,6 +30,22 @@
     state: restarted
     daemon_reload: true
 
+- tags: [ monitoring, monitoring_server, monitoring-server, loki, grafana_loki ]
+  name: restart loki
+  become: true
+  systemd:
+    name: loki.service
+    state: restarted
+    daemon_reload: true
+
+- tags: [ monitoring, monitoring_server, monitoring-server, loki, grafana_loki, promtail ]
+  name: restart promtail
+  become: true
+  systemd:
+    name: promtail.service
+    state: restarted
+    daemon_reload: true
+
 - tags: [ monitoring, monitoring_server, monitoring-server, webserver, caddy ]
   name: reload caddy
   become: true

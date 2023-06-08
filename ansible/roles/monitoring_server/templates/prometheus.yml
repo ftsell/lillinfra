@@ -10,11 +10,14 @@ scrape_configs:
   ###
   # Main Config
   #
-  - job_name: local-node-exporter
+  - job_name: local-services
     static_configs:
       - targets: [ localhost:9100 ]
         labels:
-          instance: monitoring.srv.ftsell.de
+          instance: monitoring
+      - targets: [ localhost:3100 ]
+        labels:
+          instance: loki
 
   - job_name: ping4
     metrics_path: /probe
