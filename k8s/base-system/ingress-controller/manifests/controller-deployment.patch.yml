@@ -1,25 +1,3 @@
-# allow these pods to be scheduled on the load balancer
-- op: add
-  path: /spec/template/spec/tolerations
-  value:
-    - key: ftsell.de/load-balancer
-      effect: NoSchedule
-      operator: Exists
-
-# prefer scheduling these pods directly on the load balancer
-- op: add
-  path: /spec/template/spec/affinity
-  value:
-    nodeAffinity:
-      preferredDuringSchedulingIgnoredDuringExecution:
-        - preference:
-            matchExpressions:
-              - key: ftsell.de/purpose
-                operator: In
-                values:
-                  - load_balancer
-          weight: 10
-
 # add prometheus.io annotations for metric collections
 - op: add
   path: /spec/template/metadata/annotations
