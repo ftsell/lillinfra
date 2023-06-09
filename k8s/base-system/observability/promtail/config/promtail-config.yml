@@ -1,0 +1,79 @@
+# See Reference: https://grafana.com/docs/loki/latest/clients/promtail/configuration/
+
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+clients:
+  - url: https://loki.monitoring.ftsell.de/loki/api/v1/push
+    basic_auth:
+      username: k8s-prometheus
+      password_file: /etc/promtail/remote_access.passwd.txt
+
+positions:
+  filename: /srv/promtail/positions.yaml
+
+# See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config
+scrape_configs:
+  # collect logs of all pods on the current host
+  - job_name: k8s-pods
+    kubernetes_sd_configs:
+      - role: pod
+    relabel_configs:
+      # only try to read logs from pods running on the current host by setting __host__ label correctly
+      - action: keep
+        source_labels: [ __meta_kubernetes_pod_node_name ]
+        regex: ${HOSTNAME}
+      # construct the target log file path based on pod information
+      - replacement: /var/log/pods/*$1/*.log
+        separator: /
+        source_labels: [ __meta_kubernetes_pod_uid, __meta_kubernetes_pod_container_name ]
+        target_label: __path__
+      # map all pod labels and some special metadata to prometheus labels
+      - action: labelmap
+        regex: __meta_kubernetes_pod_label_(.+)
+      - source_labels: [ __meta_kubernetes_namespace ]
+        action: replace
+        target_label: pod_namespace
+      - source_labels: [ __meta_kubernetes_pod_name ]
+        action: replace
+        target_label: pod_name
+      - source_labels: [ __meta_kubernetes_pod_node_name ]
+        action: replace
+        target_label: host
+      - source_labels: [ __meta_kubernetes_pod_container_name ]
+        action: replace
+        target_label: pod_container
+      # remove labels that I know to not want to reduce the number of streams loki needs to keep
+      - action: labeldrop
+        regex: "(pod_template_hash)|(controller_revision_hash)|(pod_template_generation)"
+    pipeline_stages:
+      - cri: { }
+
+  # collect logs from systemd-journald
+  - job_name: systemd
+    journal:
+      max_age: 1h
+      path: /var/log/journal
+      labels:
+        host: ${HOSTNAME}
+    relabel_configs:
+      # only keep .service logs
+      - action: keep
+        source_labels: [ __journal__systemd_unit ]
+        regex: (.+)\.service
+      # make a clean label name
+      - source_labels: [ __journal__systemd_unit ]
+        target_label: systemd_unit
+      - source_labels: [ __journal_priority_keyword ]
+        target_label: systemd_priority
+
+  # collect logs from log-files located directly in /var/log and some additional files from known locations
+  - job_name: static_logs
+    static_configs:
+      - labels:
+          host: ${HOSTNAME}
+          __path__: /var/log/auth.log
+      - labels:
+          host: ${HOSTNAME}
+          __path__: /var/log/aptitude

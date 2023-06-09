@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: promtail
+  labels: &labels
+    app.kubernetes.io/name: promtail
+spec:
+  selector:
+    matchLabels: *labels
+  template:
+    metadata:
+      labels: *labels
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9080"
+    spec:
+      serviceAccountName: promtail
+
+      volumes:
+        - name: config
+          configMap:
+            name: promtail
+        - name: config-secret
+          secret:
+            secretName: promtail
+        - name: data
+          hostPath:
+            path: /srv/promtail/
+            type: DirectoryOrCreate
+        - name: host-logs
+          hostPath:
+            path: /var/log
+
+      containers:
+        - name: promtail
+          image: docker.io/grafana/promtail
+          args:
+            - -config.file=/etc/promtail/promtail-config.yml
+            - -config.expand-env=true
+          env:
+            - name: HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - name: config
+              mountPath: /etc/promtail/promtail-config.yml
+              subPath: promtail-config.yml
+            - name: config-secret
+              mountPath: /etc/promtail/remote_access.passwd.txt
+              subPath: remote_access.passwd.txt
+            - name: data
+              mountPath: /srv/promtail
+            - name: host-logs
+              mountPath: /var/log
+              readOnly: true
+          ports:
+            - name: metrics
+              containerPort: 9080
+          readinessProbe:
+            httpGet:
+              port: metrics
+              path: /ready
