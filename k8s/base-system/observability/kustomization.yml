@@ -6,4 +6,3 @@ resources:
   - ./prometheus
   - ./node-exporter
   - ./postgres-exporter
-  - ./promtail
