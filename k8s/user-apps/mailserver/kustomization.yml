@@ -29,6 +29,7 @@ secretGenerator:
     files:
       - opendkim_key.pem=configs/dkim_key.secret.pem
       - dovecot-oauth2.conf.ext=configs/oauth2.secret.conf
+      - fetchmailrc=configs/fetchmailrc.secret
 
   - name: github-packages-creds
     type: kubernetes.io/dockerconfigjson
