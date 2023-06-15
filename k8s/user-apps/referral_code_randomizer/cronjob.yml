@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: referral-code-randomizer
+  labels: &labels
+    app.kubernetes.io/name: referral-code-randomizer
+spec:
+  schedule: "0 2 * * *"   # every day at 2 o'clock
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    metadata:
+      labels: *labels
+    spec:
+      backoffLimit: 1
+      template:
+        metadata:
+          labels: *labels
+        spec:
+
+          restartPolicy: Never
+          volumes:
+            - name: script
+              configMap:
+                name: script
+          containers:
+            - name: referral-code-randomizer
+              image: docker.io/python
+              command: [ "bash", "-c" ]
+              args:
+                - |
+                  set -e
+                  pip install requests
+                  python /srv/script.py
+              volumeMounts:
+                - name: script
+                  mountPath: /srv/
