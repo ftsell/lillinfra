@@ -6,17 +6,9 @@ commonLabels:
 
 resources:
   - git::git@git.mafiasi.de:17engelke/kino.git
-  - service_account.yml
 
 secretGenerator:
   - name: django-config
     behavior: merge
     envs:
       - secret.env
-
-  - name: github-packages-creds
-    type: kubernetes.io/dockerconfigjson
-    options:
-      disableNameSuffixHash: true
-    files:
-      - ".dockerconfigjson=dockerconfig.secret.json"

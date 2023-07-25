@@ -27,11 +27,3 @@ configMapGenerator:
   - name: website-riddles
     envs:
       - configs/riddles.secret.env
-
-secretGenerator:
-  - name: github-packages-creds
-    type: kubernetes.io/dockerconfigjson
-    options:
-      disableNameSuffixHash: true
-    files:
-      - ".dockerconfigjson=configs/dockerconfig.secret.json"

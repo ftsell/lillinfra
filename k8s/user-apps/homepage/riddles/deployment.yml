@@ -12,8 +12,6 @@ spec:
     metadata:
       labels: *labels
     spec:
-      imagePullSecrets:
-        - name: github-packages-creds
       containers:
         - name: riddles
           image: ghcr.io/ftsell/homepage-riddles

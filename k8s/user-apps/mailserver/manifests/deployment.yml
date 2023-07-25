@@ -12,8 +12,6 @@ spec:
       labels: *labels
     spec:
       nodeName: main
-      imagePullSecrets:
-        - name: github-packages-creds
 
       volumes:
         - name: conf
