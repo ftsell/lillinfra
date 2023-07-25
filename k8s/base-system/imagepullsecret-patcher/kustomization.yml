@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: imagepullsecret-patcher
+commonLabels:
+  app.kubernetes.io/part-of: imagepullsecret-patcher
+
+resources:
+  - manifests/namespace.yml
+  - manifests/rbac.yml
+  - manifests/github-package-creds.deployment.yml
+
+images:
+  - name: quay.io/titansoft/imagepullsecret-patcher
+    newTag: "v0.14"
+
+configMapGenerator:
+  - name: imagepullsecret-patcher
+    envs:
+      - config.env
+
+secretGenerator:
+  - name: github-packages-creds
+    type: kubernetes.io/dockerconfigjson
+    options:
+      disableNameSuffixHash: true
+    files:
+      - ".dockerconfigjson=dockerconfig.secret.json"
