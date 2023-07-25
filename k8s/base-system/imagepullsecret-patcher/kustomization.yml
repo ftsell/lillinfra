@@ -7,7 +7,8 @@ commonLabels:
 resources:
   - manifests/namespace.yml
   - manifests/rbac.yml
-  - manifests/github-package-creds.deployment.yml
+  - manifests/github.deployment.yml
+  - manifests/dockerhub.deployment.yml
 
 images:
   - name: quay.io/titansoft/imagepullsecret-patcher
@@ -24,4 +25,10 @@ secretGenerator:
     options:
       disableNameSuffixHash: true
     files:
-      - ".dockerconfigjson=dockerconfig.secret.json"
+      - ".dockerconfigjson=dockerconfig-github.secret.json"
+  - name: dockerhub-creds
+    type: kubernetes.io/dockerconfigjson
+    options:
+      disableNameSuffixHash: true
+    files:
+      - ".dockerconfigjson=dockerconfig-dockerhub.secret.json"
