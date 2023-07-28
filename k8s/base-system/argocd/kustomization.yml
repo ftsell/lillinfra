@@ -7,7 +7,7 @@ commonLabels:
 namespace: argocd
 
 resources:
-  - https://raw.githubusercontent.com/argoproj/argo-cd/v2.7.7/manifests/install.yaml
+  - https://raw.githubusercontent.com/argoproj/argo-cd/v2.7.9/manifests/install.yaml
   - manifests/namespace.yml
   - manifests/ingress.yml
 
