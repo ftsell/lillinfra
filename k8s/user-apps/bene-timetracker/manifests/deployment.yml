@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: time-tracker
+  labels: &labels
+    app.kubernetes.io/name: bene-timetracker
+    app.kubernetes.io/component: http-server
+spec:
+  replicas: 1   # high-availability is not supported
+  selector:
+    matchLabels: *labels
+  template:
+    metadata:
+      labels: *labels
+    spec:
+
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: bene-timetracker
+
+      containers:
+        - name: time-tracker
+          image: ghcr.io/rnxpyke/buntimer
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: bene-timetracker
+          volumeMounts:
+            - name: storage
+              mountPath: /app/storage/
+          ports:
+            - name: http
+              containerPort: 3000
+          readinessProbe:
+            httpGet:
+              port: http

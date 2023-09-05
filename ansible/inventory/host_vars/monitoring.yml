@@ -12,6 +12,7 @@ monitored_http_targets:
   - "https://cloud.ftsell.de"
   - "https://git.ftsell.de"
   - "https://kino.timonengelke.de"
+  - "https://time.ftsell.de"
 
 monitored_smtp_targets:
   - "mail.ftsell.de:25"
