@@ -18,7 +18,6 @@ info@bit-bots.de                finn@bit-bots.de;
     bestmann@informatik.uni-hamburg.de;
     jan@bit-bots.de;
     7engelke@informatik.uni-hamburg.de;
-    6stelter@informatik.uni-hamburg.de;
     jasper.gueldenstein@uni-hamburg.de;
     valerie.bartel@uni-hamburg.de
 finn@bit-bots.de                bit-bots@ftsell.de
