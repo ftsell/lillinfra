@@ -6,6 +6,8 @@ metadata:
     app.kubernetes.io/name: gitea
     app.kubernetes.io/component: gitea-server
 spec:
+  strategy:
+    type: Recreate
   selector:
     matchLabels: *labels
   template:
