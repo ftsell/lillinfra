@@ -24,4 +24,4 @@ configMapGenerator:
 secretGenerator:
   - name: gitea
     envs:
-      - secrets.env
+      - secret.env
