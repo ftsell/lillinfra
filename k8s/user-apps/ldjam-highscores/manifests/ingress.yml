@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ldjam-highscores
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http
+spec:
+  tls:
+    - secretName: tls-highscores.ftsell.de
+      hosts: [ highscores.ftsell.de ]
+  rules:
+    - host: highscores.ftsell.de
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ldjam-highscores
+                port:
+                  name: http
