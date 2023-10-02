@@ -5,7 +5,7 @@ metadata:
   labels: &labels
     app.kubernetes.io/name: ldjam-highscores
 spec:
-  replicas: 5
+  replicas: 1
   selector:
     matchLabels: *labels
   template:
