@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rom-o-mat.de
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http
+spec:
+  tls:
+    - secretName: tls-rom-o-mat.de
+      hosts: [ rom-o-mat.de ]
+  rules:
+    - host: rom-o-mat.de
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: rom-o-mat-server
+                port:
+                  name: http
