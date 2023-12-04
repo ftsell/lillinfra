@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: vikunja
+commonLabels:
+  app.kubernetes.io/part-of: vikunja
+
+resources:
+  - manifests/namespace.yml
+  - manifests/vikunja-api.yml
+  - manifests/vikunja-frontend.yml
+  - manifests/ingress.yml
+
+images:
+  - name: docker.io/vikunja/api
+    newTag: "0.21"
+  - name: docker.io/vikunja/frontend
+    newTag: "0.21"
+
+configMapGenerator:
+  - name: vikunja-api
+    files:
+      - config.yml=vikunja.secret.yml
