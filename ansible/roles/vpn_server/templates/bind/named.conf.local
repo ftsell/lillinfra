@@ -20,5 +20,12 @@ zone "30.20.10.in-addr.arpa" {
         allow-update { key rndc-key; };
 };
 
+// Response-Policy Zone for DNS-Firewalling of ad and malicious domains
+zone "rpz.ftsell.de" {
+        type primary;
+        file "/etc/bind/db.blocklist.rpz";
+        allow-query { localhost; };
+};
+
 // Serve reverse lookups for other private networks as empty zones
 include "/etc/bind/zones.rfc1918";

@@ -15,4 +15,8 @@ options {
     listen-on-v6 {
         fc10:20:30::2;
     };
+
+    response-policy {
+        zone "rpz.ftsell.de";
+    };
 };

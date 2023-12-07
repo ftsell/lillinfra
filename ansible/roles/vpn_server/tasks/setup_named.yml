@@ -21,6 +21,19 @@
           named-checkconf %s
           {% endif %}
 
+    - name: Update dns blocklist
+      tags: [ adblock, blocklist, blocklists ]
+      become: true
+      notify: reload bind9 name server
+      apply_blocklist:
+        rpz_zone: "rpz.ftsell.de."
+        sources: "{{ dns_blocklists }}"
+        block_action: "BLACKHOLE"
+        dest: /etc/bind/db.blocklist.rpz
+        owner: bind
+        group: bind
+        mode: u=rw,g=r,o=r
+
     - name: ensure bind9 name server is running and enabled
       become: true
       systemd:
