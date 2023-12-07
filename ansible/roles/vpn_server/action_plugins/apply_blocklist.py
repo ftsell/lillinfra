@@ -51,7 +51,7 @@ class ActionModule(ActionBase):
                 result += "\n"
 
             # skip non-block instruction entries
-            elif not line.startswith("0.0.0.0"):
+            elif not line.startswith("0.0.0.0") or line.endswith("0.0.0.0"):
                 continue
 
             # skip hosts that bind does not support
