@@ -1,25 +1,3 @@
-- tags: [ monitoring, monitoring_server, monitoring-server ]
+- tags: [ monitoring, monitoring_server, monitoring-server, icinga, icinga2 ]
   block:
-    - name: install podman
-      become: true
-      apt:
-        name: podman
-
-    - name: configure systemd monitoring target
-      become: true
-      template:
-        src: monitoring.target
-        dest: /etc/systemd/system/monitoring.target
-
-    - name: ensure monitoring target is enabled
-      become: true
-      systemd:
-        name: monitoring.target
-        daemon_reload: true
-        enabled: true
-
-    - import_tasks: setup_prometheus.yml
-    - import_tasks: setup_grafana.yml
-    - import_tasks: setup_node_exporter.yml
-    - import_tasks: setup_blackbox_exporter.yml
     - import_tasks: setup_webserver.yml

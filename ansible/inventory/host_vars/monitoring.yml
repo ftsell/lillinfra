@@ -1,3 +1,5 @@
+expected_dist_version: 12
+
 monitored_icmp_targets:
   - "monitoring.srv.ftsell.de"
   - "main.srv.ftsell.de"

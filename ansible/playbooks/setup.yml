@@ -6,9 +6,9 @@
     - ssh_server
     - user_accounts
 
-- hosts: monitoring
-  roles:
-    - monitoring_server
+#- hosts: monitoring
+#  roles:
+#    - monitoring_server
 
 - hosts: vpn
   roles:
