@@ -23,6 +23,44 @@
         name: icingaweb2
         owner: icingaweb2
 
+    - name: Import icingaweb schema into postgres database
+      become: true
+      become_user: postgres
+      when: create_db.changed
+      community.postgresql.postgresql_script:
+        host: localhost
+        db: icingaweb2
+        login_user: icingaweb2
+        login_password: icingaweb2
+        path: /usr/share/icingaweb2/schema/pgsql.schema.sql
+
+    - name: Create admin user for icingaweb2
+      become: true
+      become_user: postgres
+      vars:
+        group_name: Administrators
+        username: admin
+        pw_hash: "{{ lookup('ansible.builtin.password', 'artifacts/credentials/{{ inventory_hostname }}/icingaweb/admin', chars=['ascii_letters', 'digits']) | ansible.builtin.password_hash }}"
+        time: "{{ now(fmt='%Y-%m-%d %H:%M:%S') }}"
+      community.postgresql.postgresql_query:
+        host: localhost
+        db: icingaweb2
+        login_user: icingaweb2
+        login_password: icingaweb2
+        query: |
+          -- create Administrators group
+          INSERT INTO icingaweb_group (name, ctime)
+          VALUES ('{{ group_name }}', '{{ time }}')
+          ON CONFLICT DO NOTHING;
+
+          -- create admin user
+          INSERT INTO icingaweb_user (name, active, password_hash, ctime)
+          VALUES ('{{ username }}', 1, '{{ pw_hash }}', '{{ time }}')
+          ON CONFLICT (name) DO UPDATE SET
+            active = 1,
+            password_hash = '{{ pw_hash }}',
+            mtime = '{{ time }}';
+
     - name: Configure icingaweb2
       become: true
       with_items:
