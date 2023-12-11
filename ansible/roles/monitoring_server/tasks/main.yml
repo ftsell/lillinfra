@@ -1,3 +1,8 @@
-- tags: [ monitoring, monitoring_server, monitoring-server, icinga, icinga2 ]
+- name: Setup Monitoring Server
+  tags: [ monitoring, monitoring_server, monitoring-server, icinga, icinga2 ]
   block:
-    - import_tasks: setup_webserver.yml
+    - ansible.builtin.import_tasks: setup_icinga_repo.yml
+    - ansible.builtin.import_tasks: setup_icingadb.yml
+    - ansible.builtin.import_tasks: setup_icinga2_node.yml
+    - ansible.builtin.import_tasks: setup_icingaweb.yml
+    - ansible.builtin.import_tasks: setup_webserver.yml

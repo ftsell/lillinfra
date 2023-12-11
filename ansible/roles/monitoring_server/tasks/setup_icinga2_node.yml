@@ -1,0 +1,109 @@
+- name: Install icinga2
+  become: true
+  apt:
+    name: [icinga2, monitoring-plugins]
+
+- name: Setup icinga CA
+  tags: [pki]
+  block:
+    - name: Create ca private key
+      become: true
+      ansible.builtin.openssl_privatekey:
+        path: /var/lib/icinga2/ca/ca.key
+        owner: nagios
+        group: nagios
+        mode: u=rw,g=r,o=
+    - name: Create ca csr
+      become: true
+      ansible.builtin.openssl_csr:
+        path: /var/lib/icinga2/ca.csr
+        privatekey_path: /var/lib/icinga2/ca/ca.key
+        common_name: Icinga CA
+        basic_constraints:
+          - "CA:TRUE"
+        basic_constraints_critical: true
+        owner: nagios
+        group: nagios
+        mode: u=rw,g=r,o=
+    - name: Create self-signed ca certificate
+      become: true
+      ansible.builtin.openssl_certificate:
+        path: /var/lib/icinga2/ca/ca.crt
+        csr_path: /var/lib/icinga2/ca.csr
+        privatekey_path: /var/lib/icinga2/ca/ca.key
+        provider: selfsigned
+        owner: nagios
+        group: nagios
+        mode: u=rw,g=r,o=
+    - name: Copy CA certificate to cert dir
+      become: true
+      ansible.builtin.copy:
+        src: /var/lib/icinga2/ca/ca.crt
+        dest: /var/lib/icinga2/certs/ca.crt
+        remote_src: true
+        owner: nagios
+        group: nagios
+        mode: u=rw,g=r,o=
+
+- name: Setup key material for this node
+  tags: [pki]
+  notify: Restart icinga2
+  block:
+    - name: Create {{ inventory_hostname }} private key
+      become: true
+      ansible.builtin.openssl_privatekey:
+        path: /var/lib/icinga2/certs/{{ inventory_hostname }}.key
+        owner: nagios
+        group: nagios
+        mode: u=rw,g=r,o=
+    - name: Create {{ inventory_hostname }} csr
+      become: true
+      ansible.builtin.openssl_csr:
+        path: /var/lib/icinga2/certs/{{ inventory_hostname }}.csr
+        privatekey_path: /var/lib/icinga2/certs/{{ inventory_hostname }}.key
+        common_name: "{{ inventory_hostname}}"
+        basic_constraints:
+          - "CA:FALSE"
+        basic_constraints_critical: true
+        owner: nagios
+        group: nagios
+        mode: u=rw,g=r,o=
+    - name: Sign {{ inventory_hostname }} certificate with ca
+      become: true
+      ansible.builtin.openssl_certificate:
+        path: /var/lib/icinga2/certs/{{ inventory_hostname }}.crt
+        csr_path: /var/lib/icinga2/certs/{{ inventory_hostname }}.csr
+        provider: ownca
+        ownca_path: /var/lib/icinga2/certs/ca.crt
+        ownca_privatekey_path: /var/lib/icinga2/ca/ca.key
+        owner: nagios
+        group: nagios
+        mode: u=rw,g=r,o=
+
+- name: Configure icinga api-users
+  become: true
+  notify: Restart icinga2
+  ansible.builtin.template:
+    src: icinga2/api-users.conf
+    dest: /etc/icinga2/conf.d/api-users.conf
+    owner: nagios
+    group: nagios
+    mode: u=rw,g=r,o=
+
+- name: Enable icinga api feature
+  become: true
+  ansible.builtin.file:
+    path: /etc/icinga2/features-enabled/api.conf
+    state: link
+    src: /etc/icinga2/features-available/api.conf
+
+- name: Configure icinga constants
+  become: true
+  notify: Restart icinga2
+  with_items:
+    - { key: NodeName, value: "{{ inventory_hostname}}" }
+    - { key: ZoneName, value: "{{ inventory_hostname}}" }
+  ansible.builtin.lineinfile:
+    path: /etc/icinga2/constants.conf
+    regex: "const {{ item.key }} ?= ?[\"'].+[\"']"
+    line: "const {{ item.key }} = \"{{ item.value }}\""

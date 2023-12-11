@@ -1,6 +1,21 @@
-- tags: [ monitoring, monitoring_server, monitoring-server, webserver, caddy ]
-  name: reload caddy
+- name: reload caddy
+  tags: [ monitoring, monitoring_server, monitoring-server, webserver, caddy ]
   become: true
   systemd:
     name: caddy.service
     state: reloaded
+
+- name: restart icingadb
+  tags: [ monitoring, monitoring_server, monitoring-server, icinga, icinga2, icingadb ]
+  become: true
+  systemd:
+    name: icingadb.service
+    state: restarted
+
+- name: Restart icinga2
+  tags: [monitoring, monitoring_server, icinga, icinga2]
+  become: true
+  systemd:
+    name: icinga2.service
+    state: restarted
+
