@@ -16,6 +16,7 @@
         - templates.conf
         - timeperiods.conf
         - users.conf
+        - scripts
       ansible.builtin.file:
         path: /etc/icinga2/conf.d/{{ item }}
         state: absent
