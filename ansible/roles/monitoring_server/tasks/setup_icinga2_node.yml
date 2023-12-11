@@ -90,6 +90,16 @@
     group: nagios
     mode: u=rw,g=r,o=
 
+- name: Configure icinga api
+  become: true
+  notify: Restart icinga2
+  ansible.builtin.template:
+    src: icinga2/api.conf
+    dest: /etc/icinga2/features-available/api.conf
+    owner: nagios
+    group: nagios
+    mode: u=rw,g=r,o=
+
 - name: Enable icinga api feature
   become: true
   ansible.builtin.file:
@@ -103,7 +113,8 @@
   with_items:
     - { key: NodeName, value: "{{ inventory_hostname}}" }
     - { key: ZoneName, value: "{{ inventory_hostname}}" }
+    - { key: TicketSalt, value: "{{ lookup('ansible.builtin.password', 'artifacts/credentials/{{ inventory_hostname }}/icinga2/ticket_salt', chars=['ascii_letters', 'digits']) }}" }
   ansible.builtin.lineinfile:
     path: /etc/icinga2/constants.conf
-    regex: "const {{ item.key }} ?= ?[\"'].+[\"']"
+    regex: "const {{ item.key }} ?= ?[\"'].*[\"']"
     line: "const {{ item.key }} = \"{{ item.value }}\""

@@ -1,0 +1,84 @@
+- name: Setup icinga director
+  tags: [director, icinga-director]
+  block:
+
+    - name: Ensure this icinga is bare-bones
+      become: true
+      notify: Restart icinga2
+      with_items:
+        - apt.conf
+        - commands.conf
+        - downtimes.conf
+        - groups.conf
+        - hosts.conf
+        - notifications.conf
+        - services.conf
+        - templates.conf
+        - timeperiods.conf
+        - users.conf
+      ansible.builtin.file:
+        path: /etc/icinga2/conf.d/{{ item }}
+        state: absent
+
+    - name: Configure zones.conf
+      become: true
+      notify: Restart icinga2
+      ansible.builtin.template:
+        src: icinga2/zones.conf
+        dest: /etc/icinga2/zones.conf
+        owner: nagios
+        group: nagios
+        mode: u=rw,g=r,o=
+
+    # an api-user is configured via the basic icinga api-users.conf template
+
+    - name: Create postgresql user for icinga_director
+      become: true
+      become_user: postgres
+      community.postgresql.postgresql_user:
+        name: icinga_director
+        password: icinga_director
+
+    - name: Create postgresql database for icinga_director
+      become: true
+      become_user: postgres
+      register: create_db
+      community.postgresql.postgresql_db:
+        name: icinga_director
+        owner: icinga_director
+        encoding: UTF8
+
+    - name: Add citext extension to icinga_director postgresql database
+      become: true
+      become_user: postgres
+      community.postgresql.postgresql_ext:
+        db: icinga_director
+        ext: pgcrypto
+
+    - name: Install icinga-director
+      become: true
+      ansible.builtin.apt:
+        name: [icinga-director]
+
+    - name: Configure icinga-director
+      become: true
+      with_items:
+        - config.ini
+      ansible.builtin.template:
+        src: icinga-director/{{ item }}
+        dest: /etc/icingaweb2/modules/director/{{ item }}
+        owner: www-data
+        group: icingaweb2
+        mode: u=rw,g=rw,o=
+
+    - name: Migrate icinga-director database
+      become: true
+      when: create_db.changed
+      ansible.builtin.command: icingacli director migration run --verbose
+
+    - name: Ensure icinga-director background daemon is running
+      become: true
+      ansible.builtin.systemd:
+        name: icinga-director.service
+        state: started
+        enabled: true

@@ -4,5 +4,6 @@
     - ansible.builtin.import_tasks: setup_icinga_repo.yml
     - ansible.builtin.import_tasks: setup_icingadb.yml
     - ansible.builtin.import_tasks: setup_icinga2_node.yml
+    - ansible.builtin.import_tasks: setup_icinga_director.yml
     - ansible.builtin.import_tasks: setup_icingaweb.yml
     - ansible.builtin.import_tasks: setup_webserver.yml

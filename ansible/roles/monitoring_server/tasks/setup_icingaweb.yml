@@ -84,6 +84,7 @@
       with_items:
         - doc
         - icingadb
+        - director
       ansible.builtin.file:
         path: /etc/icingaweb2/enabledModules/{{ item }}
         state: link
