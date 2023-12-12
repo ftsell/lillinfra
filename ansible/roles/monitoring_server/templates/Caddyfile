@@ -5,5 +5,5 @@
 monitoring.ftsell.de {
     root * /usr/share/icingaweb2/public
     php_fastcgi unix//run/php/php-fpm.sock
-    #file_server
+    file_server
 }
