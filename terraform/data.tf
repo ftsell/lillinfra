@@ -11,7 +11,7 @@ data "template_file" "cloud-init-config" {
 }
 
 data "hcloud_image" "debian_x86" {
-  name              = "debian-11"
+  name              = "debian-12"
   with_status       = ["available"]
   with_architecture = "x86"
   most_recent       = true

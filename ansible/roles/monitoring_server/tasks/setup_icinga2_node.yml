@@ -6,6 +6,17 @@
 - name: Setup icinga CA
   tags: [pki]
   block:
+    - name: Create required directories
+      become: true
+      with_items:
+        - { path: /var/lib/icinga2/ca, mode: "u=rwx,g=,o=" }
+        - { path: /var/lib/icinga2/certs, mode: "u=rwx,g=rx,o=" }
+      file:
+        path: "{{ item.path }}"
+        state: directory
+        owner: nagios
+        group: nagios
+        mode: "{{ item.mode }}"
     - name: Create ca private key
       become: true
       ansible.builtin.openssl_privatekey:
@@ -116,7 +127,7 @@
     - { key: TicketSalt, value: "{{ lookup('ansible.builtin.password', 'artifacts/credentials/{{ inventory_hostname }}/icinga2/ticket_salt', chars=['ascii_letters', 'digits']) }}" }
   ansible.builtin.lineinfile:
     path: /etc/icinga2/constants.conf
-    regex: "const {{ item.key }} ?= ?[\"'].*[\"']"
+    regex: "const {{ item.key }} ?= ?[\"']?.*[\"']?"
     line: "const {{ item.key }} = \"{{ item.value }}\""
 
 - name: Deploy custom scripts

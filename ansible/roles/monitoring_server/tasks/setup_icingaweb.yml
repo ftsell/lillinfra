@@ -6,7 +6,7 @@
       become: true
       ansible.builtin.apt:
         # mini-http is not actually used but the package requires a webserver and caddy does not satisfy that constraint formally
-        name: [icingacli, icingaweb2, php-imagick, icingadb-web, mini-httpd]
+        name: [icingacli, icingaweb2, php-imagick, icingadb-web, mini-httpd, php-fpm]
 
     - name: Create postgresql user for icingaweb2
       become: true
@@ -61,6 +61,17 @@
             password_hash = '{{ pw_hash }}',
             mtime = '{{ time }}';
 
+    - name: Create required icingaweb2 config diretories
+      become: true
+      with_items:
+        - /etc/icingaweb2/modules/icingadb
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: www-data
+        group: icingaweb2
+        mode: u=rwx,g=rwx,o=
+
     - name: Configure icingaweb2
       become: true
       with_items:
@@ -84,7 +95,6 @@
       with_items:
         - doc
         - icingadb
-        - director
       ansible.builtin.file:
         path: /etc/icingaweb2/enabledModules/{{ item }}
         state: link
