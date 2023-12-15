@@ -1,2 +1,3 @@
 icinga_node_fqdn: "{{ inventory_hostname}}"
+icinga_node_cluster_root: "self"
 icinga_node_icingaweb_enabled: false

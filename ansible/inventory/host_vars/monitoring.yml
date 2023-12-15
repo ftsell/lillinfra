@@ -3,6 +3,15 @@ expected_dist_version: 12
 icinga_node_icingaweb_enabled: true
 icinga_node_icingaweb_domain: monitoring.ftsell.de
 icinga_node_fqdn: monitoring.srv.ftsell.de
+icinga_node_zones:
+  global-templates: {}
+  main:
+    hosts.conf: |
+      object Host "monitoring.srv.ftsell.de" {
+        check_command = "hostalive"
+        address = "monitoring.srv.ftsell.de"
+        zone = "monitoring.srv.ftsell.de"
+      }
 
 #monitored_icmp_targets:
   #- "monitoring.srv.ftsell.de"

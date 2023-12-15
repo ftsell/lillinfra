@@ -1,0 +1,35 @@
+- name: Setup key material for this node
+  tags: [pki]
+  notify: Restart icinga2
+  block:
+    - name: Create {{ icinga_node_fqdn }} private key
+      become: true
+      ansible.builtin.openssl_privatekey:
+        path: /var/lib/icinga2/certs/{{ icinga_node_fqdn }}.key
+        owner: nagios
+        group: nagios
+        mode: u=rw,g=r,o=
+    - name: Create {{ icinga_node_fqdn }} csr
+      become: true
+      ansible.builtin.openssl_csr:
+        path: /var/lib/icinga2/certs/{{ icinga_node_fqdn }}.csr
+        privatekey_path: /var/lib/icinga2/certs/{{ icinga_node_fqdn }}.key
+        common_name: "{{ icinga_node_fqdn}}"
+        basic_constraints:
+          - "CA:FALSE"
+        basic_constraints_critical: true
+        owner: nagios
+        group: nagios
+        mode: u=rw,g=r,o=
+    - name: Sign {{ icinga_node_fqdn }} certificate with ca
+      become: true
+      ansible.builtin.openssl_certificate:
+        path: /var/lib/icinga2/certs/{{ icinga_node_fqdn }}.crt
+        csr_path: /var/lib/icinga2/certs/{{ icinga_node_fqdn }}.csr
+        provider: ownca
+        ownca_path: /var/lib/icinga2/certs/ca.crt
+        ownca_privatekey_path: /var/lib/icinga2/ca/ca.key
+        owner: nagios
+        group: nagios
+        mode: u=rw,g=r,o=
+
