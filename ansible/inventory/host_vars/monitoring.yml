@@ -4,13 +4,93 @@ icinga_node_icingaweb_enabled: true
 icinga_node_icingaweb_domain: monitoring.ftsell.de
 icinga_node_fqdn: monitoring.srv.ftsell.de
 icinga_node_zones:
-  global-templates: {}
-  main:
+  global-templates:
+    templates.conf: |
+      /**
+        * Provides default settings for hosts.
+        * By convention, all hosts should import this template.
+        */
+      template Host "generic-host" {
+        check_interval = 1m
+        retry_interval = 30s
+        check_command = "hostalive"
+      }
+
+      /**
+        * Provides defaults for hosts that aren't real servers (i.e. load balancer IPs)
+        */
+      template Host "virtual-host" {
+        check_interval = 1h
+        check_command = "dummy"
+      }
+
+      /**
+        * A host template valid for most normal linux servers I host
+        */
+      template Host "normal-server" {
+        vars.apt_check_enabled = true
+        vars.ssh_check_enabled = true
+        vars.systemd_check_enabled = true
+        vars.mem_check_enabled = true
+      }
+
+      /**
+        * Provides default settings for services.
+        * By convention all services should import this template.
+        */
+      template Service "generic-service" {
+        max_check_attempts = 5
+        check_interval = 1m
+        retry_interval = 30s
+      }
+
+      /**
+        * Provides default settings for users.
+        * By convention all users should import this template.
+        */
+      template User "generic-user" {}
+
+    services.conf: |
+      apply Service "apt" {
+        import "generic-service"
+        check_command = "apt"
+        check_interval = 3h
+        assign where host.vars.apt_check_enabled
+      }
+      
+      apply Service "ssh" {
+        import "generic-service"
+        check_command = "ssh"
+        assign where host.vars.ssh_check_enabled
+      }
+
+      apply Service "systemd" {
+        import "generic-service"
+        check_command = "systemd"
+        assign where host.vars.systemd_check_enabled
+      }
+
+      apply Service "memory" {
+        import "generic-service"
+        check_command = "mem"
+        vars.mem_used = true
+        vars.mem_cached = true
+        vars.mem_warning = 70
+        vars.mem_critical = 85
+        assign where host.vars.mem_check_enabled
+      }
+      
+  global:
     hosts.conf: |
       object Host "monitoring.srv.ftsell.de" {
-        check_command = "hostalive"
+        import "generic-host"
+        import "normal-server"
         address = "monitoring.srv.ftsell.de"
         zone = "monitoring.srv.ftsell.de"
+
+        //vars.websites = [
+          //"https://monitoring.ftsell.de",
+        //]
       }
 
 #monitored_icmp_targets:

@@ -13,7 +13,7 @@
     state: restarted
 
 - name: Restart icinga2
-  tags: [monitoring, monitoring_server, icinga_node, icinga, icinga2]
+  tags: [monitoring, monitoring_server, icinga_node, icinga, icinga2, icinga_zone]
   become: true
   systemd:
     name: icinga2.service

@@ -31,6 +31,7 @@
     state: absent
 
 - name: Create needed icinga2 config directory
+  tags: [icinga_zones]
   become: true
   with_filetree: templates/icinga2/
   loop_control:
@@ -44,6 +45,7 @@
     mode: u=rwx,g=rx,o=
 
 - name: Configure icinga2
+  tags: [icinga_zones]
   become: true
   notify: Restart icinga2
   with_filetree: templates/icinga2/
@@ -75,8 +77,10 @@
     src: /etc/icinga2/features-available/{{ item.feature }}.conf
 
 - name: Configure icinga2 zones
+  tags: [icinga_zones]
   with_items: "{{ icinga_node_zones | mandatory | dict2items(key_name='zone_name', value_name='zone_files') }}"
   loop_control:
+    label: "{{ zone_definition.zone_name }}"
     loop_var: zone_definition
   ansible.builtin.include_tasks: configure_icinga_zone.yml
 
