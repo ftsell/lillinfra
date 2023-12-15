@@ -1,0 +1,2 @@
+icinga_node_fqdn: "{{ inventory_hostname}}"
+icinga_node_icingaweb_enabled: false

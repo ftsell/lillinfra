@@ -2,7 +2,7 @@
 
 # See https://caddyserver.com/docs/caddyfile
 
-monitoring.ftsell.de {
+{{ icinga_node_icingaweb_domain | mandatory }} {
     root * /usr/share/icingaweb2/public
     php_fastcgi unix//run/php/php-fpm.sock
     file_server

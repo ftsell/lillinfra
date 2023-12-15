@@ -8,7 +8,7 @@
 
 - hosts: monitoring
   roles:
-    - monitoring_server
+    - icinga_node
 
 - hosts: vpn
   roles:
