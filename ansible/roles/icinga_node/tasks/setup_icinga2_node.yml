@@ -1,7 +1,7 @@
 - name: Install icinga2
   become: true
   apt:
-    name: [icinga2, monitoring-plugins]
+    name: [icinga2, monitoring-plugins, monitoring-plugins-contrib, monitoring-plugins-systemd, lz4, lzop]
 
 - ansible.builtin.include_tasks: pki/create_pki.yml
   when: icinga_node_cluster_root == "self"
@@ -83,6 +83,15 @@
     label: "{{ zone_definition.zone_name }}"
     loop_var: zone_definition
   ansible.builtin.include_tasks: configure_icinga_zone.yml
+
+- name: Fix some script locations to match icinga command definitions
+  become: true
+  with_items:
+    - { from: check_systemd, to: check_systemd.py }
+  ansible.builtin.file:
+    path: /usr/lib/nagios/plugins/{{ item.to }}
+    state: link
+    src: /usr/lib/nagios/plugins/{{ item.from }}    
 
 - name: Deploy custom scripts
   become: true
