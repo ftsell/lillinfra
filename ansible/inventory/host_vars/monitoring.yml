@@ -89,11 +89,22 @@ icinga_node_zones:
       apply Service "https://" for (domain in host.vars.websites) to Host {
         import "generic-service"
         check_command = "http"
+        zone = "monitoring.srv.ftsell.de"    // perform these checks from the internet and not locally
         vars.http_vhost = domain
         vars.http_ssl = true
         vars.http_sni = true
         vars.http_onredirect = "stickyport"
         vars.http_expect = "200,302,303,401,403"
+        assign where host.vars.websites
+      }
+
+      apply Service "cert-" for (domain in host.vars.websites) to Host {
+        import "generic-service"
+        check_command = "ssl_cert"
+        zone = "monitoring.srv.ftsell.de"
+        vars.ssl_cert_address = domain
+        vars.ssl_cert_cn = domain
+        vars.ssl_cert_sni = domain
         assign where host.vars.websites
       }
 
@@ -215,4 +226,10 @@ icinga_node_zones:
         vars.systemd_check_notify = true
         vars.running_kernel_check_enabled = true
         vars.running_kernel_notify = false
+
+        vars.websites = [
+          "ha.home.ftsell.de",
+          "media.home.ftsell.de",
+          "audiobooks.home.ftsell.de",
+        ]
       }

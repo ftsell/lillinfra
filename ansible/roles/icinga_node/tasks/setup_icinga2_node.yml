@@ -1,7 +1,7 @@
 - name: Install icinga2
   become: true
   apt:
-    name: [icinga2, monitoring-plugins, monitoring-plugins-contrib, monitoring-plugins-systemd, lz4, lzop, zstd]
+    name: [icinga2, monitoring-plugins, monitoring-plugins-contrib, monitoring-plugins-systemd, lz4, lzop, zstd, bc]
 
 - ansible.builtin.include_tasks: pki/create_pki.yml
   when: icinga_node_cluster_root == "self"
