@@ -1,3 +1,9 @@
+- name: Create apt keyring directory
+  become: true
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+
 - name: add icinga2 repo key
   become: true
   get_url:

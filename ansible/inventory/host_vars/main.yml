@@ -1,3 +1,8 @@
+expected_dist: debian
+expected_dist_version: 12
+
+icinga_node_fqdn: main.srv.ftsell.de
+
 systemd_networkd_configs:
   10-eth0.network: |
     [Match]

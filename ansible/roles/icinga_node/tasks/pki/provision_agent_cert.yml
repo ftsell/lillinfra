@@ -1,0 +1,100 @@
+- name: Create local temp directory
+  delegate_to: localhost
+  register: tempdir
+  changed_when: false
+  ansible.builtin.tempfile:
+    state: directory
+
+- block:
+    - name: Create cert directory
+      become: true
+      ansible.builtin.file:
+        path: /var/lib/icinga2/certs
+        state: directory
+        owner: nagios
+        group: nagios
+        mode: u=rwx,g=rw,o=
+
+    - name: Create {{ icinga_node_fqdn }} private key
+      become: true
+      ansible.builtin.openssl_privatekey:
+        path: /var/lib/icinga2/certs/{{ icinga_node_fqdn }}.key
+        owner: nagios
+        group: nagios
+        mode: u=rw,g=r,o=
+
+    - name: Create {{ icinga_node_fqdn }} csr
+      become: true
+      ansible.builtin.openssl_csr:
+        path: /var/lib/icinga2/certs/{{ icinga_node_fqdn }}.csr
+        privatekey_path: /var/lib/icinga2/certs/{{ icinga_node_fqdn }}.key
+        common_name: "{{ icinga_node_fqdn }}"
+        basic_constraints:
+          - "CA:FALSE"
+        basic_constraints_critical: true
+        owner: nagios
+        group: nagios
+        mode: u=rw,g=r,o=
+
+    - name: Copy csr to local temp dir
+      become: true
+      changed_when: false
+      ansible.builtin.fetch:
+        src: /var/lib/icinga2/certs/{{ icinga_node_fqdn }}.csr
+        dest: "{{ tempdir.path }}/{{ icinga_node_fqdn }}.csr"
+        flat: true
+        
+    - name: Copy csr to cluster root node
+      become: true
+      delegate_to: "{{ icinga_node_cluster_root }}"
+      ansible.builtin.copy:
+        src: "{{ tempdir.path }}/{{ icinga_node_fqdn }}.csr"
+        dest: /var/lib/icinga2/certs/{{ icinga_node_fqdn }}.csr
+        owner: nagios
+        group: nagios
+        mode: u=rw,g=r,o=
+
+    - name: Sign csr with ca
+      become: true
+      delegate_to: "{{ icinga_node_cluster_root }}"
+      ansible.builtin.openssl_certificate:
+        path: /var/lib/icinga2/certs/{{ icinga_node_fqdn }}.crt
+        csr_path: /var/lib/icinga2/certs/{{ icinga_node_fqdn }}.csr
+        provider: ownca
+        ownca_path: /var/lib/icinga2/certs/ca.crt
+        ownca_privatekey_path: /var/lib/icinga2/ca/ca.key
+        owner: nagios
+        group: nagios
+        mode: u=rw,g=r,o=
+
+    - name: Copy pki files from root node to local temp dir
+      become: true
+      delegate_to: "{{ icinga_node_cluster_root }}"
+      changed_when: false
+      with_items:
+        - ca.crt
+        - "{{ icinga_node_fqdn }}.crt"
+      ansible.builtin.fetch:
+        src: /var/lib/icinga2/certs/{{ item }}
+        dest: "{{ tempdir.path }}/{{ item }}"
+        flat: true
+
+    - name: Copy pki files from local temp dir to node
+      become: true
+      with_items:
+        - ca.crt
+        - "{{ icinga_node_fqdn }}.crt"
+      ansible.builtin.copy:
+        src: "{{ tempdir.path }}/{{ item }}"
+        dest: /var/lib/icinga2/certs/{{ item }}
+        owner: nagios
+        group: nagios
+        mode: u=rw,g=r,o=
+
+  always:
+    - name: Remove local temp directory
+      delegate_to: localhost
+      changed_when: false
+      ansible.builtin.file:
+        path: "{{ tempdir.path }}"
+        state: absent

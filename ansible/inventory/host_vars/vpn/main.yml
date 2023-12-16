@@ -1,4 +1,5 @@
+
 expected_dist: debian
 expected_dist_version: 11
 
-icinga_node_cluster_root: "monitoring"
+icinga_node_fqdn: vpn.srv.ftsell.de

@@ -1,15 +1,14 @@
 - name: Install icinga2
   become: true
   apt:
-    name: [icinga2, monitoring-plugins, monitoring-plugins-contrib, monitoring-plugins-systemd, lz4, lzop]
+    name: [icinga2, monitoring-plugins, monitoring-plugins-contrib, monitoring-plugins-systemd, lz4, lzop, zstd]
 
 - ansible.builtin.include_tasks: pki/create_pki.yml
   when: icinga_node_cluster_root == "self"
-- ansible.builtin.include_tasks: pki/create_node_cert.yml
+- ansible.builtin.include_tasks: pki/create_local_node_cert.yml
   when: icinga_node_cluster_root == "self"
 
-- fail:
-    msg: distributed monitoring is not implemented
+- ansible.builtin.include_tasks: pki/provision_agent_cert.yml
   when: icinga_node_cluster_root != "self"
 
 - name: Remove icinga2 default local configuration
@@ -65,8 +64,8 @@
   with_items:
     - { feature: api, enabled: true }
     - { feature: checker, enabled: true }
-    - { feature: icingadb, enabled: true }
-    - { feature: mainlog, enabled: true }
+    - { feature: icingadb, enabled: "{{ icinga_node_icingaweb_enabled }}" }
+    - { feature: mainlog, enabled: false }
     - { feature: notification, enabled: true }
     - { feature: journald, enabled: true }
   loop_control:
@@ -74,7 +73,7 @@
   ansible.builtin.file:
     path: /etc/icinga2/features-enabled/{{ item.feature }}.conf
     state: "{% if item.enabled %}link{% else %}absent{% endif %}"
-    src: /etc/icinga2/features-available/{{ item.feature }}.conf
+    src: "{% if item.enabled %}/etc/icinga2/features-available/{{ item.feature }}.conf{% else %}{{ omit }}{% endif %}"
 
 - name: Configure icinga2 zones
   tags: [icinga_zones]

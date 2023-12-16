@@ -14,7 +14,7 @@
       ansible.builtin.openssl_csr:
         path: /var/lib/icinga2/certs/{{ icinga_node_fqdn }}.csr
         privatekey_path: /var/lib/icinga2/certs/{{ icinga_node_fqdn }}.key
-        common_name: "{{ icinga_node_fqdn}}"
+        common_name: "{{ icinga_node_fqdn }}"
         basic_constraints:
           - "CA:FALSE"
         basic_constraints_critical: true
