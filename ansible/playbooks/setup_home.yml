@@ -2,3 +2,5 @@
 - hosts: home
   roles:
     - vpn_client
+    - dyndns_setter
+    - icinga_node

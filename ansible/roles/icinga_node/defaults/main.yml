@@ -1,0 +1,4 @@
+icinga_node_icingaweb_enabled: false
+icinga_node_zones: {}
+
+icinga_node_log_level: warning

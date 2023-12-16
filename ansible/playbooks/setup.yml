@@ -6,9 +6,12 @@
     - ssh_server
     - user_accounts
 
-- hosts: monitoring
+- hosts: hcloud
   roles:
-    - monitoring_server
+    - role: icinga_node
+      when: icinga_node_cluster_root == "self"
+    - role: icinga_node
+      when: icinga_node_cluster_root != "self"
 
 - hosts: vpn
   roles:

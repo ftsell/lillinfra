@@ -1,0 +1,105 @@
+- name: Install icinga2
+  become: true
+  apt:
+    name: [icinga2, monitoring-plugins, monitoring-plugins-contrib, monitoring-plugins-systemd, lz4, lzop, zstd]
+
+- ansible.builtin.include_tasks: pki/create_pki.yml
+  when: icinga_node_cluster_root == "self"
+- ansible.builtin.include_tasks: pki/create_local_node_cert.yml
+  when: icinga_node_cluster_root == "self"
+
+- ansible.builtin.include_tasks: pki/provision_agent_cert.yml
+  when: icinga_node_cluster_root != "self"
+
+- name: Remove icinga2 default local configuration
+  become: true
+  notify: Restart icinga2
+  with_items:
+    - apt.conf
+    - commands.conf
+    - downtimes.conf
+    - groups.conf
+    - hosts.conf
+    - notifications.conf
+    - services.conf
+    - templates.conf
+    - timeperiods.conf
+    - users.conf
+  ansible.builtin.file:
+    path: /etc/icinga2/conf.d/{{ item }}
+    state: absent
+
+- name: Create needed icinga2 config directory
+  tags: [icinga_zones]
+  become: true
+  with_filetree: templates/icinga2/
+  loop_control:
+    label: "{{ item.path }}"
+  when: item.state == "directory"
+  ansible.builtin.file:
+    path: /etc/icinga2/{{ item.path }}
+    state: directory
+    owner: nagios
+    group: nagios
+    mode: u=rwx,g=rx,o=
+
+- name: Configure icinga2
+  tags: [icinga_zones]
+  become: true
+  notify: Restart icinga2
+  with_filetree: templates/icinga2/
+  loop_control:
+    label: "{{ item.path }}"
+  when: item.state == "file"
+  ansible.builtin.template:
+    src: "icinga2/{{ item.path }}"
+    dest: "/etc/icinga2/{{ item.path }}"
+    owner: nagios
+    group: nagios
+    mode: u=rw,g=r,o=
+
+- name: Configure enablement of icinga features
+  become: true
+  notify: Restart icinga2
+  with_items:
+    - { feature: api, enabled: true }
+    - { feature: checker, enabled: true }
+    - { feature: icingadb, enabled: "{{ icinga_node_icingaweb_enabled }}" }
+    - { feature: mainlog, enabled: false }
+    - { feature: notification, enabled: true }
+    - { feature: journald, enabled: true }
+  loop_control:
+    label: "{{ item.feature }} = {{ item.enabled }}"
+  ansible.builtin.file:
+    path: /etc/icinga2/features-enabled/{{ item.feature }}.conf
+    state: "{% if item.enabled %}link{% else %}absent{% endif %}"
+    src: "{% if item.enabled %}/etc/icinga2/features-available/{{ item.feature }}.conf{% else %}{{ omit }}{% endif %}"
+
+- name: Configure icinga2 zones
+  tags: [icinga_zones]
+  with_items: "{{ icinga_node_zones | mandatory | dict2items(key_name='zone_name', value_name='zone_files') }}"
+  loop_control:
+    label: "{{ zone_definition.zone_name }}"
+    loop_var: zone_definition
+  ansible.builtin.include_tasks: configure_icinga_zone.yml
+
+- name: Fix some script locations to match icinga command definitions
+  become: true
+  with_items:
+    - { from: check_systemd, to: check_systemd.py }
+  ansible.builtin.file:
+    path: /usr/lib/nagios/plugins/{{ item.to }}
+    state: link
+    src: /usr/lib/nagios/plugins/{{ item.from }}    
+
+- name: Deploy custom scripts
+  become: true
+  with_fileglob: scripts/*
+  loop_control:
+    label: "{{ item | basename }}"
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: /usr/lib/nagios/plugins/{{ item | basename }}
+    owner: nagios
+    group: nagios
+    mode: u=rwx,g=rx,o=

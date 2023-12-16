@@ -1,8 +1,0 @@
-# {{ ansible_managed }}
-
-[Unit]
-Description=Monitoring functionality
-After=network.target
-
-[Install]
-WantedBy=default.target

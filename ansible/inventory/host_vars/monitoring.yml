@@ -1,22 +1,199 @@
-monitored_icmp_targets:
-  - "monitoring.srv.ftsell.de"
-  - "main.srv.ftsell.de"
-  - "vpn.srv.ftsell.de"
+expected_dist_version: 12
 
-monitored_http_targets:
-  - "https://ftsell.de"
-  - "https://finn-thorben.me"
-  - "https://argocd.ftsell.de"
-  - "https://auth.ftsell.de"
-  - "https://budget.ftsell.de"
-  - "https://cloud.ftsell.de"
-  - "https://git.ftsell.de"
-  - "https://kino.timonengelke.de"
-  - "https://time.ftsell.de"
+icinga_node_cluster_root: "self"
+icinga_node_icingaweb_enabled: true
+icinga_node_icingaweb_domain: monitoring.ftsell.de
+icinga_node_fqdn: monitoring.srv.ftsell.de
+icinga_node_zones:
+  global-templates:
+    templates.conf: |
+      /**
+        * Provides default settings for hosts.
+        * By convention, all hosts should import this template.
+        */
+      template Host "generic-host" {
+        check_interval = 1m
+        retry_interval = 30s
+        check_command = "hostalive"
+      }
 
-monitored_smtp_targets:
-  - "mail.ftsell.de:25"
-  - "mail.ftsell.de:587"
+      /**
+        * Provides defaults for hosts that aren't real servers (i.e. load balancer IPs)
+        */
+      template Host "virtual-host" {
+        check_interval = 1h
+        check_command = "dummy"
+      }
 
-monitored_imap_targets:
-  - "mail.ftsell.de:993"
+      /**
+        * A host template valid for most normal linux servers I host
+        */
+      template Host "normal-server" {
+        vars.apt_check_enabled = true
+        vars.apt_check_notify = false
+        vars.ssh_check_enabled = true
+        vars.ssh_check_notify = true
+        vars.systemd_check_enabled = true
+        vars.systemd_check_notify = true
+        vars.running_kernel_check_enabled = true
+        vars.running_kernel_notify = false
+      }
+
+      /**
+        * Provides default settings for services.
+        * By convention all services should import this template.
+        */
+      template Service "generic-service" {
+        max_check_attempts = 5
+        check_interval = 1m
+        retry_interval = 30s
+      }
+
+      /**
+        * Provides default settings for users.
+        * By convention all users should import this template.
+        */
+      template User "generic-user" {}
+
+    services.conf: |
+      apply Service "apt" {
+        import "generic-service"
+        check_command = "apt"
+        check_interval = 3h
+        enable_notifications = host.vars.apt_check_notify
+        assign where host.vars.apt_check_enabled
+      }
+
+      apply Service "ssh" {
+        import "generic-service"
+        check_command = "ssh"
+        enable_notifications = host.vars.ssh_check_notify
+        assign where host.vars.ssh_check_enabled
+      }
+
+      apply Service "systemd" {
+        import "generic-service"
+        check_command = "systemd"
+        enable_notifications = host.vars.systemd_check_notify
+        assign where host.vars.systemd_check_enabled
+      }
+
+      apply Service "running_kernel" {
+        import "generic-service"
+        check_command = "running_kernel"
+        check_interval = 5m
+        enable_notifications = host.vars.running_kernel_notify
+        assign where host.vars.running_kernel_check_enabled
+      }
+
+      apply Service "https://" for (domain in host.vars.websites) to Host {
+        import "generic-service"
+        check_command = "http"
+        vars.http_vhost = domain
+        vars.http_ssl = true
+        vars.http_sni = true
+        vars.http_onredirect = "stickyport"
+        vars.http_expect = "200,302,303,401,403"
+        assign where host.vars.websites
+      }
+
+      apply Service "imaps" to Host {
+        import "generic-service"
+        check_command = "imap"
+        vars.imap_ssl = true
+        vars.imap_port = 993
+        enable_notifications = host.vars.imap_notify
+        assign where host.vars.imap_check_enabled
+      }
+
+      apply Service "smtp" to Host {
+        import "generic-service"
+        check_command = "smtp"
+        vars.smtp_port = 25
+        enable_notifications = host.vars.smtp_notify
+        assign where host.vars.smtp_check_enabled
+      }
+
+      apply Service "submission" to Host {
+        import "generic-service"
+        check_command = "smtp"
+        vars.smtp_port = 587
+        vars.smtp_starttls = true
+        enable_notifications = host.vars.submission_notify
+        assign where host.vars.submission_check_enabled
+      }
+
+  monitoring.srv.ftsell.de:
+    hosts.conf: |
+      object Host "monitoring.srv.ftsell.de" {
+        import "generic-host"
+        import "normal-server"
+        address = "monitoring.srv.ftsell.de"
+
+        vars.websites = [
+          "monitoring.ftsell.de",
+        ]
+      }
+
+      object Host "main.svc.ftsell.de" {
+        import "virtual-host"
+        address = "main.svc.ftsell.de"
+
+        vars.websites = [
+          "ftsell.de",
+          "cloud.ftsell.de",
+          "git.ftsell.de",
+          "budget.ftsell.de",
+          "todo.ftsell.de",
+          "kino.timonengelke.de",
+          "time.ftsell.de",
+          "argocd.ftsell.de",
+          "auth.ftsell.de",
+        ]
+      }
+
+      object Host "mail.svc.ftsell.de" {
+        import "virtual-host"
+        address = "mail.svc.ftsell.de"
+
+        vars.imap_check_enabled = true
+        vars.smtp_check_enabled = true
+        vars.submission_check_enabled = true
+      }
+
+    services.conf: |
+      object Service "icingadb" {
+        import "generic-service"
+        host_name = "monitoring.srv.ftsell.de"
+        check_command = "icingadb"
+      }
+
+      object Service "icinga-cluster" {
+        import "generic-service"
+        check_command = "cluster"
+        host_name = "monitoring.srv.ftsell.de"
+      }
+
+  main.srv.ftsell.de:
+    host.conf: |
+      object Host "main.srv.ftsell.de" {
+        import "generic-host"
+        import "normal-server"
+        address = "main.srv.ftsell.de"
+      }
+
+  vpn.srv.ftsell.de:
+    host.conf: |
+      object Host "vpn.srv.ftsell.de" {
+        import "generic-host"
+        import "normal-server"
+        address = "vpn.srv.ftsell.de"
+      }
+
+  nas.home.ftsell.de:
+    host.conf: |
+      object Host "nas.home.ftsell.de" {
+        import "generic-host"
+        import "normal-server"
+        address = "has.home.ftsell.de"
+      }

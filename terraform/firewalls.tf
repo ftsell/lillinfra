@@ -89,6 +89,14 @@ resource "hcloud_firewall" "main" {
     port        = "4190"
     source_ips  = ["0.0.0.0/0", "::/0"]
   }
+
+  rule {
+    description = "Icinga2"
+    direction = "in"
+    protocol = "tcp"
+    port = "5665"
+    source_ips = ["0.0.0.0/0", "::/0"]
+  }
 }
 
 resource "hcloud_firewall" "monitoring" {
@@ -123,6 +131,14 @@ resource "hcloud_firewall" "monitoring" {
     port       = "443"
     source_ips = ["0.0.0.0/0", "::/0"]
   }
+
+  rule {
+    description = "Icinga2"
+    direction = "in"
+    protocol = "tcp"
+    port = "5665"
+    source_ips = ["0.0.0.0/0", "::/0"]
+  }
 }
 
 resource "hcloud_firewall" "vpn" {
@@ -151,5 +167,13 @@ resource "hcloud_firewall" "vpn" {
     protocol    = "udp"
     port        = "51820"
     source_ips  = ["0.0.0.0/0", "::/0"]
+  }
+
+  rule {
+    description = "Icinga2"
+    direction = "in"
+    protocol = "tcp"
+    port = "5665"
+    source_ips = ["0.0.0.0/0", "::/0"]
   }
 }

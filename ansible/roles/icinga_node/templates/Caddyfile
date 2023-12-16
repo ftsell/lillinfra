@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+
+# See https://caddyserver.com/docs/caddyfile
+
+{{ icinga_node_icingaweb_domain | mandatory }} {
+    root * /usr/share/icingaweb2/public
+    php_fastcgi unix//run/php/php-fpm.sock
+    file_server
+}
