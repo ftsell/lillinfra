@@ -190,10 +190,29 @@ icinga_node_zones:
         address = "vpn.srv.ftsell.de"
       }
 
+      object Host "nas.vpn.private" {
+        import "generic-host"
+        address = "10.20.30.103"
+        address6 = "fc10:20:30::103"
+
+        vars.ssh_check_enabled = true
+        vars.ssh_check_notify = true
+      }
+      object Dependency "vpn-nas2home-nas" {
+        child_host_name = "nas.vpn.private"
+        parent_host_name = "nas.home.ftsell.de"
+      }
+
   nas.home.ftsell.de:
     host.conf: |
       object Host "nas.home.ftsell.de" {
         import "generic-host"
-        import "normal-server"
-        address = "has.home.ftsell.de"
+        address = "nas.home.ftsell.de"
+
+        vars.apt_check_enabled = true
+        vars.apt_check_notify = false
+        vars.systemd_check_enabled = true
+        vars.systemd_check_notify = true
+        vars.running_kernel_check_enabled = true
+        vars.running_kernel_notify = false
       }
