@@ -32,7 +32,9 @@ icinga_node_zones:
         vars.apt_check_enabled = true
         vars.apt_check_notify = false
         vars.ssh_check_enabled = true
+        vars.ssh_check_notify = true
         vars.systemd_check_enabled = true
+        vars.systemd_check_notify = true
         vars.running_kernel_check_enabled = true
         vars.running_kernel_notify = false
       }
@@ -58,21 +60,21 @@ icinga_node_zones:
         import "generic-service"
         check_command = "apt"
         check_interval = 3h
-        enable_notifications = host.vars.apt_check_notify || true
+        enable_notifications = host.vars.apt_check_notify
         assign where host.vars.apt_check_enabled
       }
 
       apply Service "ssh" {
         import "generic-service"
         check_command = "ssh"
-        enable_notifications = host.vars.ssh_check_notify || true
+        enable_notifications = host.vars.ssh_check_notify
         assign where host.vars.ssh_check_enabled
       }
 
       apply Service "systemd" {
         import "generic-service"
         check_command = "systemd"
-        enable_notifications = host.vars.systemd_check_notify || true
+        enable_notifications = host.vars.systemd_check_notify
         assign where host.vars.systemd_check_enabled
       }
 
@@ -80,7 +82,7 @@ icinga_node_zones:
         import "generic-service"
         check_command = "running_kernel"
         check_interval = 5m
-        enable_notifications = host.vars.running_kernel_notify || true
+        enable_notifications = host.vars.running_kernel_notify
         assign where host.vars.running_kernel_check_enabled
       }
 
@@ -100,7 +102,7 @@ icinga_node_zones:
         check_command = "imap"
         vars.imap_ssl = true
         vars.imap_port = 993
-        enable_notifications = host.vars.imap_notify || true
+        enable_notifications = host.vars.imap_notify
         assign where host.vars.imap_check_enabled
       }
 
@@ -108,7 +110,7 @@ icinga_node_zones:
         import "generic-service"
         check_command = "smtp"
         vars.smtp_port = 25
-        enable_notifications = host.vars.smtp_notify || true
+        enable_notifications = host.vars.smtp_notify
         assign where host.vars.smtp_check_enabled
       }
 
@@ -117,7 +119,7 @@ icinga_node_zones:
         check_command = "smtp"
         vars.smtp_port = 587
         vars.smtp_starttls = true
-        enable_notifications = host.vars.submission_notify || true
+        enable_notifications = host.vars.submission_notify
         assign where host.vars.submission_check_enabled
       }
 
@@ -186,4 +188,12 @@ icinga_node_zones:
         import "generic-host"
         import "normal-server"
         address = "vpn.srv.ftsell.de"
+      }
+
+  nas.home.ftsell.de:
+    host.conf: |
+      object Host "nas.home.ftsell.de" {
+        import "generic-host"
+        import "normal-server"
+        address = "has.home.ftsell.de"
       }
