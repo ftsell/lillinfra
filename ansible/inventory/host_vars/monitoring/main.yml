@@ -204,6 +204,7 @@ icinga_node_zones:
         import "generic-host"
         import "normal-server"
         address = "monitoring.srv.ftsell.de"
+        display_name = "Monitoring"
 
         vars.websites = [
           "monitoring.ftsell.de",
@@ -213,6 +214,7 @@ icinga_node_zones:
       object Host "main.svc.ftsell.de" {
         import "virtual-host"
         address = "main.svc.ftsell.de"
+        display_name = "K8S Main"
 
         vars.websites = [
           "ftsell.de",
@@ -230,6 +232,7 @@ icinga_node_zones:
       object Host "mail.svc.ftsell.de" {
         import "virtual-host"
         address = "mail.svc.ftsell.de"
+        display_name = "K8S Mail"
 
         vars.imap_check_enabled = true
         vars.smtp_check_enabled = true
@@ -255,6 +258,7 @@ icinga_node_zones:
         import "generic-host"
         import "normal-server"
         address = "main.srv.ftsell.de"
+        display_name = "Main Server"
       }
 
   vpn.srv.ftsell.de:
@@ -263,12 +267,14 @@ icinga_node_zones:
         import "generic-host"
         import "normal-server"
         address = "vpn.srv.ftsell.de"
+        display_name = "VPN Server"
       }
 
       object Host "nas.vpn.private" {
         import "generic-host"
         address = "10.20.30.103"
         address6 = "fc10:20:30::103"
+        display_name = "NAS (vpn)"
 
         vars.ssh_check_enabled = true
         vars.ssh_check_notify = true
@@ -283,6 +289,7 @@ icinga_node_zones:
       object Host "nas.home.ftsell.de" {
         import "generic-host"
         address = "nas.home.ftsell.de"
+        display_name = "NAS (public)"
 
         vars.apt_check_enabled = true
         vars.apt_check_notify = false
