@@ -56,7 +56,7 @@ icinga_node_zones:
       template User "generic-user" {}
 
     services.conf: |
-      apply Service "apt" {
+      apply Service "apt" to Host {
         import "generic-service"
         check_command = "apt"
         check_interval = 3h
@@ -64,21 +64,21 @@ icinga_node_zones:
         assign where host.vars.apt_check_enabled
       }
 
-      apply Service "ssh" {
+      apply Service "ssh" to Host {
         import "generic-service"
         check_command = "ssh"
         enable_notifications = host.vars.ssh_check_notify
         assign where host.vars.ssh_check_enabled
       }
 
-      apply Service "systemd" {
+      apply Service "systemd" to Host {
         import "generic-service"
         check_command = "systemd"
         enable_notifications = host.vars.systemd_check_notify
         assign where host.vars.systemd_check_enabled
       }
 
-      apply Service "running_kernel" {
+      apply Service "running_kernel" to Host {
         import "generic-service"
         check_command = "running_kernel"
         check_interval = 5m
@@ -132,6 +132,70 @@ icinga_node_zones:
         vars.smtp_starttls = true
         enable_notifications = host.vars.submission_notify
         assign where host.vars.submission_check_enabled
+      }
+
+    notifications.conf: |
+      object User "ftsell" {
+        email = "admin+monitoring@ftsell.de"
+        vars.telegram_id = "87082671"
+      }
+
+      template Notification "telegram-notification" {
+        command = "notify-telegram"
+        zone = "monitoring.srv.ftsell.de"
+        vars.notification_telegram_token = "{{ monitoring_telegram_bot_token }}"
+        vars.notification_chat_id = "$user.vars.telegram_id$"
+      }
+     
+      apply Notification "host-down" to Host {
+        import "telegram-notification"
+        types = ["Custom", "Problem", "Recovery"]
+        users = [ "ftsell" ]
+        {% raw -%}
+        vars.notification_text = {{
+          notification_type = macro("$notification.type$")
+          notification_comment = macro("$notification.comment$")
+          if (notification_type == "CUSTOM") {
+            return "*$host.display_name$*: $notification.comment$"
+          } else if (notification_type == "PROBLEM" || notification_type == "RECOVERY") {
+            text = "*$notification_type$: $host.display_name$ is $host.state$*"
+            if (notification_comment) {
+              text += "\n\n_Comment_: $notification.comment$"
+            }
+            text += "\n\n_Last Check (at $host.last_check$)_: `$host.output$`"
+            return text
+          } else {
+            return "Notification of unknon type $notification_type$ was just triggered"
+          }
+        }}
+        {% endraw -%}
+        assign where host.enable_notifications
+      }
+
+      apply Notification "service-down" to Service {
+        import "telegram-notification"
+        types = ["Custom", "Problem", "Recovery"]
+        states = ["OK", "Critical"]
+        users = ["ftsell"]
+        {% raw -%}
+        vars.notification_text = {{
+          notification_type = macro("$notification.type$")
+          notification_comment = macro("$notification.comment$")
+          if (notification_type == "CUSTOM") {
+            return "*$service.display_name$ on $host.display_name$*: $notification.comment$"
+          } else if (notification_type == "PROBLEM" || notification_type == "RECOVERY") {
+            text = "*$notification_type$: $service.display_name$ on $host.display_name$ is $service.state$*"
+            if (notification_comment) {
+              text += "\n\n_Comment_: $notification.comment$"
+            }
+            text += "\n\nLast Check (at $service.last_check$): `$service.output$`"
+            return text
+          } else {
+            return "Notification of unknown type $notification_type$ was just triggered"
+          }
+        }}
+        {%endraw -%}
+        assign where service.enable_notifications
       }
 
   monitoring.srv.ftsell.de:

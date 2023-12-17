@@ -1,33 +1,21 @@
 #!/usr/bin/env python3
 import requests
 import argparse
+import sys
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("notify_host_telegram.py")
     parser.add_argument("--telegram-token", required=True)
     parser.add_argument("--chat-id", required=True)
-    parser.add_argument("--object-type", choices=["host", "service"])
-    parser.add_argument("--object-state", choices=["OK", "Warning", "Critical", "Unknown", "Up", "Down"])
-    parser.add_argument("--notification-type", choices=["Problem", "Recovery" ], required=True)
     parser.add_argument("--silent", action="store_true", default=False)
-    parser.add_argument("--host-name", required=True)
-    parser.add_argument("--service-name")
+    parser.add_argument("--text", required=True)
     args = parser.parse_args()
 
-    # construct message text
-    if args.notification_type == "Problem":
-        if args.object_type == "host":
-            header = f"*❗{args.host_name} is {args.object_state} ❗*"
-        elif args.object_type == "service":
-            header = f"*❗{args.service_name} is {args.object_state} ❗*"
-    elif args.notification_type == "Recovery":
-        if args.object_type == "host":
-            header = f"*✅ {args.host_name} is {args.object_state}*"
-        elif args.object_type == "service":
-            header = f"*✅ {args.service_name} is {args.object_state}*"
-
-    text = header
+    # sanitize text according to telegrams rules
+    text = str(args.text)\
+        .replace(".", "\\.")\
+        .replace("-", "\\-")
 
     print("Sending telegram notification")
     response = requests.post(
@@ -39,4 +27,9 @@ if __name__ == "__main__":
             "disable_web_page_preview": True,
             "disable_notification": args.silent,
         })
-    response.raise_for_status()
+
+    if response.status_code == 200:
+        print("Successfully sent telegram notification")
+    else:
+        print(f"Could not send telegram notification: status={response.status_code} text={response.text}")
+        sys.exit(1)
