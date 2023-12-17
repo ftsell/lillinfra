@@ -37,6 +37,8 @@ icinga_node_zones:
         vars.systemd_check_notify = true
         vars.running_kernel_check_enabled = true
         vars.running_kernel_notify = false
+        vars.disk_check_enabled = true
+        vars.disk_notify = true
       }
 
       /**
@@ -132,6 +134,14 @@ icinga_node_zones:
         vars.smtp_starttls = true
         enable_notifications = host.vars.submission_notify
         assign where host.vars.submission_check_enabled
+      }
+
+      apply Service "disk" to Host {
+        check_command = "disk"
+        check_interval = 30m
+        vars.disk_local = true
+        enable_notifications = host.vars.disk_notify
+        assign where host.vars.disk_check_enabled
       }
 
     notifications.conf: |
@@ -297,6 +307,8 @@ icinga_node_zones:
         vars.systemd_check_notify = true
         vars.running_kernel_check_enabled = true
         vars.running_kernel_notify = false
+        vars.disk_check_enabled = true
+        vars.disk_notify = true
 
         vars.websites = [
           "ha.home.ftsell.de",
