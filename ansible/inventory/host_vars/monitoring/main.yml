@@ -4,6 +4,7 @@ icinga_node_cluster_root: "self"
 icinga_node_icingaweb_enabled: true
 icinga_node_icingaweb_domain: monitoring.ftsell.de
 icinga_node_fqdn: monitoring.srv.ftsell.de
+icinga_node_api_is_reachable: true
 icinga_node_zones:
   global-templates:
     templates.conf: |
