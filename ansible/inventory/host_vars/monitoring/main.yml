@@ -41,6 +41,11 @@ icinga_node_zones:
         vars.disk_notify = true
       }
 
+      template Host "icinga-agent" {
+        vars.icinga_check_enabled = true
+        vars.icinga_notify = true
+      }
+
       /**
         * Provides default settings for services.
         * By convention all services should import this template.
@@ -58,6 +63,13 @@ icinga_node_zones:
       template User "generic-user" {}
 
     services.conf: |
+      apply Service "icinga" to Host {
+        import "generic-service"
+        check_command = "icinga"
+        enable_notifications = host.vars.icinga_check_notify
+        assign where host.vars.icinga_check_enabled
+      }
+
       apply Service "apt" to Host {
         import "generic-service"
         check_command = "apt"
@@ -156,7 +168,7 @@ icinga_node_zones:
         vars.notification_telegram_token = "{{ monitoring_telegram_bot_token }}"
         vars.notification_chat_id = "$user.vars.telegram_id$"
       }
-     
+
       apply Notification "host-down" to Host {
         import "telegram-notification"
         types = ["Custom", "Problem", "Recovery"]
@@ -213,6 +225,7 @@ icinga_node_zones:
       object Host "monitoring.srv.ftsell.de" {
         import "generic-host"
         import "normal-server"
+        import "icinga-agent"
         address = "monitoring.srv.ftsell.de"
         display_name = "Monitoring"
 
@@ -267,6 +280,7 @@ icinga_node_zones:
       object Host "main.srv.ftsell.de" {
         import "generic-host"
         import "normal-server"
+        import "icinga-agent"
         address = "main.srv.ftsell.de"
         display_name = "Main Server"
       }
@@ -276,6 +290,7 @@ icinga_node_zones:
       object Host "vpn.srv.ftsell.de" {
         import "generic-host"
         import "normal-server"
+        import "icinga-agent"
         address = "vpn.srv.ftsell.de"
         display_name = "VPN Server"
       }
@@ -298,6 +313,7 @@ icinga_node_zones:
     host.conf: |
       object Host "nas.home.ftsell.de" {
         import "generic-host"
+        import "icinga-agent"
         address = "nas.home.ftsell.de"
         display_name = "NAS (public)"
 
