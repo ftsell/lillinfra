@@ -183,6 +183,7 @@ icinga_node_zones:
 
         vars.websites = [
           "ftsell.de",
+          "finn-thorben.me",
           "cloud.ftsell.de",
           "git.ftsell.de",
           "budget.ftsell.de",
