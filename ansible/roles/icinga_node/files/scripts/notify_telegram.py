@@ -15,7 +15,9 @@ if __name__ == "__main__":
     # sanitize text according to telegrams rules
     text = str(args.text)\
         .replace(".", "\\.")\
-        .replace("-", "\\-")
+        .replace("-", "\\-")\
+        .replace("(", "\\(")\
+        .replace(")", "\\)")
 
     print("Sending telegram notification")
     response = requests.post(

@@ -207,7 +207,7 @@ icinga_node_zones:
           if (notification_type == "CUSTOM") {
             return "*$service.display_name$ on $host.display_name$*: $notification.comment$"
           } else if (notification_type == "PROBLEM" || notification_type == "RECOVERY") {
-            text = "*$notification_type$: $service.display_name$ on $host.display_name$ is $service.state$*"
+            text = "*$notification.type$: $service.display_name$ on $host.display_name$ is $service.state$*"
             if (notification_comment) {
               text += "\n\n_Comment_: $notification.comment$"
             }
