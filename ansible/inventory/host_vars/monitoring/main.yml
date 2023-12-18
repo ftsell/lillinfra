@@ -262,6 +262,12 @@ icinga_node_zones:
         vars.submission_check_enabled = true
       }
 
+    dependencies.conf: |
+      object Dependency "vpn-nas2home-nas" {
+        child_host_name = "nas.vpn.private"
+        parent_host_name = "nas.home.ftsell.de"
+      }
+
     services.conf: |
       object Service "icingadb" {
         import "generic-service"
@@ -304,10 +310,6 @@ icinga_node_zones:
 
         vars.ssh_check_enabled = true
         vars.ssh_check_notify = true
-      }
-      object Dependency "vpn-nas2home-nas" {
-        child_host_name = "nas.vpn.private"
-        parent_host_name = "nas.home.ftsell.de"
       }
 
   nas.home.ftsell.de:
