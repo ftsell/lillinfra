@@ -273,6 +273,7 @@ icinga_node_zones:
         import "generic-service"
         check_command = "cluster"
         host_name = "monitoring.srv.ftsell.de"
+        max_check_attempts = 10
       }
 
   main.srv.ftsell.de:
