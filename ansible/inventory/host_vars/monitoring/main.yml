@@ -153,6 +153,11 @@ icinga_node_zones:
         check_command = "disk"
         check_interval = 30m
         vars.disk_local = true
+        vars.disk_all = true
+        vars.disk_ignore_ereg_path = [
+          "/var/lib/containers/storage/overlay",
+          "/var/lib/kubelet/pods/.*",
+        ]
         enable_notifications = host.vars.disk_notify
         assign where host.vars.disk_check_enabled
       }
