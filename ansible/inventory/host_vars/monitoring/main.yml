@@ -162,6 +162,87 @@ icinga_node_zones:
         assign where host.vars.disk_check_enabled
       }
 
+  monitoring.srv.ftsell.de:
+    hosts.conf: |
+      object Host "monitoring.srv.ftsell.de" {
+        import "generic-host"
+        import "normal-server"
+        import "icinga-agent"
+        address = "monitoring.srv.ftsell.de"
+        display_name = "Monitoring"
+
+        vars.websites = [
+          "monitoring.ftsell.de",
+        ]
+      }
+
+      object Host "main.svc.ftsell.de" {
+        import "virtual-host"
+        address = "main.svc.ftsell.de"
+        display_name = "K8S Main"
+
+        vars.websites = [
+          "ftsell.de",
+          "cloud.ftsell.de",
+          "git.ftsell.de",
+          "budget.ftsell.de",
+          "todo.ftsell.de",
+          "kino.timonengelke.de",
+          "time.ftsell.de",
+          "argocd.ftsell.de",
+          "auth.ftsell.de",
+        ]
+      }
+
+      object Host "mail.svc.ftsell.de" {
+        import "virtual-host"
+        address = "mail.svc.ftsell.de"
+        display_name = "K8S Mail"
+
+        vars.imap_check_enabled = true
+        vars.smtp_check_enabled = true
+        vars.submission_check_enabled = true
+      }
+
+    dependencies.conf: |
+      object Dependency "nas.home.ftsell.de" {
+        child_host_name = "nas.vpn.private"
+        parent_host_name = "nas.home.ftsell.de"
+      }
+
+      apply Dependency "icinga-cluster" to Service {
+        child_host_name = service.host_name
+        child_service_name = service.display_name
+        parent_host_name = "monitoring.srv.ftsell.de"
+        parent_service_name = "icinga-cluster"
+        assign where match("icinga-zone-*", service.display_name)
+      }
+
+    services.conf: |
+      object Service "icingadb" {
+        import "generic-service"
+        host_name = "monitoring.srv.ftsell.de"
+        check_command = "icingadb"
+      }
+
+      object Service "icinga-cluster" {
+        import "generic-service"
+        check_command = "cluster"
+        host_name = "monitoring.srv.ftsell.de"
+        max_check_attempts = 10
+      }
+
+      {% for i in hostvars | dict2items(key_name="host", value_name="vars") -%}
+      {% if i.vars["icinga_node_fqdn"] is defined -%}
+      object Service "icinga-zone-{{ i.vars.icinga_node_fqdn }}" {
+        import "generic-service"
+        check_command = "cluster-zone"
+        host_name = "monitoring.srv.ftsell.de"
+        vars.cluster_zone = "{{ i.vars.icinga_node_fqdn }}"
+      }
+      {% endif -%}
+      {% endfor -%}
+
     notifications.conf: |
       object User "ftsell" {
         email = "admin+monitoring@ftsell.de"
@@ -224,68 +305,6 @@ icinga_node_zones:
         }}
         {%endraw -%}
         assign where service.enable_notifications
-      }
-
-  monitoring.srv.ftsell.de:
-    hosts.conf: |
-      object Host "monitoring.srv.ftsell.de" {
-        import "generic-host"
-        import "normal-server"
-        import "icinga-agent"
-        address = "monitoring.srv.ftsell.de"
-        display_name = "Monitoring"
-
-        vars.websites = [
-          "monitoring.ftsell.de",
-        ]
-      }
-
-      object Host "main.svc.ftsell.de" {
-        import "virtual-host"
-        address = "main.svc.ftsell.de"
-        display_name = "K8S Main"
-
-        vars.websites = [
-          "ftsell.de",
-          "cloud.ftsell.de",
-          "git.ftsell.de",
-          "budget.ftsell.de",
-          "todo.ftsell.de",
-          "kino.timonengelke.de",
-          "time.ftsell.de",
-          "argocd.ftsell.de",
-          "auth.ftsell.de",
-        ]
-      }
-
-      object Host "mail.svc.ftsell.de" {
-        import "virtual-host"
-        address = "mail.svc.ftsell.de"
-        display_name = "K8S Mail"
-
-        vars.imap_check_enabled = true
-        vars.smtp_check_enabled = true
-        vars.submission_check_enabled = true
-      }
-
-    dependencies.conf: |
-      object Dependency "vpn-nas2home-nas" {
-        child_host_name = "nas.vpn.private"
-        parent_host_name = "nas.home.ftsell.de"
-      }
-
-    services.conf: |
-      object Service "icingadb" {
-        import "generic-service"
-        host_name = "monitoring.srv.ftsell.de"
-        check_command = "icingadb"
-      }
-
-      object Service "icinga-cluster" {
-        import "generic-service"
-        check_command = "cluster"
-        host_name = "monitoring.srv.ftsell.de"
-        max_check_attempts = 10
       }
 
   main.srv.ftsell.de:
