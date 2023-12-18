@@ -260,6 +260,7 @@ icinga_node_zones:
         import "telegram-notification"
         types = ["Custom", "Problem", "Recovery"]
         users = [ "ftsell" ]
+        interval = 1d
         {% raw -%}
         vars.notification_text = {{
           notification_type = macro("$notification.type$")
@@ -271,7 +272,7 @@ icinga_node_zones:
             if (notification_comment) {
               text += "\n\n_Comment_: $notification.comment$"
             }
-            text += "\n\n_Last Check (at $host.last_check$)_: `$host.output$`"
+            text += "\n\n_Last Check (from " + DateTime(macro("$host.last_check$")).to_string() + ")_:\n```$host.output$```"
             return text
           } else {
             return "Notification of unknon type $notification_type$ was just triggered"
@@ -286,6 +287,7 @@ icinga_node_zones:
         types = ["Custom", "Problem", "Recovery"]
         states = ["OK", "Critical"]
         users = ["ftsell"]
+        interval = 7d
         {% raw -%}
         vars.notification_text = {{
           notification_type = macro("$notification.type$")
@@ -297,7 +299,7 @@ icinga_node_zones:
             if (notification_comment) {
               text += "\n\n_Comment_: $notification.comment$"
             }
-            text += "\n\nLast Check (at $service.last_check$): `$service.output$`"
+            text += "\n\n_Last Check (from " + DateTime(macro("$service.last_check$")).to_string() + ")_:\n```$service.output$```"
             return text
           } else {
             return "Notification of unknown type $notification_type$ was just triggered"
@@ -343,7 +345,7 @@ icinga_node_zones:
         import "generic-host"
         import "icinga-agent"
         address = "nas.home.ftsell.de"
-        display_name = "NAS (public)"
+        display_name = "NAS"
 
         vars.apt_check_enabled = true
         vars.apt_check_notify = false

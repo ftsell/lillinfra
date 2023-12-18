@@ -2,4 +2,4 @@ icinga_node_icingaweb_enabled: false
 icinga_node_zones: {}
 icinga_node_api_is_reachable: false
 
-icinga_node_log_level: warning
+icinga_node_log_level: information
