@@ -1,0 +1,90 @@
+#!/usr/bin/env python3
+import nagiosplugin
+import argparse
+import subprocess
+import json
+import logging
+import re
+
+
+_log = logging.getLogger("nagiosplugin")
+
+
+class KernelLog(nagiosplugin.Resource):
+    def probe(self):
+        _log.debug("reading kernel logs with dmesg")
+        msgs = subprocess.check_output(["sudo", "-n", "/usr/bin/dmesg", "--json", "--decode"], encoding="UTF-8")
+        _log.debug("parsing dmesg output")
+        return [
+            nagiosplugin.Metric("msg", msg, context="severities") for msg in json.loads(msgs)["dmesg"]
+        ]
+
+
+class LevelContext(nagiosplugin.Context):
+    def __init__(self, name: str, warn_at: list, crit_at: list, allowed: list):
+        self.name = name
+        self.allowed = [re.compile(allow_pattern) for allow_pattern in allowed]
+        self.warn_at = warn_at
+        self.crit_at = crit_at
+
+    def evaluate(self, metric: nagiosplugin.Metric, resource: KernelLog):
+        if any(pattern.fullmatch(metric.value["msg"]) is not None for pattern in self.allowed):
+            _log.info("skipped log line %s because it matched an allow-pattern", metric)
+            return nagiosplugin.Result(nagiosplugin.Ok, metric=metric)
+        elif metric.value["pri"] in self.crit_at:
+            _log.info("log line %s is at a level considered critical", metric)
+            return nagiosplugin.Result(nagiosplugin.Critical, metric=metric)
+        elif metric.value["pri"] in self.warn_at:
+            _log.info("log line %s is at a level considered warning", metric)
+            return nagiosplugin.Result(nagiosplugin.Warn, metric=metric)
+        else:
+            _log.debug("log line %s is not of note", metric)
+            return nagiosplugin.Result(nagiosplugin.Ok, metric=metric)
+
+    def describe(self, metric: nagiosplugin.Metric):
+        v = metric.value
+        return f"{v['fac']}@{v['pri']}: {v['msg']}"
+
+
+class Summary(nagiosplugin.Summary):
+    def ok(self, results: nagiosplugin.Results):
+        return "there are no errors in the kernel log"
+
+    def problem(self, results: nagiosplugin.Results):
+        if nagiosplugin.Critical not in results.by_state.keys():
+            n_crit = 0
+        else:
+            n_crit = len(results.by_state[nagiosplugin.Critical])
+
+        if nagiosplugin.Warn not in results.by_state.keys():
+            n_warn = 0
+        else:
+            n_warn = len(results.by_state[nagiosplugin.Warn])
+
+        return f"there are {n_crit} criticals and {n_warn} warnings in the kernel log"
+
+
+@nagiosplugin.guarded()
+def main():
+    KNOWN_LEVELS = ["emerg", "alert", "crit", "err", "warn", "notice", "info", "debug"]
+    argp = argparse.ArgumentParser()
+    argp.add_argument("--wlevel", action="append", default=[], choices=KNOWN_LEVELS,
+                      help="make the check result WARNING if the kernel log contains an entry with this log level (can be given multiple times)")
+    argp.add_argument("--clevel", action="append", default=[], choices=KNOWN_LEVELS,
+                      help="make the check result CRITICAL if the kernel log contains an entry with this log level (can be given multiple times)")
+    argp.add_argument('-v', '--verbose', action='count', default=1,
+                      help='increase output verbosity (use up to 2 times)')
+    argp.add_argument("-a", "--allow", action="append", default=[],
+                      help="a regex for allowed log lines (can be given multiple times)")
+    args = argp.parse_args()
+
+    check = nagiosplugin.Check(
+        KernelLog(),
+        LevelContext(name="severities", warn_at=args.wlevel, crit_at=args.clevel, allowed=args.allow),
+        Summary(),
+    )
+    check.main(verbose=args.verbose)
+
+
+if __name__ == "__main__":
+    main()

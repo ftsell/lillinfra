@@ -1,7 +1,7 @@
 - name: Install icinga2
   become: true
   apt:
-    name: [icinga2, monitoring-plugins, monitoring-plugins-contrib, monitoring-plugins-systemd, lz4, lzop, zstd, bc]
+    name: [icinga2, monitoring-plugins, lz4, lzop, zstd, bc]
 
 - ansible.builtin.include_tasks: pki/create_pki.yml
   when: icinga_node_cluster_root == "self"
@@ -90,7 +90,7 @@
   ansible.builtin.file:
     path: /usr/lib/nagios/plugins/{{ item.to }}
     state: link
-    src: /usr/lib/nagios/plugins/{{ item.from }}    
+    src: /usr/lib/nagios/plugins/{{ item.from }}
 
 - name: Deploy custom scripts
   become: true
@@ -102,4 +102,13 @@
     dest: /usr/lib/nagios/plugins/{{ item | basename }}
     owner: nagios
     group: nagios
-    mode: u=rwx,g=rx,o=
+    mode: u=rwx,g=rx,o=rx
+
+- name: Deploy custom sudoers rules for check execution
+  become: true
+  ansible.builtin.template:
+    src: icinga.sudoers
+    dest: /etc/sudoers.d/icinga
+    owner: root
+    group: root
+    mode: u=r,g=r,o=

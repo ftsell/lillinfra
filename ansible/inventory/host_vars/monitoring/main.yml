@@ -40,6 +40,8 @@ icinga_node_zones:
         vars.running_kernel_notify = false
         vars.disk_check_enabled = true
         vars.disk_notify = true
+        vars.dmesg_check_enabled = true
+        vars.dmesg_notify = false
       }
 
       template Host "icinga-agent" {
@@ -160,6 +162,12 @@ icinga_node_zones:
         ]
         enable_notifications = host.vars.disk_notify
         assign where host.vars.disk_check_enabled
+      }
+
+      apply Service "kernel-log" to Host {
+        check_command = "dmesg"
+        enable_notifications = host.vars.dmesg_notify
+        assign where host.vars.dmesg_check_enabled
       }
 
   monitoring.srv.ftsell.de:
