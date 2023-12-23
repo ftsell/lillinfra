@@ -269,11 +269,11 @@ icinga_node_zones:
           if (notification_type == "CUSTOM") {
             return "*$host.display_name$*: $notification.comment$"
           } else if (notification_type == "PROBLEM" || notification_type == "RECOVERY") {
-            text = "*$notification_type$: $host.display_name$ is $host.state$*"
+            text = "*$notification.type$: $host.display_name$ is $host.state$*"
             if (notification_comment) {
               text += "\n\n_Comment_: $notification.comment$"
             }
-            text += "\n\n_Last Check (from " + DateTime(macro("$host.last_check$")).to_string() + ")_:\n```$host.output$```"
+            text += "\n\n_Last Check (from " + DateTime(macro("$host.last_check$")).to_string() + ")_:\n```\n$host.output$\n```"
             return text
           } else {
             return "Notification of unknon type $notification_type$ was just triggered"
@@ -300,10 +300,10 @@ icinga_node_zones:
             if (notification_comment) {
               text += "\n\n_Comment_: $notification.comment$"
             }
-            text += "\n\n_Last Check (from " + DateTime(macro("$service.last_check$")).to_string() + ")_:\n```$service.output$```"
+            text += "\n\n_Last Check (from " + DateTime(macro("$service.last_check$")).to_string() + ")_:\n```\n$service.output$\n```"
             return text
           } else {
-            return "Notification of unknown type $notification_type$ was just triggered"
+            return "Notification of unknown type $notification.type$ was just triggered"
           }
         }}
         {%endraw -%}
