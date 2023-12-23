@@ -1,4 +1,5 @@
 vpn_iface: wg_vpn
+wg_tunnel_keepalive: false
 vpn_server_endpoint: vpn.ftsell.de:51820
 vpn_server_pub_key: "{{ hostvars['vpn'].wg_pub_key }}"
 vpn_server_ips:

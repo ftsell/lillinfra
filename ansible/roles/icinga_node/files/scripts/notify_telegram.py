@@ -17,7 +17,8 @@ if __name__ == "__main__":
         .replace(".", "\\.")\
         .replace("-", "\\-")\
         .replace("(", "\\(")\
-        .replace(")", "\\)")
+        .replace(")", "\\)")\
+        .replace("+", "\\+")
 
     print("Sending telegram notification")
     response = requests.post(

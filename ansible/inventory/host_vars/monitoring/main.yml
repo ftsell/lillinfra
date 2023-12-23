@@ -209,8 +209,11 @@ icinga_node_zones:
         display_name = "K8S Mail"
 
         vars.imap_check_enabled = true
+        vars.imap_notify = true
         vars.smtp_check_enabled = true
+        vars.smtp_notify = true
         vars.submission_check_enabled = true
+        vars.submission_notify = true
       }
 
     dependencies.conf: |
@@ -343,6 +346,16 @@ icinga_node_zones:
         address = "10.20.30.103"
         address6 = "fc10:20:30::103"
         display_name = "NAS (vpn)"
+
+        vars.ssh_check_enabled = true
+        vars.ssh_check_notify = true
+      }
+
+      object Host "sell-nas.vpn.private" {
+        import "generic-host"
+        address = "10.20.30.106"
+        address6 = "fc10:20:30::106"
+        display_name = "Sell Karosserie NAS (vpn)"
 
         vars.ssh_check_enabled = true
         vars.ssh_check_notify = true
