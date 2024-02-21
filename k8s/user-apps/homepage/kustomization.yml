@@ -24,6 +24,9 @@ configMapGenerator:
       - WIDTH=800
       - HEIGHT=600
 
+  - name: website
+    envs:
+      - configs/website.secret.env
   - name: website-riddles
     envs:
       - configs/riddles.secret.env
