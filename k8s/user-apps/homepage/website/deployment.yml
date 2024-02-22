@@ -6,6 +6,7 @@ metadata:
     app.kubernetes.io/name: website
     app.kubernetes.io/component: website-server
 spec:
+  replicas: 3
   selector:
     matchLabels: *labels
   template:
