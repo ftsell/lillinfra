@@ -4,3 +4,5 @@
 
 mydomain = ftsell.de
 myhostname = mail.$mydomain
+
+message_size_limit = 50000000
