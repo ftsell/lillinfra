@@ -18,9 +18,9 @@ It is deployed via [k8s/user-apps/mailserver](../k8s/user-apps/mailserver).
 
 3. Add address rewriting rules to [postfix_virtual_alias_maps.txt](../k8s/user-apps/mailserver/configs/postfix_virtual_alias_maps.txt).
 
-   Postfix uses this maps for address rewriting of incoming e-mail. 
-   The file lists `<from> <to>` rewriting rules so that e.g. the rule `foo@example.com bar@example.com` would result in e-mails destined to `foo@example.com` be delivered to `bar@example.com`. 
-   Aliases can be recursive. 
+   Postfix uses this maps for address rewriting of incoming e-mail.
+   The file lists `<from> <to>` rewriting rules so that e.g. the rule `foo@example.com bar@example.com` would result in e-mails destined to `foo@example.com` be delivered to `bar@example.com`.
+   Aliases can be recursive.
    Aliases can also resolve to multiple addresses which are `;` separated in which case the e-mail will be delivered to all of them.
    Catch-all aliases for a whole domain can be specified as `@example.com`.
 
@@ -33,13 +33,17 @@ It is deployed via [k8s/user-apps/mailserver](../k8s/user-apps/mailserver).
    The format is `<sender-address> <username>` where `<sender-address>` can also be the whole domain given as `@example.com`.
    Multiple users can be allowed to send from the same address by separating them with `,`.
 
+5. Add domain to [opendkim_domains.txt](../k8s/user-apps/mailserver/configs/opendkim_domains.txt)
+
+   This file configures the opendkim daemon to attach signatures to all outgoing mails for domains that are listed here.
+
 
 ### Actions on users Infrastructure
 
 1. Configure [DNS A Record](https://en.wikipedia.org/wiki/List_of_DNS_record_types#A).
 
-   This is not strictly necessary but some e-mail providers require the sending domain to have a valid A record. 
-   For this reason it is recommended to do so. 
+   This is not strictly necessary but some e-mail providers require the sending domain to have a valid A record.
+   For this reason it is recommended to do so.
    This record does not need to point to the mailserver.
 
 2. Configure [DNS MX Record](https://en.wikipedia.org/wiki/MX_record)

@@ -4,6 +4,7 @@ noreply@ftsell.de           noreply
 @finn-thorben.me            ftsell
 @timonengelke.de            tengelke
 @sheaksadi.me               ssheak
+@bastianpermesang.com       bpermesang
 
 finn@bit-bots.de            ftsell
 jasper@bit-bots.de          bitbots-jasper
