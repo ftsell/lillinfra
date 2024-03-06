@@ -8,4 +8,4 @@ spec:
     - matchLabels:
         kubernetes.io/hostname: main
   interfaces:
-    - eth0
+    - enp1s0
