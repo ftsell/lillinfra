@@ -20,6 +20,7 @@ configMapGenerator:
       - postfix_virtual_alias_maps.txt=configs/postfix_virtual_alias_maps.txt
       - postfix_virtual_domains.txt=configs/postfix_virtual_domains.txt
       - postfix_sender_login_maps.txt=configs/postfix_sender_login_maps.txt
+      - postfix_recipient_access.txt=configs/postfix_recipient_access.txt
       - rspamd_worker_controller.inc=configs/rspamd_worker_controller.inc
       - opendkim_domains.txt=configs/opendkim_domains.txt
       - dovecot-extra.passwd=configs/dovecot-extra.passwd
