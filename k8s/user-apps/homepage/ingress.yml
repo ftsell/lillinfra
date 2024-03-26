@@ -27,9 +27,16 @@ spec:
             pathType: Exact
             backend:
               service:
-                name: pixelflut-intern
+                name: pixeldike-intern
                 port:
-                  name: websocket
+                  name: pixelflut-ws
+          - path: /stream/
+            pathType: Prefix
+            backend:
+              service:
+                name: mediamtx
+                port:
+                  name: http
           - path: /verysecretriddles
             pathType: Prefix
             backend:

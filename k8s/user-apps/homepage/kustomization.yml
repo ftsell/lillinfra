@@ -14,9 +14,8 @@ resources:
   - riddles/deployment.yml
   - riddles/service.yml
 
-  - pixelflut/deployment.yml
-  - pixelflut/service.yml
-  - pixelflut/storage.yml
+  - pixelflut/pixeldike.yml
+  - pixelflut/mediamtx.yml
 
 configMapGenerator:
   - name: pixelflut
