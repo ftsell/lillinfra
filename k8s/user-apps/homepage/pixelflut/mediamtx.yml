@@ -14,11 +14,36 @@ items:
       selector: *labels
       ports:
         - name: http
-          port: 8888
+          port: 8889
           targetPort: http
         - name: rtmp
           port: 1935
           targetPort: rtmp
+        - name: rtsp
+          port: 8554
+          targetPort: rtsp
+
+  # service for WebRtc (must be publicly discoverable)
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: mediamtx-webrtc
+      labels: *labels
+      annotations:
+        metallb.universe.tf/allow-shared-ip: main-sharing-key
+        metallb.universe.tf/ip-allocated-from-pool: main
+    spec:
+      selector: *labels
+      type: LoadBalancer
+      ports:
+        - name: webrtc-udp
+          port: 8189
+          targetPort: 8189
+          protocol: UDP
+        - name: webrtc-tcp
+          port: 8189
+          targetPort: 8189
+          protocol: TCP
 
   # deployment
   - apiVersion: apps/v1
@@ -33,23 +58,28 @@ items:
         metadata:
           labels: *labels
         spec:
+          volumes:
+            - name: config
+              configMap:
+                name: mediamtx
           containers:
             - name: mediamtx
               image: docker.io/bluenviron/mediamtx:latest-ffmpeg
               imagePullPolicy: Always
-              env:
-                - name: MTX_WEBRTC
-                  value: "no"
-                - name: MTX_RTSP
-                  value: "no"
-                - name: MTX_RTMP
-                  value: "yes"
-                - name: MTX_HLS
-                  value: "yes"
-                - name: MTX_SRT
-                  value: "no"
+              volumeMounts:
+                - name: config
+                  mountPath: /mediamtx.yml
+                  subPath: mediamtx.yml
               ports:
                 - name: http
-                  containerPort: 8888
+                  containerPort: 8889
                 - name: rtmp
                   containerPort: 1935
+                - name: rtsp
+                  containerPort: 8554
+                - name: webrtc-udp
+                  containerPort: 8189
+                  protocol: UDP
+                - name: webrtc-tcp
+                  containerPort: 8189
+                  protocol: TCP
