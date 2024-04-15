@@ -20,7 +20,7 @@ For each new registry with which the cluster should automatically authenticate, 
    USERNAME=agserver
    PW=foobar123
    
-   kubectl create secret docker-registry --docker-server=$SERVER --docker-username=$USERNAME --docker-password=$PW --dry-run=client test -o json | jq '.data.".dockerconfigjson"' -r | base64 -d
+   kubectl create secret docker-registry --docker-server=$SERVER --docker-username=$USERNAME --docker-password=$PW --dry-run=client test -o json | jq '.data.".dockerconfigjson"' -r | base64 -d | jq
    ```
    
    This outputs a json structure that should be stored in a file like `dockerconfig-${SERVER}.secret.json`.
