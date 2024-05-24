@@ -8,5 +8,6 @@ noreply@ftsell.de           noreply
 
 finn@bit-bots.de            ftsell
 jasper@bit-bots.de          bitbots-jasper
-info@bit-bots.de            ftsell,bitbots-jasper,bitbots-sponsoring
-sponsoring@bit-bots.de      bitbots-sponsoring
+info@bit-bots.de            ftsell,bitbots-jasper,bitbots-sponsoring,bitbots-valerie
+sponsoring@bit-bots.de      bitbots-sponsoring,bitbots-valerie
+valerie@bit-bots.de         bitbots-valerie
