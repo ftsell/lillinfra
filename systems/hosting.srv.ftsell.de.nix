@@ -53,7 +53,13 @@
   boot.extraModulePackages = [ ];
   boot.loader.grub.enable = true;
 
-  services.openssh.enable = true;
+  services.openssh = {
+    enable = true;
+    settings = {
+      PermitRootLogin = "no";
+      PasswordAuthentication = false;
+    };
+  };
 
   environment.systemPackages = map lib.lowPrio [
     pkgs.curl
