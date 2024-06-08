@@ -9,15 +9,10 @@
     };
   };
 
-  outputs = { nixpkgs, disko, ... }:
-    {
-      nixosConfigurations.hosting = nixpkgs.lib.nixosSystem {
-        system = "aarch64-linux";
-        modules = [
-          disko.nixosModules.disko
-          ./configuration.nix
-        ];
-        
-      };
+  outputs = inputs@{ self, nixpkgs, disko, ... }: {
+    nixosConfigurations = import ./systems {
+      inherit self inputs nixpkgs;
     };
+  };
+
 }
