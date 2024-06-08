@@ -1,6 +1,0 @@
-- name: Restart ddclient
-  tags: [dyndns, ddclient, dyndns_setter]
-  become: true
-  ansible.builtin.systemd:
-    name: ddclient.service
-    state: restarted
