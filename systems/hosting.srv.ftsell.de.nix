@@ -94,5 +94,8 @@
     };
   };
 
+  nix.settings.tarball-ttl = 60;
+  nix.settings.trusted-users = [ "root" "@wheel" ];
+
   system.stateVersion = "23.11";
 }
