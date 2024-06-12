@@ -53,6 +53,8 @@
   boot.extraModulePackages = [ ];
   boot.loader.grub.enable = true;
 
+  networking.useDHCP = false;
+
   services.openssh = {
     enable = true;
     settings = {
@@ -63,7 +65,7 @@
 
   environment.systemPackages = map lib.lowPrio [
     pkgs.curl
-    pkgs.gitMinimal
+    pkgs.git
   ];
   programs.fish.enable = true;
 
@@ -82,7 +84,6 @@
     isNormalUser = true;
   };
 
-  networking.useDHCP = false;
   systemd.network = {
     enable = true;
 
@@ -122,6 +123,33 @@
         "2a10:9906:1002:0::1"
       ];
     };
+  };
+
+  systemd.timers.download-nixos-installer = {
+    name = "download-nixos-installer.timer";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnActiveSec = "0";
+      OnCalendar = "24hr";
+    };
+  };
+  systemd.services.download-nixos-installer = {
+    name = "download-nixos-installer.service";
+    path = [ pkgs.curl ];
+    script = "curl -sSL https://github.com/nix-community/nixos-images/releases/download/nixos-24.05/nixos-installer-x86_64-linux.iso -o /var/lib/libvirt/images/nixos-installer-x86_64-linux.iso";
+  };
+  systemd.timers.download-debian-installer = {
+    name = "download-debian-installer.timer";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnActiveSec = "0";
+      OnCalendar = "24hr";
+    };
+  };
+  systemd.services.download-debian-installer = {
+    name = "download-debian-installer.service";
+    path = [ pkgs.curl ];
+    script = "curl -sSL https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-12.5.0-amd64-netinst.iso -o /var/lib/libvirt/images/debian-12-amd64-netinst.iso";
   };
 
   nix.settings.tarball-ttl = 60;

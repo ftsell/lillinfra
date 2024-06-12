@@ -26,6 +26,9 @@
       inputs.disko.follows = "disko";
     };
 
+    # prebuilt images of NixOS which output installation ISOs
+    nixos-images.url = "github:nix-community/nixos-images";
+
   };
 
   outputs = inputs@{ self, nixpkgs, disko, ... }: {
