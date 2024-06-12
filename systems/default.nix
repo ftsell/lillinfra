@@ -15,4 +15,5 @@ in
 {
   hosting = mkSystem "x86_64-unknown-linux-gnu" "hosting.srv.ftsell.de";
   finnsLaptop = mkSystem "x86_64-unknown-linux-gnu" "finnsLaptop";
+  factorio-z9 = mkSystem "x86_64-unknown-linux-gnu" "factorio.z9.ccchh.net";
 }
