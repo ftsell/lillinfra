@@ -72,7 +72,7 @@
   ];
   users.users.ftsell = {
     createHome = true;
-    extraGroups = [ "wheel" ];
+    extraGroups = [ "wheel" "libvirtd" ];
     home = "/home/ftsell";
     shell = pkgs.fish;
     openssh.authorizedKeys.keys = [
@@ -85,17 +85,53 @@
   networking.useDHCP = false;
   systemd.network = {
     enable = true;
-    networks.myroot = {
-      matchConfig = {
+
+    # define a bridge device for physical network connections
+    netdevs.brMyRoot = {
+      netdevConfig = {
+        Name = "brMyRoot";
+        Description = "The bridge device connected to the physical network";
+        Kind = "bridge";
         MACAddress = "0c:c4:7a:8e:25:ae";
       };
-      address = [ "37.153.156.125/24" ];
-      gateway = [ "37.153.156.1" ];
+    };
+
+    # instruct the physical ethernet adapter to use the brMyRoot bridge device
+    networks.ethMyRoot = {
+      matchConfig = {
+        Type = "ether";
+        MACAddress = "0c:c4:7a:8e:25:ae";
+      };
+      networkConfig = {
+        DHCP = "no";
+        Bridge = "brMyRoot";
+      };
+    };
+
+    # assign IP addresses for the server itself on the bridge device
+    networks.brMyRoot = {
+      matchConfig = {
+        Name = "brMyRoot";
+      };
+      address = [
+        "37.153.156.125/24"
+        "2a10:9906:1002:0:125::125/64"
+      ];
+      gateway = [
+        "37.153.156.1"
+        "2a10:9906:1002:0::1"
+      ];
     };
   };
 
   nix.settings.tarball-ttl = 60;
   nix.settings.trusted-users = [ "root" "@wheel" ];
+
+  virtualisation.libvirtd = {
+    enable = true;
+    onShutdown = "shutdown";
+    parallelShutdown = 10;
+  };
 
   system.stateVersion = "23.11";
 }
