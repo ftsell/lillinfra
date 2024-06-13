@@ -1,4 +1,8 @@
-{ modulesPath, config, lib, pkgs, ... }: {
+{ modulesPath, config, lib, pkgs, ... }:
+let
+  myLib = import ../lib.nix { inherit lib pkgs; };
+in
+{
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
   ];
@@ -64,6 +68,7 @@
   environment.systemPackages = map lib.lowPrio [
     pkgs.curl
     pkgs.git
+    pkgs.htop
   ];
   programs.fish.enable = true;
 
@@ -92,8 +97,17 @@
     };
   };
 
-  nix.settings.tarball-ttl = 60;
   nix.settings.trusted-users = [ "root" "@wheel" ];
-
+  nixpkgs.config.allowUnfree = true;
   system.stateVersion = "24.05";
+
+  # actual factorio config
+  services.factorio = {
+    enable = true;
+    game-name = "CCCHH Factorio";
+    lan = true;
+    saveName = "default-no-mods";
+    requireUserVerification = false;
+    openFirewall = true;
+  };
 }

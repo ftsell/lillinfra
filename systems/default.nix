@@ -8,6 +8,7 @@ let
       ./${name}.nix
       {
         networking.hostName = builtins.head (nixpkgs.lib.strings.splitString "." name);
+        nix.settings.tarball-ttl = 60;
       }
     ];
   };
