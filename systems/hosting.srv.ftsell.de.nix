@@ -122,7 +122,44 @@
         "37.153.156.1"
         "2a10:9906:1002:0::1"
       ];
+      routes = [
+        {
+          routeConfig = {
+            Destination = "2a10:9906:1002:125::1/128";
+          };
+        }
+        {
+          routeConfig = {
+            Destination = "2a10:9906:1002:125::/64";
+            Gateway = "2a10:9906:1002:125::1/128";
+          };
+        }
+        {
+          routeConfig = {
+            Destination = "37.153.156.168";
+          };
+        }
+      ] ++ builtins.map
+        (i: {
+          routeConfig = {
+            Destination = i;
+            Gateway = "37.153.156.168";
+          };
+        }) [
+        "37.153.156.175"
+        "37.153.156.174"
+        "37.153.156.173"
+        "37.153.156.172"
+        "37.153.156.171"
+        "37.153.156.170"
+        "37.153.156.169"
+      ];
     };
+  };
+
+  boot.kernel.sysctl = {
+    "net.ipv4.ip_forward" = "1";
+    "net.ipv6.conf.all.forwarding" = "1";
   };
 
   systemd.timers.download-nixos-installer = {
@@ -136,7 +173,7 @@
   systemd.services.download-nixos-installer = {
     name = "download-nixos-installer.service";
     path = [ pkgs.curl ];
-    script = "curl -sSL https://github.com/nix-community/nixos-images/releases/download/nixos-24.05/nixos-installer-x86_64-linux.iso -o /var/lib/libvirt/images/nixos-installer-x86_64-linux.iso";
+    script = "curl -sSL https://channels.nixos.org/nixos-24.05/latest-nixos-minimal-x86_64-linux.iso -o /var/lib/libvirt/images/nixos-installer-x86_64-linux.iso";
   };
   systemd.timers.download-debian-installer = {
     name = "download-debian-installer.timer";
@@ -152,7 +189,6 @@
     script = "curl -sSL https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-12.5.0-amd64-netinst.iso -o /var/lib/libvirt/images/debian-12-amd64-netinst.iso";
   };
 
-  nix.settings.tarball-ttl = 60;
   nix.settings.trusted-users = [ "root" "@wheel" ];
 
   virtualisation.libvirtd = {
