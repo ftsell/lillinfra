@@ -25,13 +25,13 @@
     # prebuilt images of NixOS which output installation ISOs
     nixos-images.url = "github:nix-community/nixos-images";
     nixos-images.inputs.nixos-stable.follows = "nixpkgs";
-
   };
 
-  outputs = inputs@{ self, nixpkgs, disko, ... }: {
+  outputs = inputs@{ self, nixpkgs, nixos-images, ... }: {
     nixosConfigurations = import ./systems {
       inherit self inputs nixpkgs;
     };
+    # installer = (nixpkgs.legacyPackages.${system}.nixos [ self.nixosModules.image-installer ]).config.system.build.isoImage;
+    installer = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux" ] (system: (nixpkgs.legacyPackages.x86_64-linux.nixos [ ./installer-config.nix]).isoImage);
   };
-
 }
