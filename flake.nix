@@ -1,6 +1,9 @@
 {
   description = "finnfrastructure - ftsell's infrastructure configuration";
 
+  nixConfig.extra-substituters = [ "https://nix-community.cachix.org" ];
+  nixConfig.extra-trusted-public-keys = [ "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" ];
+
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.05";
 
@@ -19,15 +22,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # nixos installer
-    nixos-anywhere = {
-      url = "github:nix-community/nixos-anywhere";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.disko.follows = "disko";
-    };
-
     # prebuilt images of NixOS which output installation ISOs
     nixos-images.url = "github:nix-community/nixos-images";
+    nixos-images.inputs.nixos-stable.follows = "nixpkgs";
 
   };
 
