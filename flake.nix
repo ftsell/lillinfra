@@ -10,6 +10,12 @@
     # support for special hardware quirks
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
+    # dotfile (and user package) manager
+    home-manager = {
+      url = "github:nix-community/home-manager?ref=release-24.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # disk partitioning description
     disko = {
       url = "github:nix-community/disko";
