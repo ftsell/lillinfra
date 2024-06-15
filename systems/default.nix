@@ -6,15 +6,11 @@ let
     modules = [
       inputs.disko.nixosModules.disko
       inputs.home-manager.nixosModules.home-manager
+
       ./${name}.nix
+
       {
         networking.hostName = builtins.head (nixpkgs.lib.strings.splitString "." name);
-        nix.settings.tarball-ttl = 60;
-        nix.gc = {
-          automatic = true;
-          dates = "weekly";
-          options = "--delete-older-than 30d";
-        };
       }
     ];
   };
