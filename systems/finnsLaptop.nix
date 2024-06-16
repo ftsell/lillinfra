@@ -60,6 +60,7 @@
   # additional packages
   environment.systemPackages = with pkgs; [
     nixpkgs-fmt
+    virt-manager
   ];
 
   # DO NOT CHANGE

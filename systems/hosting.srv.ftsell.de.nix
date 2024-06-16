@@ -5,56 +5,33 @@
     ../modules/user_ftsell.nix
   ];
 
-  disko.devices = {
-    disk.disk1 = {
-      device = "/dev/disk/by-id/ata-WDC_WD120EFBX-68B0EN0_D7HE49WN";
-      type = "disk";
-      content = {
-        type = "gpt";
-        partitions = {
-          mbr = {
-            size = "1M";
-            type = "EF02";
-            priority = 1;
-          };
-          boot = {
-            name = "boot";
-            size = "500M";
-            type = "8300";
-            content = {
-              type = "filesystem";
-              format = "vfat";
-              mountpoint = "/boot";
-            };
-          };
-          swap = {
-            size = "8G";
-            content = {
-              type = "swap";
-              randomEncryption = true;
-            };
-          };
-          root = {
-            name = "root";
-            size = "100%";
-            content = {
-              type = "filesystem";
-              format = "bcachefs";
-              mountpoint = "/";
-            };
-          };
-        };
-      };
+  # boot config
+  fileSystems = {
+    "/" = {
+      device = "/dev/disk/by-uuid/88eabac5-5476-49c1-b5d6-dd1f29ff3660";
+      fsType = "bcachefs";
+    };
+    "/boot" = {
+      device = "/dev/disk/by-uuid/C85B-5816";
+      fsType = "vfat";
+      options = [ "fmask=0077" "dmask=0077" ];
     };
   };
+  swapDevices = [{
+    device = "/dev/disk/by-uuid/58ccf5a8-6b0f-45b3-bfe0-fe9db08b3338";
+  }];
 
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
   boot.initrd.availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usbhid" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
-  boot.loader.grub.enable = true;
+  boot.loader.grub = {
+    enable = true;
+    device = "/dev/disk/by-id/ata-WDC_WD120EFBX-68B0EN0_D7HE49WN";
+  };
 
+  # networking config
   networking.useDHCP = false;
 
   services.openssh = {
@@ -175,8 +152,10 @@
     onShutdown = "shutdown";
     parallelShutdown = 10;
   };
+  users.users.ftsell.extraGroups = [ "libvirtd" ];
 
   # DO NOT CHANGE
   # this defines the first version of NixOS that was installed on the machine so that programs with non-migratable data files are kept compatible
+  home-manager.users.ftsell.home.stateVersion = "24.05";
   system.stateVersion = "23.11";
 }
