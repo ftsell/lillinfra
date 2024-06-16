@@ -40,11 +40,42 @@
         DHCP = "no";
       };
       address = [
-        "37.153.156.168/24"
+        "37.153.156.168/32"
       ];
       gateway = [
         "37.153.156.1"
       ];
+      routes = [
+        {
+          routeConfig = {
+            Destination = "37.153.156.1";
+          };
+        }
+      ];
+    };
+    networks.ethVMs = {
+      matchConfig = {
+        Type = "ether";
+        MACAddress = "52:54:00:85:6c:df";
+      };
+      address = [
+        "37.153.156.168/29"
+      ];
+      # routes = builtins.map
+      #   (i: {
+      #     routeConfig = {
+      #       Destination = i;
+
+      #     };
+      #   }) [
+      #   "37.153.156.175"
+      #   "37.153.156.174"
+      #   "37.153.156.173"
+      #   "37.153.156.172"
+      #   "37.153.156.171"
+      #   "37.153.156.170"
+      #   "37.153.156.169"
+      # ];
     };
   };
 
@@ -53,6 +84,43 @@
     settings = {
       PermitRootLogin = "no";
       PasswordAuthentication = false;
+    };
+  };
+
+  services.kea.dhcp4 = {
+    enable = true;
+    settings = {
+      interfaces-config = {
+        interfaces = [ "enp8s0" ];
+      };
+      lease-database = {
+        name = "/var/lib/kea/dhcp4.leases";
+        persist = true;
+        type = "memfile";
+      };
+      rebind-timer = 2000;
+      renew-timer = 1000;
+      subnet4 = [
+        {
+          subnet = "37.153.156.168/29";
+          pools = [
+            {
+              "pool" = "37.153.156.169 - 37.153.156.175";
+            }
+          ];
+          option-data = [
+            {
+              name = "domain-name-servers";
+              data = "9.9.9.9";
+            }
+            {
+              name = "routers";
+              data = "37.153.156.168";
+            }
+          ];
+        }
+      ];
+      valid-lifetime = 4000;
     };
   };
 
