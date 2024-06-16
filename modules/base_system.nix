@@ -20,6 +20,7 @@
   # locale settings
   time.timeZone = lib.mkDefault "Europe/Berlin";
   i18n = {
+    # https://man.archlinux.org/man/locale.7
     defaultLocale = lib.mkDefault "en_US.UTF-8";
     extraLocaleSettings = lib.genAttrs [
       "LC_CTYPE"
@@ -27,7 +28,6 @@
       "LC_TIME"
       "LC_COLLATE"
       "LC_MONETARY"
-      "LC_MESSAGES"
       "LC_PAPER"
       "LC_NAME"
       "LC_ADDRESS"
