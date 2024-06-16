@@ -52,10 +52,14 @@
 
   # additional apps
   environment.systemPackages = with pkgs; [
-    vim
     git
     helix
     tig
     htop
   ];
+  environment.variables = {
+    EDITOR = "hx";
+    VISUAL = "hx";
+  };
+  environment.localBinInPath = true;
 }
