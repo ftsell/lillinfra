@@ -2,6 +2,8 @@
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")
+    ../modules/base_system.nix
+    ../modules/user_ftsell.nix
   ];
 
   disko.devices = {
@@ -58,24 +60,6 @@
     };
   };
 
-  environment.systemPackages = map lib.lowPrio [
-    pkgs.curl
-    pkgs.git
-  ];
-  programs.fish.enable = true;
-
-  users.users.ftsell = {
-    createHome = true;
-    extraGroups = [ "wheel" ];
-    home = "/home/ftsell";
-    shell = pkgs.fish;
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPzGnNKyn6jmVxig4SRnTBfpi6okPU2aOHPwFnAPTxJm ftsell@ftsell.de"
-    ];
-    hashedPassword = "$y$j9T$x55BKHAikhaUeAPN6GsCa/$uig7LwmWeodvbBKKMmlO7k/UbtU.Za6RuS.QI5O5ag9";
-    isNormalUser = true;
-  };
-
   systemd.network = {
     enable = true;
     networks.ethMyRoot = {
@@ -111,5 +95,7 @@
 
   nix.settings.trusted-users = [ "root" "@wheel" ];
 
+  # DO NOT CHANGE
+  # this defines the first version of NixOS that was installed on the machine so that programs with non-migratable data files are kept compatible
   system.stateVersion = "23.11";
 }

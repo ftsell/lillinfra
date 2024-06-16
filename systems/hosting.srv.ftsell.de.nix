@@ -1,6 +1,8 @@
 { modulesPath, config, lib, pkgs, ... }: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
+    ../modules/base_system.nix
+    ../modules/user_ftsell.nix
   ];
 
   disko.devices = {
@@ -61,27 +63,6 @@
       PermitRootLogin = "no";
       PasswordAuthentication = false;
     };
-  };
-
-  environment.systemPackages = map lib.lowPrio [
-    pkgs.curl
-    pkgs.git
-  ];
-  programs.fish.enable = true;
-
-  users.users.root.openssh.authorizedKeys.keys = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPzGnNKyn6jmVxig4SRnTBfpi6okPU2aOHPwFnAPTxJm ftsell@ftsell.de"
-  ];
-  users.users.ftsell = {
-    createHome = true;
-    extraGroups = [ "wheel" "libvirtd" ];
-    home = "/home/ftsell";
-    shell = pkgs.fish;
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPzGnNKyn6jmVxig4SRnTBfpi6okPU2aOHPwFnAPTxJm ftsell@ftsell.de"
-    ];
-    hashedPassword = "$y$j9T$x55BKHAikhaUeAPN6GsCa/$uig7LwmWeodvbBKKMmlO7k/UbtU.Za6RuS.QI5O5ag9";
-    isNormalUser = true;
   };
 
   systemd.network = {
@@ -189,13 +170,13 @@
     script = "curl -sSL https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-12.5.0-amd64-netinst.iso -o /var/lib/libvirt/images/debian-12-amd64-netinst.iso";
   };
 
-  nix.settings.trusted-users = [ "root" "@wheel" ];
-
   virtualisation.libvirtd = {
     enable = true;
     onShutdown = "shutdown";
     parallelShutdown = 10;
   };
 
+  # DO NOT CHANGE
+  # this defines the first version of NixOS that was installed on the machine so that programs with non-migratable data files are kept compatible
   system.stateVersion = "23.11";
 }
