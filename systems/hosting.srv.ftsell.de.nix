@@ -1,4 +1,8 @@
-{ modulesPath, config, lib, pkgs, ... }: {
+{ modulesPath, config, lib, pkgs, ... }:
+let
+  data.network = import ../data/hosting_network.nix;
+in
+{
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ../modules/base_system.nix
@@ -93,24 +97,17 @@
         }
         {
           routeConfig = {
-            Destination = "37.153.156.168";
+            Destination = data.network.guests.rt-hosting.ipv4;
           };
         }
       ] ++ builtins.map
         (i: {
           routeConfig = {
-            Destination = i;
-            Gateway = "37.153.156.168";
+            Destination = i.ipv4;
+            Gateway = data.network.guests.rt-hosting.ipv4;
           };
-        }) [
-        "37.153.156.169"
-        "37.153.156.170"
-        "37.153.156.171"
-        "37.153.156.172"
-        "37.153.156.173"
-        "37.153.156.174"
-        "37.153.156.175"
-      ];
+        })
+        data.network.routedGuests;
     };
   };
 

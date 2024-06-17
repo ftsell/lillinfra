@@ -1,4 +1,7 @@
-{ modulesPath, config, lib, pkgs, ... }: {
+{ modulesPath, config, lib, pkgs, ... }:
+let
+  data.network = import ../data/hosting_network.nix;
+in {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
     ../modules/base_system.nix
@@ -40,7 +43,7 @@
         IPv4ProxyARP = true;
       };
       address = [
-        "37.153.156.168/32"
+        "${data.network.guests.rt-hosting.ipv4}/32"
       ];
       gateway = [
         "37.153.156.1"
@@ -59,22 +62,14 @@
         MACAddress = "52:54:00:85:6c:df";
       };
       address = [
-        "37.153.156.168/32"
+        "${data.network.guests.rt-hosting.ipv4}/32"
       ];
       routes = builtins.map
         (i: {
           routeConfig = {
-            Destination = i;
+            Destination = i.ipv4;
           };
-        }) [
-        "37.153.156.169"
-        "37.153.156.170"
-        "37.153.156.171"
-        "37.153.156.172"
-        "37.153.156.173"
-        "37.153.156.174"
-        "37.153.156.175"
-      ];
+        }) data.network.routedGuests;
     };
   };
 
@@ -99,6 +94,7 @@
       };
       rebind-timer = 2000;
       renew-timer = 1000;
+      valid-lifetime = 4000;
       subnet4 = [
         {
           subnet = "37.153.156.168/29";
@@ -107,6 +103,10 @@
               "pool" = "37.153.156.169 - 37.153.156.175";
             }
           ];
+          reservations = (builtins.map (i: {
+            hw-address = i.macAddress;
+            ip-address = i.ipv4;
+          }) data.network.routedGuests);
           option-data = [
             {
               name = "domain-name-servers";
@@ -114,12 +114,11 @@
             }
             {
               name = "routers";
-              data = "37.153.156.168";
+              data = data.network.guests.rt-hosting.ipv4;
             }
           ];
         }
       ];
-      valid-lifetime = 4000;
     };
   };
 
