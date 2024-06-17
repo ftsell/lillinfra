@@ -37,7 +37,6 @@
     gnome-calendar
     epiphany
     geary
-    evince
     gnome-characters
     totem
     tali

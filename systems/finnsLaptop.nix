@@ -61,6 +61,7 @@
   environment.systemPackages = with pkgs; [
     nixpkgs-fmt
     virt-manager
+    libreoffice-fresh
   ];
 
   # DO NOT CHANGE
