@@ -15,6 +15,8 @@ rec {
   guests = {
     rt-hosting = mkExposed "52:54:00:af:bc:45" "37.153.156.168";
     main-srv = mkGuest "52:54:00:ba:63:25" "37.153.156.169";
+    mail-srv = mkGuest "52:54:00:66:e2:38" "37.153.156.170";
+    #vpn-srv = mkGuest = "TODO" "37.153.156.171";
   };
   routedGuests = (
     builtins.filter (i: i._type == "routedGuest")
