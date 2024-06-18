@@ -17,6 +17,7 @@ rec {
     main-srv = mkGuest "52:54:00:ba:63:25" "37.153.156.169";
     mail-srv = mkGuest "52:54:00:66:e2:38" "37.153.156.170";
     vpn-srv = mkGuest "52:54:00:8e:97:05" "37.153.156.171";
+    bene-server = mkGuest "52:54:00:13:f8:f9" "37.153.156.172";
   };
   routedGuests = (
     builtins.filter (i: i._type == "routedGuest")
