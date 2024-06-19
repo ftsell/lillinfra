@@ -1,7 +1,8 @@
 { modulesPath, config, lib, pkgs, ... }:
 let
   data.network = import ../data/hosting_network.nix;
-in {
+in
+{
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
     ../modules/base_system.nix
@@ -63,13 +64,18 @@ in {
       };
       address = [
         "${data.network.guests.rt-hosting.ipv4}/32"
+        "10.0.0.1/24"
       ];
       routes = builtins.map
         (i: {
           routeConfig = {
             Destination = i.ipv4;
           };
-        }) data.network.routedGuests;
+        })
+        data.network.routedGuests;
+      networkConfig = {
+        IPMasquerade = "ipv4";
+      };
     };
   };
 
@@ -95,30 +101,57 @@ in {
       rebind-timer = 2000;
       renew-timer = 1000;
       valid-lifetime = 4000;
-      subnet4 = [
-        {
-          subnet = "37.153.156.168/29";
-          pools = [
-            {
-              "pool" = "37.153.156.169 - 37.153.156.175";
-            }
-          ];
-          reservations = (builtins.map (i: {
-            hw-address = i.macAddress;
-            ip-address = i.ipv4;
-          }) data.network.routedGuests);
-          option-data = [
-            {
-              name = "domain-name-servers";
-              data = "9.9.9.9";
-            }
-            {
-              name = "routers";
-              data = data.network.guests.rt-hosting.ipv4;
-            }
-          ];
-        }
-      ];
+      shared-networks = [{
+        name = "vmNet";
+        subnet4 = [
+          # routed subnet
+          {
+            subnet = "37.153.156.168/29";
+            pools = [
+              {
+                pool = "37.153.156.169 - 37.153.156.175";
+              }
+            ];
+            reservations = (builtins.map
+              (i: {
+                hw-address = i.macAddress;
+                ip-address = i.ipv4;
+              })
+              data.network.routedGuests);
+            option-data = [
+              {
+                name = "domain-name-servers";
+                data = "9.9.9.9";
+              }
+              {
+                name = "routers";
+                data = data.network.guests.rt-hosting.ipv4;
+              }
+            ];
+          }
+          # natted subnet
+          {
+            subnet = "10.0.0.0/24";
+            pools = [{ pool = "10.0.0.0/24"; }];
+            reservations = (builtins.map
+              (i: {
+                hw-address = i.macAddress;
+                ip-address = i.ipv4;
+              })
+              data.network.natGuests);
+            option-data = [
+              {
+                name = "domain-name-servers";
+                data = "9.9.9.9";
+              }
+              {
+                name = "routers";
+                data = "10.0.0.1";
+              }
+            ];
+          }
+        ];
+      }];
     };
   };
 
