@@ -81,12 +81,19 @@ in
     enable = true;
     externalInterface = "enp1s0";
     internalIPs = [ "10.0.0.0/24" ];
-    forwardPorts = [
-      {
-        sourcePort = 2022;
-        destination = "${data.network.guests.nix-builder.ipv4}:22";
-      }
-    ];
+    forwardPorts = (
+      lib.flatten
+        (builtins.map
+          (iGuest: builtins.map
+            (
+              iPort: {
+                proto = iPort.proto;
+                sourcePort = iPort.src;
+                destination = "${iGuest.ipv4}:${builtins.toString iPort.dst}";
+              }
+            )
+            iGuest.portForwards)
+          data.network.natGuests));
   };
 
   services.openssh = {

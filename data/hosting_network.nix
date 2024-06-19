@@ -9,10 +9,11 @@ let
     ipv4 = ipv4;
     macAddress = macAddress;
   };
-  mkNat = macAddress: ipv4: {
+  mkNat = macAddress: ipv4: portForwards: {
     _type = "natGuest";
     ipv4 = ipv4;
     macAddress = macAddress;
+    portForwards = portForwards;
   };
 in
 rec {
@@ -28,8 +29,10 @@ rec {
     mail-srv = mkRouted "52:54:00:66:e2:38" "37.153.156.170";
     bene-server = mkRouted "52:54:00:13:f8:f9" "37.153.156.172";
     # nat guests
-    vpn-srv = mkNat "52:54:00:8e:97:05" "10.0.0.101";
-    nix-builder = mkNat "52:54:00:5e:35:24" "10.0.0.102";
+    vpn-srv = mkNat "52:54:00:8e:97:05" "10.0.0.101" [
+      { proto = "udp"; src = 51820; dst = 51820; }
+    ];
+    nix-builder = mkNat "52:54:00:5e:35:24" "10.0.0.102" [];
   };
 
   routedGuests = (
