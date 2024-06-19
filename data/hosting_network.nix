@@ -32,7 +32,6 @@ rec {
     vpn-srv = mkNat "52:54:00:8e:97:05" "10.0.0.101" [
       { proto = "udp"; src = 51820; dst = 51820; }
     ];
-    nix-builder = mkNat "52:54:00:5e:35:24" "10.0.0.102" [];
   };
 
   routedGuests = (
