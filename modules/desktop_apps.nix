@@ -2,6 +2,7 @@
   environment.systemPackages = with pkgs; [
     fractal
     telegram-desktop
+    signal-desktop
     nextcloud-client
     keepassxc
   ];
