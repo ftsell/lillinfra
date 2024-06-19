@@ -73,10 +73,20 @@ in
           };
         })
         data.network.routedGuests;
-      networkConfig = {
-        IPMasquerade = "ipv4";
-      };
     };
+  };
+
+  networking.nftables.enable = true;
+  networking.nat = {
+    enable = true;
+    externalInterface = "enp1s0";
+    internalIPs = [ "10.0.0.0/24" ];
+    forwardPorts = [
+      {
+        sourcePort = 2022;
+        destination = "${data.network.guests.nix-builder.ipv4}:22";
+      }
+    ];
   };
 
   services.openssh = {
