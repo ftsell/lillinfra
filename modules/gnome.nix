@@ -9,14 +9,14 @@
     desktopManager.gnome = {
       enable = true;
       extraGSettingsOverrides = ''
-                [org.gnome.desktop.input-sources]
-                sources=[('xkb', 'us'), ('xkb', 'de')]
+          [org.gnome.desktop.input-sources]
+          sources=[('xkb', 'us'), ('xkb', 'de')]
         	[org.gnome.shell.world-clocks]
-                locations=[<(uint32 2, <('Hamburg', 'EDDH', true, [(0.93607824966852793, 0.17453292519943295)], [(0.93462381444296339, 0.17453292519943295)])>)>]
+          locations=[<(uint32 2, <('Hamburg', 'EDDH', true, [(0.93607824966852793, 0.17453292519943295)], [(0.93462381444296339, 0.17453292519943295)])>)>]
         	[org.gnome.shell.weather]
         	locations=[<(uint32 2, <('Hamburg', 'EDDH', true, [(0.93607824966852793, 0.17453292519943295)], [(0.93462381444296339, 0.17453292519943295)])>)>]
-                [org.gnome.desktop.wm.preferences]
-                focus-mode='mouse'
+          [org.gnome.desktop.wm.preferences]
+          focus-mode='mouse'
       '';
     };
   };
@@ -46,6 +46,6 @@
   ]);
 
   services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
-  
+
   services.displayManager.enable = true;
 }
