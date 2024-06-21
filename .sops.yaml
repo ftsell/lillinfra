@@ -1,0 +1,17 @@
+keys: &keys
+  - &ftsell "age19h7xtfmt3py3ydgl8d8fgh8uakxqxjr74flrxev3pgmvvx94kvtq5d932d"
+  - &vpn-srv "age13jcav0647guw6pr0f74gkjc06x9j5ensk9ck27dlkkafddsv0u5qqvzn65"
+creation_rules:
+  - path_regex: "data/secrets/global.yml"
+    key_groups:
+      - age: *keys
+  - path_regex: "data/wg_vpn.yml"
+    key_groups:
+      - age: [ *ftsell ]
+  - path_regex: "data/secrets/vpn-srv.yml"
+    key_groups:
+      - age: [ *ftsell, *vpn-srv ]
+  - path_regex: "data/secrets/finnsLaptop.yml"
+    key_groups:
+      - age: [ *ftsell ]
+      

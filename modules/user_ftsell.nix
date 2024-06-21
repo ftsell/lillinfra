@@ -1,4 +1,6 @@
-{ modulesPath, config, lib, pkgs, home-manager, ... }: {
+{ modulesPath, config, lib, pkgs, home-manager, ... }: let 
+  data.hosting_network = import ../data/hosting_network.nix;
+in {
   programs.fish.enable = true;
 
   users.users.ftsell = {
@@ -168,6 +170,23 @@
         };
         "raspi5.home.private" = {
           user = "ftsell";
+        };
+        "hosting.srv.ftsell.de" = {
+          user = "ftsell";
+          hostname = "hosting.srv.ftsell.de";
+        };
+        "rt-hosting.srv.ftsell.de" = {
+          user = "ftsell";
+          hostname = "rt-hosting.srv.ftsell.de";
+        };
+        "mail.srv.ftsell.de" = {
+          user = "ftsell";
+          hostname = "mail.srv.ftsell.de";
+        };
+        "vpn-srv" = home-manager.lib.hm.dag.entryBefore [ "rt-hosting.srv.ftsell.de" ] {
+          user = "ftsell";
+          hostname = data.hosting_network.guests.vpn-srv.ipv4;
+          proxyJump = "rt-hosting.srv.ftsell.de";
         };
         # Uni
         "rzssh1.informatik.uni-hamburg.de" = {

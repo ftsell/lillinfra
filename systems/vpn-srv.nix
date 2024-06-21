@@ -1,7 +1,9 @@
 { modulesPath, config, lib, pkgs, ... }:
-let 
+let
   data.network = import ../data/hosting_network.nix;
-in {
+  data.wg_vpn = import ../data/wg_vpn.nix;
+in
+{
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
     ../modules/base_system.nix
@@ -31,6 +33,10 @@ in {
     editor = false;
   };
 
+  environment.systemPackages = with pkgs; [
+    wireguard-tools
+  ];
+
   # networking config
   networking.useDHCP = false;
   systemd.network = {
@@ -42,6 +48,34 @@ in {
       };
       DHCP = "yes";
     };
+    netdevs.wgVpn = {
+      netdevConfig = {
+        Kind = "wireguard";
+        Name = "wgVpn";
+      };
+      wireguardConfig = {
+        ListenPort = 51820;
+        PrivateKeyFile = "/run/secrets/wg_vpn/privkey";
+      };
+      wireguardPeers = (
+        builtins.map
+          (iPeer: {
+            wireguardPeerConfig = {
+              PublicKey = iPeer.pub;
+              AllowedIPs = iPeer.ip;
+              Endpoint = lib.mkIf (builtins.hasAttr "endpoint" iPeer) iPeer.endpoint;
+            };
+          })
+          (builtins.attrValues
+            (lib.filterAttrs (peerName: iPeer: peerName != "vpn-srv")
+              data.wg_vpn)));
+    };
+    networks.wgVpn = {
+      matchConfig = {
+        Name = "wgVpn";
+      };
+      address = data.wg_vpn.vpn-srv.ip;
+    };
   };
 
   services.openssh = {
@@ -49,6 +83,12 @@ in {
     settings = {
       PermitRootLogin = "no";
       PasswordAuthentication = false;
+    };
+  };
+
+  sops.secrets = {
+    "wg_vpn/privkey" = {
+      owner = "systemd-network";
     };
   };
 

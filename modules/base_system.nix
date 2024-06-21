@@ -50,16 +50,23 @@
   # software settings
   home-manager.useGlobalPkgs = lib.mkDefault true;
 
+  # derive sops key from ssh key if ssh is enabled
+  sops.age.sshKeyPaths = lib.mkIf config.services.openssh.enable [ "/etc/ssh/ssh_host_ed25519_key" ];
+
   # additional apps
   environment.systemPackages = with pkgs; [
     git
     helix
     tig
     htop
+    age
   ];
   environment.variables = {
     EDITOR = "hx";
     VISUAL = "hx";
   };
   environment.localBinInPath = true;
+
+  # configure host sepcific secrets
+  sops.defaultSopsFile = ../data/secrets + "/${config.networking.hostName}.yml";
 }

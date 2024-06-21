@@ -6,6 +6,7 @@ let
     modules = [
       inputs.disko.nixosModules.disko
       inputs.home-manager.nixosModules.home-manager
+      inputs.sops-nix.nixosModules.default
 
       ./${name}.nix
 
@@ -20,7 +21,7 @@ in
   rt-hosting = mkSystem "x86_64-unknown-linux-gnu" "rt-hosting.srv.ftsell.de";
   main-srv = mkSystem "x86_64-unknown-linux-gnu" "main.srv.ftsell.de";
   mail-srv = mkSystem "x86_64-unknown-linux-gnu" "mail.srv.ftsell.de";
-  vpn-srv = mkSystem "x86_64-unknown-linux-gnu" "vpn.srv.ftsell.de";
+  vpn-srv = mkSystem "x86_64-unknown-linux-gnu" "vpn-srv";
   finnsLaptop = mkSystem "x86_64-unknown-linux-gnu" "finnsLaptop";
   factorio-z9 = mkSystem "x86_64-unknown-linux-gnu" "factorio.z9.ccchh.net";
 }
