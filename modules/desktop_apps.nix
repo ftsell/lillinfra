@@ -5,6 +5,7 @@
     signal-desktop
     nextcloud-client
     keepassxc
+    wl-clipboard
   ];
 
   programs.firefox = {

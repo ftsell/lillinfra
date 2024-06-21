@@ -1,0 +1,4 @@
+theme = "base16_default_light"
+
+[editor]
+bufferline = "always"
