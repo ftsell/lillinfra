@@ -62,7 +62,7 @@ in
           (iPeer: {
             wireguardPeerConfig = {
               PublicKey = iPeer.pub;
-              AllowedIPs = iPeer.routedIps;
+              AllowedIPs = iPeer.ownIps;
                   Endpoint = lib.mkIf (builtins.hasAttr "endpoint" iPeer) iPeer.endpoint;
             };
           })
@@ -77,6 +77,8 @@ in
       address = data.wg_vpn.vpn-srv.ownIps;
     };
   };
+
+  networking.firewall.allowedUDPPorts = [ 51820 ];
 
   services.openssh = {
     enable = true;
