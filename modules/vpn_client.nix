@@ -11,7 +11,7 @@ in
         (iPeer: {
           publicKey = iPeer.pub;
           endpoint = iPeer.endpoint;
-          allowedIPs = iPeer.ip;
+          allowedIPs = iPeer.routedIps;
         })
         (builtins.attrValues
           (lib.filterAttrs

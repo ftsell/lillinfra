@@ -62,8 +62,8 @@ in
           (iPeer: {
             wireguardPeerConfig = {
               PublicKey = iPeer.pub;
-              AllowedIPs = iPeer.ip;
-              Endpoint = lib.mkIf (builtins.hasAttr "endpoint" iPeer) iPeer.endpoint;
+              AllowedIPs = iPeer.routedIps;
+                  Endpoint = lib.mkIf (builtins.hasAttr "endpoint" iPeer) iPeer.endpoint;
             };
           })
           (builtins.attrValues
@@ -74,7 +74,7 @@ in
       matchConfig = {
         Name = "wgVpn";
       };
-      address = data.wg_vpn.vpn-srv.ip;
+      address = data.wg_vpn.vpn-srv.ownIps;
     };
   };
 

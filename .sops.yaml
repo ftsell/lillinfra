@@ -4,9 +4,6 @@ keys: &keys
 creation_rules:
   - path_regex: "data/secrets/global.yml"
     key_groups:
-      - age: *keys
-  - path_regex: "data/wg_vpn.yml"
-    key_groups:
       - age: [ *ftsell ]
   - path_regex: "data/secrets/vpn-srv.yml"
     key_groups:
