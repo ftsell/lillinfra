@@ -70,6 +70,7 @@
 
   virtualisation.podman.enable = true;
   services.printing.enable = true;
+  services.earlyoom.enable = true;
 
   sops.age.keyFile = /home/ftsell/.config/sops/age/keys.txt;
 
