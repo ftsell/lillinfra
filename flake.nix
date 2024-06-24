@@ -35,11 +35,17 @@
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, ... }: {
+  outputs = inputs@{ self, nixpkgs, ... }: rec {
     nixosConfigurations = import ./systems {
       inherit self inputs nixpkgs;
     };
-    # installer = (nixpkgs.legacyPackages.${system}.nixos [ self.nixosModules.image-installer ]).config.system.build.isoImage;
+    packages = nixpkgs.lib.attrsets.genAttrs nixpkgs.lib.systems.flakeExposed (system: import ./packages {
+      inherit system inputs;
+      pkgs = nixpkgs.legacyPackages.${system};
+    });
+
+    # custom output shortcuts
     installer = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux" ] (system: (nixpkgs.legacyPackages.x86_64-linux.nixos [ ./installer-config.nix ]).isoImage);
+    wg_vpn = (nixpkgs.lib.filterAttrs (pkgName: _: (builtins.substring 0 14 "wg_vpn-config-") != "") packages.x86_64-linux);
   };
 }

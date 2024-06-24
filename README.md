@@ -3,6 +3,15 @@
 My personal infrastructure *configuration-as-code* repository.
 Its goal is to contain all necessary configuration for my different servers to allow easier setup.
 
+### How to show a WireGuard config
+
+Run the following command but substitue the `finnsLaptop` part for some other host:
+
+```shell
+set -l PKG (nix build --print-out-paths --no-link '.#packages.x86_64-linux.wg_vpn-config-finnsLaptop')
+$PKG/bin/show-wg-conf
+```
+
 ### How to generate an Installer ISO
 
 Run the following command.
