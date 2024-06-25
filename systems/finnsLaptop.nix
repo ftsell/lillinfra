@@ -5,7 +5,7 @@
     ../modules/gnome.nix
     ../modules/user_ftsell.nix
     ../modules/vscode.nix
-    ../modules/vpn_client.nix
+    #../modules/vpn_client.nix
   ];
 
   # boot config
@@ -66,11 +66,15 @@
     evince
     ranger
     sops
+    git-crypt
+    gnupg
   ];
+
 
   virtualisation.podman.enable = true;
   services.printing.enable = true;
   services.earlyoom.enable = true;
+  programs.gnupg.agent.enable = true;
 
   sops.age.keyFile = /home/ftsell/.config/sops/age/keys.txt;
 
