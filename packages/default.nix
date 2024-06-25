@@ -1,4 +1,4 @@
-{ inputs, pkgs, system }:
+args@{ inputs, pkgs, system }:
 let
   data.wg_vpn = import ../data/wg_vpn.nix;
 
@@ -60,7 +60,9 @@ let
     };
   });
 in
-pkgs.lib.mergeAttrs (pkgs.lib.attrsets.mapAttrs' mkVpnConfigFilePackage data.wg_vpn) {
+(pkgs.lib.attrsets.mapAttrs' mkVpnConfigFilePackage data.wg_vpn)
+  // import ./custom_python.nix args
+  // {
 
   # madara = pkgs.stdenv.mkDerivation rec {
   #   name = "madara";
