@@ -6,6 +6,7 @@
     nextcloud-client
     keepassxc
     wl-clipboard
+    thunderbird
   ];
 
   programs.firefox = {
