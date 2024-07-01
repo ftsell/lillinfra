@@ -1,6 +1,6 @@
 { inputs }:
 let
-  mkSystem = systemType: name: nixpkgs.lib.nixosSystem {
+  mkSystem = systemType: name: nixpkgs: nixpkgs.lib.nixosSystem {
     system = builtins.replaceStrings [ "-unknown-" "-gnu" ] [ "-" "" ] systemType;
     specialArgs = inputs;
     modules = [
@@ -17,11 +17,11 @@ let
   };
 in
 {
-  hosting = mkSystem "x86_64-unknown-linux-gnu" "hosting.srv.ftsell.de";
-  rt-hosting = mkSystem "x86_64-unknown-linux-gnu" "rt-hosting.srv.ftsell.de";
-  main-srv = mkSystem "x86_64-unknown-linux-gnu" "main.srv.ftsell.de";
-  mail-srv = mkSystem "x86_64-unknown-linux-gnu" "mail.srv.ftsell.de";
-  vpn-srv = mkSystem "x86_64-unknown-linux-gnu" "vpn-srv";
-  finnsLaptop = mkSystem "x86_64-unknown-linux-gnu" "finnsLaptop";
-  factorio-z9 = mkSystem "x86_64-unknown-linux-gnu" "factorio.z9.ccchh.net";
+  hosting = mkSystem "x86_64-unknown-linux-gnu" "hosting.srv.ftsell.de" inputs.nixpkgs-small;
+  rt-hosting = mkSystem "x86_64-unknown-linux-gnu" "rt-hosting.srv.ftsell.de" inputs.nixpkgs-small;
+  main-srv = mkSystem "x86_64-unknown-linux-gnu" "main.srv.ftsell.de" inputs.nixpkgs-small;
+  mail-srv = mkSystem "x86_64-unknown-linux-gnu" "mail.srv.ftsell.de" inputs.nixpkgs-small;
+  vpn-srv = mkSystem "x86_64-unknown-linux-gnu" "vpn-srv" inputs.nixpgs-small;
+  finnsLaptop = mkSystem "x86_64-unknown-linux-gnu" "finnsLaptop" inputs.nixpkgs;
+  factorio-z9 = mkSystem "x86_64-unknown-linux-gnu" "factorio.z9.ccchh.net" inputs.nixpkgs;
 }
