@@ -21,7 +21,7 @@ in
   rt-hosting = mkSystem "x86_64-unknown-linux-gnu" "rt-hosting.srv.ftsell.de" inputs.nixpkgs-small;
   main-srv = mkSystem "x86_64-unknown-linux-gnu" "main.srv.ftsell.de" inputs.nixpkgs-small;
   mail-srv = mkSystem "x86_64-unknown-linux-gnu" "mail.srv.ftsell.de" inputs.nixpkgs-small;
-  vpn-srv = mkSystem "x86_64-unknown-linux-gnu" "vpn-srv" inputs.nixpgs-small;
+  vpn-srv = mkSystem "x86_64-unknown-linux-gnu" "vpn-srv" inputs.nixpkgs-small;
   finnsLaptop = mkSystem "x86_64-unknown-linux-gnu" "finnsLaptop" inputs.nixpkgs;
   factorio-z9 = mkSystem "x86_64-unknown-linux-gnu" "factorio.z9.ccchh.net" inputs.nixpkgs;
 }
