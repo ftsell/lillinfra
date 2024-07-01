@@ -35,7 +35,7 @@
 
   outputs = inputs@{ self, nixpkgs, ... }: rec {
     nixosConfigurations = import ./systems {
-      inherit self inputs nixpkgs;
+      inherit inputs;
     };
     packages = nixpkgs.lib.attrsets.genAttrs nixpkgs.lib.systems.flakeExposed (system: import ./packages {
       inherit system inputs;

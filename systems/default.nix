@@ -1,4 +1,4 @@
-{ self, nixpkgs, inputs }:
+{ inputs }:
 let
   mkSystem = systemType: name: nixpkgs.lib.nixosSystem {
     system = builtins.replaceStrings [ "-unknown-" "-gnu" ] [ "-" "" ] systemType;
