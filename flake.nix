@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.05";
     nixpkgs-small.url = "github:nixos/nixpkgs?ref=nixos-24.05-small";
+    nixpkgs-release.url = "github:nixos/nixpkgs?ref=release-24.05";
 
     # support for special hardware quirks
     nixos-hardware.url = "github:NixOS/nixos-hardware";

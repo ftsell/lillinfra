@@ -64,11 +64,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1719796208,
-        "narHash": "sha256-8lsuMR3rnX4yUPPjz04opgb30Z47sCgZu4TIszWBW9A=",
+        "lastModified": 1719841141,
+        "narHash": "sha256-WOyohxFJJdfDvEB7N3eTcX44lNU2rZes1inHsyHL7mM=",
         "owner": "nix-community",
         "repo": "nixos-generators",
-        "rev": "f7a029d41e49ff0747888105e1ed4314dca8436f",
+        "rev": "140dcc2b9a0eb87ba5e9011076a1a7af19179ab1",
         "type": "github"
       },
       "original": {
@@ -104,6 +104,22 @@
       "original": {
         "owner": "nixos",
         "ref": "nixos-24.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs-release": {
+      "locked": {
+        "lastModified": 1719853654,
+        "narHash": "sha256-7+bYMkOy0ewQqdRUXT9rBlpNVE66AGMILJtd10rv0po=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "575a6b813672601f26a0adcbc0836b057bc8aeae",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "release-24.05",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -147,6 +163,7 @@
         "nixos-generators": "nixos-generators",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
+        "nixpkgs-release": "nixpkgs-release",
         "nixpkgs-small": "nixpkgs-small",
         "sops-nix": "sops-nix"
       }
