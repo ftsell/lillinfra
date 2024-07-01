@@ -1,11 +1,9 @@
 {
   description = "finnfrastructure - ftsell's infrastructure configuration";
 
-  nixConfig.extra-substituters = [ "https://nix-community.cachix.org" ];
-  nixConfig.extra-trusted-public-keys = [ "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" ];
-
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.05";
+    nixpkgs-small.url = "github:nixos/nixpkgs?ref=nixos-24.05-small";
 
     # support for special hardware quirks
     nixos-hardware.url = "github:NixOS/nixos-hardware";
