@@ -32,6 +32,13 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # lix package manager
+    # https://lix.systems
+    lix = {
+      url = "git+https://git.lix.systems/lix-project/nixos-module.git?ref=release-2.90";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{ self, nixpkgs, ... }: rec {
