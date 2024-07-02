@@ -24,6 +24,7 @@ in {
     home.file = {
       ".ssh/config".source = ../dotfiles/ftsell/ssh/config;
     };
+    programs.direnv = import ../dotfiles/ftsell/direnv;
     programs.ssh.enable = true;
     programs.git = import ../dotfiles/ftsell/git.nix;
     programs.fish = import ../dotfiles/ftsell/fish.nix;
