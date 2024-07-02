@@ -18,6 +18,8 @@
         "workbench.iconTheme" = "vscode-icons";
         "workbench.tree.indent" = 16;
         "workbench.startupEditor" = "none";
+        "extensions.autoUpdate" = false;
+        "update.mode" = "none";
         "explorer.confirmDragAndDrop" = false;
         "redhat.telemetry.enabled" = false;
         "editor.minimap.enabled" = false;
