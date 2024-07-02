@@ -7,6 +7,9 @@
         vscode-extensions.alefragnani.project-manager
         vscode-extensions.jnoortheen.nix-ide
         vscode-extensions.vscode-icons-team.vscode-icons
+        vscode-extensions.ms-python.python
+        vscode-extensions.mkhl.direnv
+        vscode-extensions.ms-azuretools.vscode-docker
       ];
       userSettings = {
         "files.autoSave" = "afterDelay";
@@ -14,6 +17,7 @@
         "workbench.colorTheme" = "Default Light+";
         "workbench.iconTheme" = "vscode-icons";
         "workbench.tree.indent" = 16;
+        "workbench.startupEditor" = "none";
         "explorer.confirmDragAndDrop" = false;
         "redhat.telemetry.enabled" = false;
         "editor.minimap.enabled" = false;
