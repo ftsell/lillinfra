@@ -52,6 +52,14 @@ in {
     };
   };
 
+  # k8s config
+  services.k3s = {
+    enable = true;
+    role = "server";
+    clusterInit = true;
+    extraFlags = "--disable-helm-controller --disable traefik --flannel-backend wireguard-native";
+  };
+
   # DO NOT CHANGE
   # this defines the first version of NixOS that was installed on the machine so that programs with non-migratable data files are kept compatible
   home-manager.users.ftsell.home.stateVersion = "24.05";

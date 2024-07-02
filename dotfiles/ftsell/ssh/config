@@ -19,6 +19,10 @@ Host vpn-srv
   HostName 10.0.0.101
   ProxyJump rt-hosting.srv.ftsell.de
 
+Host main-srv-new
+  User ftsell
+  HostName 37.153.156.169
+
 Host proxy.home.private
   User ftsell
 
