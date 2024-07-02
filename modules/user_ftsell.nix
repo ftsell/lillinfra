@@ -1,11 +1,14 @@
-{ modulesPath, config, lib, pkgs, home-manager, ... }: let 
+{ modulesPath, config, lib, pkgs, home-manager, ... }:
+let
   data.hosting_network = import ../data/hosting_network.nix;
-in {
+in
+{
   programs.fish.enable = true;
 
   users.users.ftsell = {
     createHome = true;
-    extraGroups = [ "wheel" "networkmanager" ];
+    extraGroups = [ "wheel" "networkmanager" ]
+      ++ (if config.virtualisation.podman.dockerSocket.enable then [ "podman" ] else []);
     home = "/home/ftsell";
     shell = pkgs.fish;
     openssh.authorizedKeys.keys = [

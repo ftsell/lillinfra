@@ -71,7 +71,12 @@
   ];
 
 
-  virtualisation.podman.enable = true;
+  virtualisation.podman = {
+    enable = true;
+    dockerSocket.enable = true;
+    autoPrune.enable = true;
+    dockerCompat = true;
+  };
   services.printing.enable = true;
   services.earlyoom.enable = true;
   programs.gnupg.agent.enable = true;
