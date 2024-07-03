@@ -10,6 +10,9 @@
         vscode-extensions.ms-python.python
         vscode-extensions.mkhl.direnv
         vscode-extensions.ms-azuretools.vscode-docker
+        vscode-extensions.vadimcn.vscode-lldb
+        vscode-extensions.elixir-lsp.vscode-elixir-ls
+        vscode-extensions.jnoortheen.nix-ide
       ];
       userSettings = {
         "files.autoSave" = "afterDelay";
