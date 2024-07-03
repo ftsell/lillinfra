@@ -104,6 +104,8 @@ in
     };
   };
 
+  services.qemuGuest.enable = true;
+
   services.kea.dhcp4 = {
     enable = true;
     settings = {

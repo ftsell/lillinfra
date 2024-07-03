@@ -51,6 +51,8 @@ in {
       PasswordAuthentication = false;
     };
   };
+  
+  services.qemuGuest.enable = true;
 
   # k8s config
   services.k3s = {

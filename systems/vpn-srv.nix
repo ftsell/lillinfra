@@ -88,6 +88,8 @@ in
     };
   };
 
+  services.qemuGuest.enable = true;
+
   sops.secrets = {
     "wg_vpn/privkey" = {
       owner = "systemd-network";

@@ -67,6 +67,8 @@ in
     };
   };
 
+  services.qemuGuest.enable = true;
+
   systemd.network = {
     enable = true;
     networks.ethMyRoot = {
