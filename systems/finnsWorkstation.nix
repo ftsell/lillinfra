@@ -2,9 +2,9 @@
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ../modules/base_system.nix
-    #../modules/gnome.nix
+    ../modules/gnome.nix
     ../modules/user_ftsell.nix
-    #../modules/vscode.nix
+    ../modules/vscode.nix
     #../modules/vpn_client.nix
   ];
 
@@ -30,46 +30,47 @@
   }];
   hardware.cpu.intel.updateMicrocode = config.hardware.enableRedistributableFirmware;
   nixpkgs.hostPlatform = "x86_64-linux";
-  boot.loader.systemd-boot = {
+  boot.loader.grub = {
     enable = true;
+    efiSupport = true;
     configurationLimit = 10;
-    editor = false;
+    useOSProber = true;
+    device = "nodev";
   };
   boot.loader.efi.canTouchEfiVariables = true;
   boot.supportedFilesystems = [ "bcachefs" ];
 
   # hardware config
-  # services.xserver.videoDrivers = [ "nvidia" ];
-  # hardware.opengl = {
-  #   enable = true;
-  #   driSupport = true;
-  # };
-  # hardware.nvidia = {
-  #   modesetting.enable = true;
-  #   open = false;
-  #   nvidiaSettings = false;
-  #   prime = {
-  #     intelBusId = "PCI:0:2:0";
-  #     nvidiaBusId = "PCI:1:0:0";
-  #     offload = {
-  #       enable = true;
-  #       enableOffloadCmd = true;
-  #     };
-  #   };
-  # };
+  services.xserver.videoDrivers = [ "nvidia" ];
+  hardware.opengl = {
+    enable = true;
+    driSupport = true;
+  };
+  hardware.nvidia = {
+    modesetting.enable = true;
+    open = false;
+    nvidiaSettings = false;
+  };
 
   # additional packages
   environment.systemPackages = with pkgs; [
     nixpkgs-fmt
     virt-manager
-    # libreoffice-fresh
-    # evince
+    libreoffice-fresh
+    evince
     ranger
     sops
     git-crypt
     gnupg
   ];
 
+  services.openssh = {
+    enable = true;
+    settings = {
+      PermitRootLogin = "no";
+      PasswordAuthentication = false;
+    };
+  };
 
   virtualisation.podman = {
     enable = true;
