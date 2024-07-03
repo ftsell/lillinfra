@@ -46,3 +46,9 @@ nix build --print-out-paths '.#installer.x86_64-linux'
    ```
 5. Reboot the system
 
+### How to get the public age key of a host
+
+```shell
+nix-shell -p ssh-to-age --run 'ssh-keyscan example.com | ssh-to-age'
+```
+

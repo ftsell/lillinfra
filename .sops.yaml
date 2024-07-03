@@ -1,10 +1,15 @@
 keys: &keys
   - &ftsell "age19h7xtfmt3py3ydgl8d8fgh8uakxqxjr74flrxev3pgmvvx94kvtq5d932d"
   - &vpn-srv "age13jcav0647guw6pr0f74gkjc06x9j5ensk9ck27dlkkafddsv0u5qqvzn65"
+  - &main-srv "age16v8l42yfmdkn6j3v40ggx3axqwxw3euu4ydzlm0erl0zgjdp9yxstglejq"
+  - &mail-srv "age1j6u4zps7zwul7dh308a5m702mq2p28xvwhuj326x09yqz46q2q9qclhlc0"
 creation_rules:
   - path_regex: "data/secrets/vpn-srv.yml"
     key_groups:
       - age: [ *ftsell, *vpn-srv ]
+  - path_regex: "data/secrets/mail.yml"
+    key_groups:
+      - age: [ *ftsell, *mail-srv ]
   - path_regex: "data/secrets/.+.yml"
     key_groups:
       - age: [ *ftsell ]

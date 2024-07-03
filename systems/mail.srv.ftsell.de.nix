@@ -52,6 +52,24 @@ in {
     };
   };
 
+  # k8s config
+  services.k3s = {
+    enable = true;
+    role = "agent";
+    serverAddr = "https://${data.network.guests.main-srv.ipv4}:6443";
+    extraFlags = "--node-taint ip-reputation=mailserver:NoExecute";
+    tokenFile = "/run/secrets/k3s/token";
+  };
+  networking.firewall = {
+    # https://docs.k3s.io/installation/requirements#networking
+    allowedTCPPorts = [ 6443 10250 ];
+    allowedUDPPorts = [ 51820 51821 ];
+  };
+
+  sops.secrets = {
+    "k3s/token" = {};
+  };
+
   # DO NOT CHANGE
   # this defines the first version of NixOS that was installed on the machine so that programs with non-migratable data files are kept compatible
   home-manager.users.ftsell.home.stateVersion = "24.05";
