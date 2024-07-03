@@ -81,6 +81,7 @@
   services.printing.enable = true;
   services.earlyoom.enable = true;
   programs.gnupg.agent.enable = true;
+  services.resolved.enable = true;
 
   # sops.age.keyFile = /home/ftsell/.config/sops/age/keys.txt;
 
