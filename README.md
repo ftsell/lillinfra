@@ -18,7 +18,7 @@ Run the following command.
 The resulting ISO file is then located in the printed path + `/iso`.
 
 ```shell
-nix build --print-out-paths '.#installer.x86_64-linux'
+nix build --print-out-paths --no-link '.#installer.x86_64-linux'
 ```
 
 ### How to install a system
