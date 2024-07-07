@@ -1,6 +1,7 @@
 { modulesPath, config, lib, pkgs, ... }: {
   environment.systemPackages = with pkgs; [
     fractal
+    element-desktop
     telegram-desktop
     signal-desktop
     nextcloud-client
