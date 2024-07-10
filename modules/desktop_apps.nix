@@ -8,6 +8,7 @@
     keepassxc
     wl-clipboard
     thunderbird
+    spotify
   ];
 
   programs.firefox = {
