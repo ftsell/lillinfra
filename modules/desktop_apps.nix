@@ -9,6 +9,7 @@
     wl-clipboard
     thunderbird
     spotify
+    drawio
   ];
 
   programs.firefox = {
