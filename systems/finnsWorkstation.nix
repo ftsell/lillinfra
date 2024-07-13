@@ -1,6 +1,7 @@
 { modulesPath, config, lib, pkgs, home-manager, ... }: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
+    ../modules/sane_extra_config.nix
     ../modules/base_system.nix
     ../modules/gnome.nix
     ../modules/user_ftsell.nix
@@ -82,7 +83,13 @@
   services.earlyoom.enable = true;
   programs.gnupg.agent.enable = true;
   services.resolved.enable = true;
-
+  hardware.sane = {
+    enable = true;
+    extraConfig."epson2" = ''
+      net EPSON79DA90.home.private
+    '';
+  };
+  
   # sops.age.keyFile = /home/ftsell/.config/sops/age/keys.txt;
 
   # DO NOT CHANGE
