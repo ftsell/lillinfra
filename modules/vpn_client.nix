@@ -1,22 +1,26 @@
 { config, lib, ... }:
 let
   data.wg_vpn = import ../data/wg_vpn.nix;
+
+  vpn_servers = (builtins.attrValues
+    (lib.filterAttrs (peerName: iPeer: peerName != config.networking.hostName && iPeer.endpoint != null)
+      data.wg_vpn.peers));
 in
 {
   networking.wg-quick.interfaces.wgVpn = {
     privateKeyFile = "/run/secrets/wg_vpn/privkey";
-    address = data.wg_vpn.${config.networking.hostName}.ip;
+    address = [
+      data.wg_vpn.peers.${config.networking.hostName}.ownIp4
+      data.wg_vpn.peers.${config.networking.hostName}.ownIp6
+    ];
     peers = (
       builtins.map
         (iPeer: {
           publicKey = iPeer.pub;
           endpoint = iPeer.endpoint;
-          allowedIPs = iPeer.routedIps;
+          allowedIPs = [ iPeer.ownIp4 iPeer.ownIp6 ] ++ iPeer.routedIp4 ++ iPeer.routedIp6;
         })
-        (builtins.attrValues
-          (lib.filterAttrs
-            (peerName: iPeer: peerName != config.networking.hostName && (builtins.hasAttr "endpoint" iPeer))
-            data.wg_vpn)));
+        vpn_servers);
   };
 
   sops.secrets = {

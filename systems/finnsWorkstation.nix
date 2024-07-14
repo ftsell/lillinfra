@@ -6,7 +6,7 @@
     ../modules/gnome.nix
     ../modules/user_ftsell.nix
     ../modules/vscode.nix
-    #../modules/vpn_client.nix
+    ../modules/vpn_client.nix
   ];
 
   # boot config
@@ -90,7 +90,7 @@
     '';
   };
   
-  # sops.age.keyFile = /home/ftsell/.config/sops/age/keys.txt;
+  sops.age.keyFile = /home/ftsell/.config/sops/age/keys.txt;
 
   # DO NOT CHANGE
   # this defines the first version of NixOS that was installed on the machine so that programs with non-migratable data files are kept compatible

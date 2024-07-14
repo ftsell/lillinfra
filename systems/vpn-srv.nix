@@ -2,6 +2,10 @@
 let
   data.network = import ../data/hosting_network.nix;
   data.wg_vpn = import ../data/wg_vpn.nix;
+
+  vpn_clients = (builtins.attrValues
+    (lib.filterAttrs (peerName: iPeer: peerName != config.networking.hostName)
+      data.wg_vpn.peers));
 in
 {
   imports = [
@@ -33,6 +37,12 @@ in
     editor = false;
   };
 
+  # enable port-forwarding so that wireguard peers can communicate with each other
+  boot.kernel.sysctl = {
+    "net.ipv4.ip_forward" = "1";
+    "net.ipv6.conf.all.forwarding" = "1";
+  };
+
   environment.systemPackages = with pkgs; [
     wireguard-tools
   ];
@@ -48,6 +58,7 @@ in
       };
       DHCP = "yes";
     };
+
     netdevs.wgVpn = {
       netdevConfig = {
         Kind = "wireguard";
@@ -62,19 +73,44 @@ in
           (iPeer: {
             wireguardPeerConfig = {
               PublicKey = iPeer.pub;
-              AllowedIPs = iPeer.ownIps;
-                  Endpoint = lib.mkIf (builtins.hasAttr "endpoint" iPeer) iPeer.endpoint;
+              AllowedIPs = [ iPeer.ownIp4 iPeer.ownIp6 ] ++ iPeer.routedIp4 ++ iPeer.routedIp6;
+              Endpoint = lib.mkIf (iPeer.endpoint != null) iPeer.endpoint;
             };
           })
-          (builtins.attrValues
-            (lib.filterAttrs (peerName: iPeer: peerName != "vpn-srv")
-              data.wg_vpn)));
+          vpn_clients);
     };
     networks.wgVpn = {
       matchConfig = {
         Name = "wgVpn";
       };
-      address = data.wg_vpn.vpn-srv.ownIps;
+      address = [
+        data.wg_vpn.peers.${config.networking.hostName}.ownIp4
+        data.wg_vpn.peers.${config.networking.hostName}.ownIp6
+      ];
+      routes = (
+        lib.flatten (
+          builtins.map
+            (iPeer:
+              [
+                # ip4 route
+                # TODO: Generate routes for the routedIp4 and routedIp6 attrs too
+                {
+                  routeConfig = {
+                    Destination = iPeer.ownIp4;
+                    Source = data.wg_vpn.peers.${config.networking.hostName}.ownIp4;
+                  };
+                }
+                # ip6 route
+                {
+                  routeConfig = {
+                    Destination = iPeer.ownIp6;
+                    Source = data.wg_vpn.peers.${config.networking.hostName}.ownIp6;
+                  };
+                }
+              ]
+            )
+            vpn_clients
+        ));
     };
   };
 
