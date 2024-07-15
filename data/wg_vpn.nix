@@ -27,5 +27,6 @@ in
     finnsPhone = mkClient "102" false "PHN5Srlsv3x7+ehWF4SPz0eezcYlm7c0pIU5jXYuYG4=";
     home-proxy = mkServer "home.ftsell.de:51820" "103" [ ] [ ] "GTWotNqG3way+5NacVVs9bDwbLXplo/afSwZzU2XzkU=";
     finnsWorkstation = mkClient "104" false "WOrk7yTwmWilfWrOhF2EpmMvK/fC8L3IfGaOnZQnRyA=";
+    nas = mkClient "105" true "NASuIV3T8lYoE2VTnuu+GPqq8Pzh/NHTfL06puPZDTE=";
   };
 }
