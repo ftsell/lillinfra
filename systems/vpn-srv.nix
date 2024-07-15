@@ -75,6 +75,7 @@ in
               PublicKey = iPeer.pub;
               AllowedIPs = [ iPeer.ownIp4 iPeer.ownIp6 ] ++ iPeer.routedIp4 ++ iPeer.routedIp6;
               Endpoint = lib.mkIf (iPeer.endpoint != null) iPeer.endpoint;
+              PersistentKeepalive = lib.mkIf iPeer.keepalive 25;
             };
           })
           vpn_clients);

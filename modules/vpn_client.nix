@@ -19,6 +19,7 @@ in
           publicKey = iPeer.pub;
           endpoint = iPeer.endpoint;
           allowedIPs = [ iPeer.ownIp4 iPeer.ownIp6 ] ++ iPeer.routedIp4 ++ iPeer.routedIp6;
+          persistentKeepalive = (lib.mkIf data.wg_vpn.peers.${config.networking.hostName}.keepalive 25);
         })
         vpn_servers);
   };
