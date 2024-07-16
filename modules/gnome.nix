@@ -6,18 +6,31 @@
   services.xserver = {
     enable = true;
     displayManager.gdm.enable = true;
-    desktopManager.gnome = {
-      enable = true;
-      extraGSettingsOverrides = ''
-          [org.gnome.desktop.input-sources]
-          sources=[('xkb', 'us'), ('xkb', 'de')]
-        	[org.gnome.shell.world-clocks]
-          locations=[<(uint32 2, <('Hamburg', 'EDDH', true, [(0.93607824966852793, 0.17453292519943295)], [(0.93462381444296339, 0.17453292519943295)])>)>]
-        	[org.gnome.shell.weather]
-        	locations=[<(uint32 2, <('Hamburg', 'EDDH', true, [(0.93607824966852793, 0.17453292519943295)], [(0.93462381444296339, 0.17453292519943295)])>)>]
-          [org.gnome.desktop.wm.preferences]
-          focus-mode='mouse'
-      '';
+    desktopManager.gnome.enable = true;
+  };
+
+  home-manager.users.ftsell.dconf = with lib.gvariant; {
+    enable = true;
+    settings = {
+      "org/gnome/desktop/interface" = {
+        enable-hot-corners = true;
+        show-battery-percentage = true;
+      };
+      "org/gnome/desktop/media-handling" = {
+        automount = false;
+        automount-open = false;
+      };
+      "org/gnome/desktop/input-sources" = {
+        sources = [ (mkTuple [ "xkb" "de" ]) (mkTuple [ "xkb" "de+neo" ]) ];
+      };
+      "org/gnome/mutter" = {
+        edge-tiling = true;
+        dynamic-workspaces = true;
+      };
+      "org/gnome/desktop/wm/preferences" = {
+        button-layout = "appmenu:minimize,close";
+        focus-mode = "mouse";
+      };
     };
   };
 
