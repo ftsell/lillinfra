@@ -34,6 +34,7 @@ Host server.home.private
 
 Host nas.vpn.private
   User ftsell
+  HostName 10.20.30.105
 
 
 ####
