@@ -51,5 +51,6 @@
     pipenv
     poetry
     uv
+    sshfs
   ];
 }
