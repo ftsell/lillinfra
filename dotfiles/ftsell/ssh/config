@@ -36,6 +36,10 @@ Host nas.vpn.private
   User ftsell
   HostName 10.20.30.105
 
+Host home.vpn.private
+  User ftsell
+  HostName 10.20.30.103
+
 
 ####
 # Uni
