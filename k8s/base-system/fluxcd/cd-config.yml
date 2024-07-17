@@ -35,3 +35,16 @@ spec:
   sourceRef:
     kind: GitRepository
     name: finnfrastructure
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: ingress-controller
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  path: ./k8s/base-system/ingress-controller
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: finnfrastructure
