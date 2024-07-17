@@ -1,4 +1,0 @@
-expected_dist: debian
-expected_dist_version: 12
-
-icinga_node_fqdn: vpn.srv.ftsell.de

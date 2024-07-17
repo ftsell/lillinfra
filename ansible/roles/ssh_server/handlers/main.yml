@@ -1,6 +1,0 @@
-- tags: [ openssh, sshd, ssh_server ]
-  name: reload ssh server
-  become: true
-  systemd:
-    name: sshd.service
-    state: reloaded

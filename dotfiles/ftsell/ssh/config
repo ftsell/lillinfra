@@ -1,0 +1,126 @@
+####
+# Private Hosts
+#
+
+Host hosting.srv.ftsell.de
+  User ftsell
+  HostName hosting.srv.ftsell.de
+
+Host mail.srv.ftsell.de
+  User ftsell
+  HostName mail.srv.ftsell.de
+
+Host rt-hosting.srv.ftsell.de
+  User ftsell
+  HostName rt-hosting.srv.ftsell.de
+
+Host vpn-srv
+  User ftsell
+  HostName 10.0.0.101
+  ProxyJump rt-hosting.srv.ftsell.de
+
+Host main-srv-new
+  User ftsell
+  HostName 37.153.156.169
+
+Host proxy.home.private
+  User ftsell
+
+Host raspi5.home.private
+  User ftsell
+
+Host server.home.private
+  User ftsell
+
+Host nas.vpn.private
+  User ftsell
+  HostName 10.20.30.105
+
+Host home.vpn.private
+  User ftsell
+  HostName 10.20.30.103
+
+
+####
+# Uni
+#
+
+Host rzssh1.informatik.uni-hamburg.de
+  User 7sell
+
+Host rzssh2.informatik.uni-hamburg.de
+  User 7sell
+
+Host bits
+  User bits
+  HostName www2.informatik.uni-hamburg.de
+  ProxyJump bits@rzssh1.informatik.uni-hamburg.de
+
+Host fs5.informatik.uni-hamburg.de
+  User finn
+  ProxyJump fs4.informatik.uni-hamburg.de
+
+Host fs4.informatik.uni-hamburg.de
+  User finn
+
+Host fs6.informatik.uni-hamburg.de
+  User finn
+  ProxyJump rzssh1.informatik.uni-hamburg.de
+
+Host fs7.informatik.uni-hamburg.de
+  User finn
+  ProxyJump rzssh1.informatik.uni-hamburg.de
+
+Host monitoring.mafiasi.de
+  User finn
+
+Host netsec-teaching
+  User teaching
+  HostName 195.37.209.19
+
+
+
+####
+# Viva con Agua
+#
+
+Host vca-backend
+  User ftsell
+  HostName backend.srv.vivaconagua.org
+
+Host vca-bi
+  User fsell
+  HostName bi.srv.vivaconagua.org
+
+Host vca-cluster1
+  User ftsell
+  HostName cluster1.srv.vivaconagua.org
+
+Host vca-live
+  User ftsell
+  HostName live.srv.vivaconagua.org
+
+Host vca-monitoring
+  User ftsell
+  HostName monitoring.srv.vivaconagua.org
+
+Host vca-pool
+  User ftsell
+  HostName pool.srv.vivaconagua.org
+
+Host vca-prod
+  User ftsell
+  HostName production.srv.vivaconagua.org
+
+# Global Override Settings
+Host *
+  ForwardAgent no
+  AddKeysToAgent no
+  Compression no
+  ServerAliveInterval 0
+  ServerAliveCountMax 3
+  HashKnownHosts no
+  UserKnownHostsFile ~/.ssh/known_hosts
+  ControlMaster no
+  ControlPath ~/.ssh/master-%r@%n:%p
+  ControlPersist no

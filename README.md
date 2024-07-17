@@ -3,14 +3,52 @@
 My personal infrastructure *configuration-as-code* repository.
 Its goal is to contain all necessary configuration for my different servers to allow easier setup.
 
-## Repo Structure
+### How to show a WireGuard config
 
-1. [terraform](./terraform) is the initial starting point.
-   It provisions servers from Hetzner, configures cloud-init and cloud firewalls appropriately.
+Run the following command but substitue the `finnsLaptop` part for some other host:
 
-   Additionally, there is also a storage box involved which is not provisioned via Terraform because there is no 
-   appropriate terraform provider.
-2. [ansible](./ansible) takes over after terraform and configures the bare servers how they should operate.
-   This includes setting up a Kubernetes cluster which is then used to run the actual application workloads.
-3. [k8s](./k8s) marks the final configuration step since it contains all the application workloads that are supposed to
-   be run on the system.
+```shell
+set -l PKG (nix build --print-out-paths --no-link '.#packages.x86_64-linux.wg_vpn-config-finnsLaptop')
+$PKG/bin/show-wg-conf
+```
+
+### How to generate an Installer ISO
+
+Run the following command.
+The resulting ISO file is then located in the printed path + `/iso`.
+
+```shell
+nix build --print-out-paths --no-link '.#installer.x86_64-linux'
+```
+
+### How to install a system
+
+2. In the installer, create and mount filesystems.
+3. Enter filesystem config into this repository for that server and commit changes.
+   
+   ```nix
+    fileSystems = {
+        "/boot" = {
+            device = "/dev/disk/by-uuid/…";
+            fsType = "vfat";
+            options = [ "fmask=0077" "dmask=0077" ];
+        };
+        "/" = {
+            device = "/dev/disk/by-uuid/…";
+            fsType = "bcachefs";
+        };
+    };
+   ```
+4. Run nixos-install like this:
+
+   ```shell
+   sudo nixos-install --no-channel-copy --no-root-passwd --root /mnt --flake 'github:ftsell/finnfrastructure?ref=nix-config#…'
+   ```
+5. Reboot the system
+
+### How to get the public age key of a host
+
+```shell
+nix-shell -p ssh-to-age --run 'ssh-keyscan example.com | ssh-to-age'
+```
+

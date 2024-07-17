@@ -1,6 +1,0 @@
-all:
-  children:
-    extern:
-      hosts:
-        sell-nas:
-          ansible_host: sell-nas.intern

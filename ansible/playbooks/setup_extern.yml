@@ -1,5 +1,0 @@
-# This playbook can only be executed under certain circumstances because it may require direct network access
-- hosts: extern
-  roles:
-    - vpn_client
-    - icinga_node

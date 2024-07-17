@@ -1,3 +1,0 @@
-- tags: [ user_accounts, users, accounts ]
-  block:
-    - import_tasks: setup_ftsell.yml
