@@ -8,5 +8,7 @@
     "gl" = "git pull";
     "gp" = "git push";
     "gc" = "git commit";
+    "kubef" = "kubectl --context=ftsell-de";
+    "kubem" = "kubectl --context=mafiasi";
   };
 }

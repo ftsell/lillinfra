@@ -52,5 +52,6 @@
     poetry
     uv
     sshfs
+    kubectl
   ];
 }

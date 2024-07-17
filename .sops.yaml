@@ -13,3 +13,6 @@ creation_rules:
   - path_regex: "data/secrets/.+.yml"
     key_groups:
       - age: [ *ftsell ]
+  - path_regex: "dotfiles/.+\\.secret\\..+"
+    key_groups:
+      - age: [ *ftsell ]
