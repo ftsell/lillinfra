@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: actual-budget
+  labels: &labels
+    app.kubernetes.io/name: actual-budget
+    app.kubernetes.io/component: webserver
+spec:
+  selector:
+    matchLabels: *labels
+  template:
+    metadata:
+      labels: *labels
+    spec:
+
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: actual-data
+
+      containers:
+        - name: actual-budget
+          image: ghcr.io/actualbudget/actual-server
+          envFrom:
+            - configMapRef:
+                name: actual-config
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          ports:
+            - name: http
+              containerPort: 5006

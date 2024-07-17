@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: actual-budget
+  labels: &labels
+    app.kubernetes.io/name: actual-budget
+    app.kubernetes.io/component: webserver
+spec:
+  selector: *labels
+  ports:
+    - port: 5006
+      name: http
+      targetPort: http
