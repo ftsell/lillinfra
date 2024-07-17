@@ -44,6 +44,16 @@
       };
     };
 
+  sops.secrets = {
+    "ftsell/kubeconfig.yml" = {
+      owner = "ftsell";
+      group = "nogroup";
+      sopsFile = ../dotfiles/ftsell/kubectl/config.secret.yml;
+      path = "/home/ftsell/.kube/config";
+      format = "binary";
+    };
+  };
+
   environment.systemPackages = with pkgs; [
     nodejs
     nodePackages.pnpm
