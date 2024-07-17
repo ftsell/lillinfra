@@ -63,6 +63,8 @@
     sops
     git-crypt
     gnupg
+    mumble
+    teams-for-linux
   ];
 
   services.openssh = {
