@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1m0s
-  path: ./k8s/base-system/kubernetes-dashboard
+  path: ./k8s/apps/kubernetes-dashboard
   prune: true
   sourceRef:
     kind: GitRepository
