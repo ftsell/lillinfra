@@ -43,4 +43,13 @@
         };
       };
     };
+
+  environment.systemPackages = with pkgs; [
+    nodejs
+    nodePackages.pnpm
+    python3
+    pipenv
+    poetry
+    uv
+  ];
 }

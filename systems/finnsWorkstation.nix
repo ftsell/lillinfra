@@ -5,7 +5,7 @@
     ../modules/base_system.nix
     ../modules/gnome.nix
     ../modules/user_ftsell.nix
-    ../modules/vscode.nix
+    ../modules/dev_env.nix
     ../modules/vpn_client.nix
   ];
 
