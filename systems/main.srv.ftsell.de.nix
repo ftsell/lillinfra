@@ -1,7 +1,8 @@
 { modulesPath, config, lib, pkgs, ... }:
-let 
+let
   data.network = import ../data/hosting_network.nix;
-in {
+in
+{
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
     ../modules/base_system.nix
@@ -51,8 +52,20 @@ in {
       PasswordAuthentication = false;
     };
   };
-  
+
   services.qemuGuest.enable = true;
+
+  # database config
+  services.postgresql = {
+    enable = true;
+    enableTCPIP = true;
+    ensureDatabases = [ "ftsell" ];
+    ensureUsers = [{
+      name = "ftsell";
+      ensureDBOwnership = true;
+      ensureClauses.superuser = true;
+    }];
+  };
 
   # k8s config
   services.k3s = {
