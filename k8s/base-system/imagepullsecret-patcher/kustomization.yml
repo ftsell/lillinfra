@@ -1,0 +1,41 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: imagepullsecret-patcher
+commonLabels:
+  app.kubernetes.io/part-of: imagepullsecret-patcher
+
+resources:
+  - manifests/namespace.yml
+  - manifests/rbac.yml
+  - manifests/github.deployment.yml
+  - manifests/dockerhub.deployment.yml
+  - manifests/own-gitea.deployment.yml
+
+images:
+  - name: quay.io/titansoft/imagepullsecret-patcher
+    newTag: "v0.14"
+
+configMapGenerator:
+  - name: imagepullsecret-patcher
+    envs:
+      - config.env
+
+secretGenerator:
+  - name: github-packages-creds
+    type: kubernetes.io/dockerconfigjson
+    options:
+      disableNameSuffixHash: true
+    files:
+      - ".dockerconfigjson=dockerconfig-github.secret.json"
+  - name: dockerhub-creds
+    type: kubernetes.io/dockerconfigjson
+    options:
+      disableNameSuffixHash: true
+    files:
+      - ".dockerconfigjson=dockerconfig-dockerhub.secret.json"
+  - name: own-gitea-creds
+    type: kubernetes.io/dockerconfigjson
+    options:
+      disableNameSuffixHash: true
+    files:
+      - ".dockerconfigjson=dockerconfig-own-gitea.secret.json"

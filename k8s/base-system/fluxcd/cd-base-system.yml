@@ -52,3 +52,20 @@ spec:
   sourceRef:
     kind: GitRepository
     name: finnfrastructure
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: imagepullsecret-patcher
+  namespace: flux-system
+spec:
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-keys
+  interval: 1m0s
+  path: ./k8s/base-system/imagepullsecret-patcher
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: finnfrastructure
