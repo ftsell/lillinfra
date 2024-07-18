@@ -1,0 +1,33 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: homepage
+commonLabels:
+  app.kubernetes.io/part-of: ftsell-de-homepage
+
+resources:
+  - namespace.yml
+  - ingress.yml
+
+  - website/deployment.yml
+  - website/service.yml
+
+  - riddles/deployment.yml
+  - riddles/service.yml
+
+  - pixelflut/pixeldike.yml
+  - pixelflut/mediamtx.yml
+
+configMapGenerator:
+  - name: pixelflut
+    literals:
+      - WIDTH=800
+      - HEIGHT=600
+
+  - name: mediamtx
+    files:
+      - mediamtx.yml=configs/mediamtx.yml
+
+secretGenerator:
+  - name: website-riddles
+    envs:
+      - configs/riddles.secret.env

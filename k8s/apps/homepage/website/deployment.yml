@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: website
+  labels: &labels
+    app.kubernetes.io/name: website
+    app.kubernetes.io/component: website-server
+spec:
+  replicas: 3
+  selector:
+    matchLabels: *labels
+  template:
+    metadata:
+      labels: *labels
+    spec:
+      containers:
+        - name: homepage
+          image: ghcr.io/ftsell/homepage
+          ports:
+            - name: http
+              containerPort: 8000
+          readinessProbe:
+            httpGet:
+              port: http
+              httpHeaders:
+                - name: Host
+                  value: ftsell.de

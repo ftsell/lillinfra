@@ -1,0 +1,95 @@
+apiVersion: v1
+kind: List
+items:
+
+  # service (intern only)
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: pixeldike-intern
+      labels: &labels
+        app.kubernetes.io/name: pixeldike
+        app.kubernetes.io/component: pixelflut-server
+    spec:
+      selector: *labels
+      ports:
+        - name: pixelflut
+          port: 1234
+          targetPort: pixelflut
+        - name: pixelflut-ws
+          port: 1235
+          targetPort: pixelflut-ws
+
+  # service (exposed via load-balancer)
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: pixeldike-extern
+      labels: *labels
+      annotations:
+        metallb.universe.tf/allow-shared-ip: main-sharing-key
+        metallb.universe.tf/ip-allocated-from-pool: main
+    spec:
+      selector: *labels
+      type: LoadBalancer
+      ports:
+        - name: pixelflut
+          port: 1234
+          targetPort: pixelflut
+
+  # deployment
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: pixeldike
+      labels: *labels
+    spec:
+      selector:
+        matchLabels: *labels
+      replicas: 1
+      strategy:
+        type: Recreate
+      template:
+        metadata:
+          labels: *labels
+        spec:
+          volumes:
+            - name: pixmap
+              persistentVolumeClaim:
+                claimName: pixmap
+          containers:
+            - name: pixeldike
+              image: ghcr.io/ftsell/pixeldike
+              args:
+                - server
+                - --listen=tcp://0.0.0.0:1234
+                - --listen=udp://0.0.0.0:1234
+                - --listen=ws://0.0.0.0:1235
+                - --load-snapshot=/srv/data/homepage.pixmap
+                - --snapshot=/srv/data/homepage.pixmap
+                - --rtmp-stream=rtmp://mediamtx:1935/stream/pixelflut
+              ports:
+                - name: pixelflut
+                  containerPort: 1234
+                - name: pixelflut-ws
+                  containerPort: 1235
+                  protocol: TCP
+              volumeMounts:
+                - name: pixmap
+                  mountPath: /srv/data/
+              readinessProbe:
+                tcpSocket:
+                  port: pixelflut
+
+  # storage
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: pixmap
+      labels: *labels
+    spec:
+      storageClassName: local-path
+      accessModes: [ ReadWriteOnce ]
+      resources:
+        requests:
+          storage: 500M
