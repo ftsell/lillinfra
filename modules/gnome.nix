@@ -38,6 +38,7 @@
     gnome.gnome-tweaks
     gnomeExtensions.appindicator
     gnomeExtensions.caffeine
+    gnomeExtensions.vitals
   ];
 
   environment.gnome.excludePackages = (with pkgs; [

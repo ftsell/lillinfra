@@ -5,5 +5,6 @@ pkgs.mkShell {
     fluxcd
     kubectl
     kustomize
+    kubernetes-helm
   ];
 }
