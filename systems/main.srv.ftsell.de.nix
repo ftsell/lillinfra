@@ -65,6 +65,9 @@ in
       ensureDBOwnership = true;
       ensureClauses.superuser = true;
     }];
+    authentication = ''
+      host all all 10.42.0.0/16 md5
+    '';
   };
 
   # k8s config
@@ -79,6 +82,10 @@ in
     # https://docs.k3s.io/installation/requirements#networking
     allowedTCPPorts = [ 6443 10250 ];
     allowedUDPPorts = [ 51820 51821 ];
+    interfaces = rec {
+      "flannel-wg".allowedTCPPorts = [ 5432 ];
+      "cni0".allowedTCPPorts = [ 5432 ];
+    };
   };
 
   # DO NOT CHANGE
