@@ -5,3 +5,11 @@ resources:
   - ./flux-install.yml
   - ./cd-base-system.yml
   - ./cd-apps.yml
+
+secretGenerator:
+  - name: sops-keys
+    namespace: flux-system
+    options:
+      disableNameSuffixHash: true
+    files:
+      - "identity.agekey=fluxcd.secret.agekey"
