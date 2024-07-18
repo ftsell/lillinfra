@@ -7,5 +7,6 @@ pkgs.mkShell {
     kustomize
     kubernetes-helm
     jq
+    cmctl
   ];
 }
