@@ -11,7 +11,8 @@ spec:
     metadata:
       labels: *labels
     spec:
-      nodeName: mail
+      nodeSelector:
+        kubernetes.io/hostname: mail
 
       tolerations:
         - key: "ip-reputation"
