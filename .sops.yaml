@@ -3,6 +3,7 @@ keys: &keys
   - &vpn-srv "age13jcav0647guw6pr0f74gkjc06x9j5ensk9ck27dlkkafddsv0u5qqvzn65"
   - &main-srv "age16v8l42yfmdkn6j3v40ggx3axqwxw3euu4ydzlm0erl0zgjdp9yxstglejq"
   - &mail-srv "age1j6u4zps7zwul7dh308a5m702mq2p28xvwhuj326x09yqz46q2q9qclhlc0"
+  - &fluxcd "age19es5hdfpqhwrz7l6lm4a56kgftmwd2ek7nxfpw2maqzpgt4yt5aq89d4fc"
 creation_rules:
   - path_regex: "data/secrets/vpn-srv.yml"
     key_groups:
@@ -16,3 +17,9 @@ creation_rules:
   - path_regex: "dotfiles/.+\\.secret\\..+"
     key_groups:
       - age: [ *ftsell ]
+  
+  # kubernetes
+  - path_regex: "k8s/(.+\\.secret\\..+)|(.+\\.secret)"
+    encrypted_regex: "^(data|stringData)$"
+    key_groups:
+      - age: [ *ftsell, *fluxcd ]

@@ -22,6 +22,10 @@ spec:
   sourceRef:
     kind: GitRepository
     name: finnfrastructure
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-keys
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
