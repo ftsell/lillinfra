@@ -76,6 +76,7 @@ in {
       frontend smtp
         bind :25
         mode tcp
+        timeout client 60000ms
         use_backend mailcow-smtp
 
       frontend submission
@@ -103,11 +104,12 @@ in {
       
       backend mailcow-smtp
         mode tcp
-        server s1 127.0.0.1:30025 check send-proxy-v2
+        timeout server 60000ms
+        server s1 127.0.0.1:30025 send-proxy-v2
 
       backend mailcow-submission
         mode tcp
-        server s1 127.0.0.1:30587 check send-proxy-v2
+        server s1 127.0.0.1:30587 check
 
       backend mailcow-imaps
         mode tcp
