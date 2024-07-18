@@ -54,17 +54,82 @@ in {
   
   services.qemuGuest.enable = true;
 
+  # haproxy
+  services.haproxy = {
+    enable = true;
+    config = ''
+      defaults
+        timeout connect 500ms
+        timeout server 5000ms
+        timeout client 20000ms
+
+      frontend http
+        bind :80
+        mode tcp
+        use_backend ingress-http
+      
+      frontend https
+        bind :443
+        mode tcp
+        use_backend ingress-https
+
+      frontend smtp
+        bind :25
+        mode tcp
+        use_backend mailcow-smtp
+
+      frontend submission
+        bind :587
+        mode tcp
+        use_backend mailcow-submission
+
+      frontend imaps
+        bind :993
+        mode tcp
+        use_backend mailcow-imaps
+
+      frontend managesieve
+        bind :4190
+        mode tcp
+        use_backend mailcow-managesieve
+      
+      backend ingress-http
+        mode tcp
+        server s1 127.0.0.1:30080 check send-proxy
+
+      backend ingress-https
+        mode tcp
+        server s1 127.0.0.1:30443 check send-proxy
+      
+      backend mailcow-smtp
+        mode tcp
+        server s1 127.0.0.1:30025 check send-proxy-v2
+
+      backend mailcow-submission
+        mode tcp
+        server s1 127.0.0.1:30587 check send-proxy-v2
+
+      backend mailcow-imaps
+        mode tcp
+        server s1 127.0.0.1:30993 check
+
+      backend mailcow-managesieve
+        mode tcp
+        server s1 127.0.0.1:30190 check
+    '';
+  };
+
   # k8s config
   services.k3s = {
     enable = true;
     role = "agent";
     serverAddr = "https://${data.network.guests.main-srv.ipv4}:6443";
-    extraFlags = "--node-taint ip-reputation=mailserver:NoExecute";
+    extraFlags = "--node-taint ip-reputation=mailserver:NoExecute --node-taint ip-reputation=mailserver:NoSchedule";
     tokenFile = "/run/secrets/k3s/token";
   };
   networking.firewall = {
     # https://docs.k3s.io/installation/requirements#networking
-    allowedTCPPorts = [ 6443 10250 ];
+    allowedTCPPorts = [ 6443 10250 80 443 25 587 993 4190 ];
     allowedUDPPorts = [ 51820 51821 ];
   };
 

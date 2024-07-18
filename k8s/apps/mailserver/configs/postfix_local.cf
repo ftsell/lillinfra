@@ -6,3 +6,5 @@ mydomain = ftsell.de
 myhostname = mail.srv.$mydomain
 
 message_size_limit = 50000000
+postscreen_upstream_proxy_protocol = haproxy
+smtpd_upstream_proxy_protocol = haproxy
