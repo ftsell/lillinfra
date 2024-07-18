@@ -70,17 +70,46 @@ in
     '';
   };
 
+  # haproxy
+  services.haproxy = {
+    enable = true;
+    config = ''
+      defaults
+        timeout connect 500ms
+        timeout server 5000ms
+        timeout client 20000ms
+
+      frontend http
+        bind :80
+        mode tcp
+        use_backend ingress-http
+      
+      frontend https
+        bind :443
+        mode tcp
+        use_backend ingress-https
+      
+      backend ingress-http
+        mode tcp
+        server s1 127.0.0.1:30080 check send-proxy
+
+      backend ingress-https
+        mode tcp
+        server s1 127.0.0.1:30443 check send-proxy
+    '';
+  };
+
   # k8s config
   services.k3s = {
     enable = true;
     role = "server";
     clusterInit = true;
     # TODO add fc00:42::/64 as cluster-cidr and fc00:43::/64 as service-cidr once the server has its own ipv6 address
-    extraFlags = "--disable-helm-controller --disable traefik --flannel-backend wireguard-native --cluster-cidr 10.42.0.0/16 --service-cidr 10.43.0.0/16 --egress-selector-mode disabled";
+    extraFlags = "--disable-helm-controller --disable=traefik --disable=servicelb --flannel-backend wireguard-native --cluster-cidr 10.42.0.0/16 --service-cidr 10.43.0.0/16 --egress-selector-mode disabled";
   };
   networking.firewall = {
     # https://docs.k3s.io/installation/requirements#networking
-    allowedTCPPorts = [ 6443 10250 ];
+    allowedTCPPorts = [ 6443 10250 80 443 ];
     allowedUDPPorts = [ 51820 51821 ];
     interfaces = rec {
       "flannel-wg".allowedTCPPorts = [ 5432 ];
