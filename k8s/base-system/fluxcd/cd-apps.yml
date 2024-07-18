@@ -101,3 +101,16 @@ spec:
   sourceRef:
     kind: GitRepository
     name: finnfrastructure
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: nextcloud
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  path: ./k8s/apps/nextcloud
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: finnfrastructure
