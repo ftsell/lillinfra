@@ -19,7 +19,10 @@ creation_rules:
       - age: [ *ftsell ]
   
   # kubernetes
-  - path_regex: "k8s/(.+\\.secret\\..+)|(.+\\.secret)"
+  - path_regex: "k8s/(.+\\.secret\\.yml)"
     encrypted_regex: "^(data|stringData)$"
+    key_groups:
+      - age: [ *ftsell, *fluxcd ]
+  - path_regex: "k8s/(.+\\.secret\\..+)"
     key_groups:
       - age: [ *ftsell, *fluxcd ]

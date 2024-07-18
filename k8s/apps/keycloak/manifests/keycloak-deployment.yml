@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  labels: &labels
+    app.kubernetes.io/name: keycloak
+    app.kubernetes.io/component: webserver
+spec:
+  selector:
+    matchLabels: *labels
+  template:
+    metadata:
+      labels: *labels
+    spec:
+
+      volumes:
+        - name: secrets
+          secret:
+            secretName: keycloak
+
+      containers:
+        - name: keycloak
+          image: quay.io/keycloak/keycloak
+          imagePullPolicy: Always
+          args: [ start ]
+          envFrom:
+            - configMapRef:
+                name: keycloak
+            - secretRef:
+                name: keycloak
+          ports:
+            - name: http
+              containerPort: 8080
+          volumeMounts:
+            - name: secrets
+              mountPath: "/opt/jboss/secrets"
+          readinessProbe:
+            httpGet:
+              port: http
+              path: /health/ready
