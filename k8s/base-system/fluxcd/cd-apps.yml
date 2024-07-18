@@ -37,3 +37,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: finnfrastructure
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-keys

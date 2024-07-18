@@ -15,3 +15,15 @@ flux create kustomization --export \
   --prune \
   $NAME >> cd-apps.yml
 ```
+
+If secrets are contained in the manifests, additional options are required so the command looks like this:
+
+```shell
+flux create kustomization --export \
+  --source=GitRepository/finnfrastructure \
+  --path="$PATH" \
+  --prune \
+  --decryption-provider=sops \
+  --decryption-secret=sops-keys \
+  $NAME >> cd-apps.yml
+```
