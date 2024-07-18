@@ -13,5 +13,5 @@ flux create kustomization --export \
   --source=GitRepository/finnfrastructure \
   --path="$PATH" \
   --prune \
-  $NAME >> cd-config.yml
+  $NAME >> cd-apps.yml
 ```

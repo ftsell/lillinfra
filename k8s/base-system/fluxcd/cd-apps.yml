@@ -24,3 +24,16 @@ spec:
   sourceRef:
     kind: GitRepository
     name: finnfrastructure
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: keycloak
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  path: ./k8s/apps/keycloak
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: finnfrastructure
