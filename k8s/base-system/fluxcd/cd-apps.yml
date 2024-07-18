@@ -41,3 +41,20 @@ spec:
     provider: sops
     secretRef:
       name: sops-keys
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: mailserver
+  namespace: flux-system
+spec:
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-keys
+  interval: 1m0s
+  path: ./k8s/apps/mailserver
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: finnfrastructure
