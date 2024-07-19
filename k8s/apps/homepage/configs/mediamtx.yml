@@ -271,14 +271,14 @@ webrtcAllowOrigin: '*'
 # List of IPs or CIDRs of proxies placed before the WebRTC server.
 # If the server receives a request from one of these entries, IP in logs
 # will be taken from the X-Forwarded-For header.
-webrtcTrustedProxies: [ "10.233.64.0/18" ]
+webrtcTrustedProxies: [ "10.42.0.0/16" ]
 # Address of a local UDP listener that will receive connections.
 # Use a blank string to disable.
-webrtcLocalUDPAddress: :8189
+webrtcLocalUDPAddress: :30189
 # Address of a local TCP listener that will receive connections.
 # This is disabled by default since TCP is less efficient than UDP and
 # introduces a progressive delay when network is congested.
-webrtcLocalTCPAddress: :8189
+webrtcLocalTCPAddress: :30189
 # WebRTC clients need to know the IP of the server.
 # Gather IPs from interfaces and send them to clients.
 webrtcIPsFromInterfaces: no
@@ -286,7 +286,7 @@ webrtcIPsFromInterfaces: no
 # An empty value means to use all available interfaces.
 webrtcIPsFromInterfacesList: [ ]
 # List of additional hosts or IPs to send to clients.
-webrtcAdditionalHosts: [ "main.svc.ftsell.de", "116.202.6.114" ]
+webrtcAdditionalHosts: [ "main.srv.ftsell.de", "37.153.156.169" ]
 # ICE servers. Needed only when local listeners can't be reached by clients.
 # STUN servers allows to obtain and share the public IP of the server.
 # TURN/TURNS servers forces all traffic through them.

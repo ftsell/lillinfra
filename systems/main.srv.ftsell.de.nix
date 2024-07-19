@@ -76,8 +76,8 @@ in
     config = ''
       defaults
         timeout connect 500ms
-        timeout server 5000ms
-        timeout client 20000ms
+        timeout server 1h
+        timeout client 1h
 
       frontend http
         bind :80
@@ -109,8 +109,20 @@ in
   };
   networking.firewall = {
     # https://docs.k3s.io/installation/requirements#networking
-    allowedTCPPorts = [ 6443 10250 80 443 ];
-    allowedUDPPorts = [ 51820 51821 ];
+    allowedTCPPorts = [
+      6443    # kubernetes api
+      10250   # kubelet metrics
+      80      # haproxy http
+      443     # haproxy https
+      30189   # mediamtx webrtc
+      30000   # pixelflut server
+    ];
+    allowedUDPPorts = [
+      51820   # k3s networking ip4 (over flannel wireguard)
+      51821   # k3s networking ip6 (over flannel wireguard)
+      30189   # mediamtx webrtc
+      30000   # pixelflut server
+    ];
     interfaces = rec {
       "flannel-wg".allowedTCPPorts = [ 5432 ];
       "cni0".allowedTCPPorts = [ 5432 ];

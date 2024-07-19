@@ -24,26 +24,25 @@ items:
           targetPort: rtsp
 
   # service for WebRtc (must be publicly discoverable)
-  # - apiVersion: v1
-  #   kind: Service
-  #   metadata:
-  #     name: mediamtx-webrtc
-  #     labels: *labels
-  #     annotations:
-  #       metallb.universe.tf/allow-shared-ip: main-sharing-key
-  #       metallb.universe.tf/ip-allocated-from-pool: main
-  #   spec:
-  #     selector: *labels
-  #     type: LoadBalancer
-  #     ports:
-  #       - name: webrtc-udp
-  #         port: 8189
-  #         targetPort: 8189
-  #         protocol: UDP
-  #       - name: webrtc-tcp
-  #         port: 8189
-  #         targetPort: 8189
-  #         protocol: TCP
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: mediamtx-webrtc
+      labels: *labels
+    spec:
+      selector: *labels
+      type: NodePort
+      ports:
+        - name: webrtc-udp
+          port: 30189
+          targetPort: webrtc-udp
+          nodePort: 30189
+          protocol: UDP
+        - name: webrtc-tcp
+          port: 30189
+          targetPort: webrtc-tcp
+          nodePort: 30189
+          protocol: TCP
 
   # deployment
   - apiVersion: apps/v1
@@ -78,8 +77,8 @@ items:
                 - name: rtsp
                   containerPort: 8554
                 - name: webrtc-udp
-                  containerPort: 8189
+                  containerPort: 30189
                   protocol: UDP
                 - name: webrtc-tcp
-                  containerPort: 8189
+                  containerPort: 30189
                   protocol: TCP

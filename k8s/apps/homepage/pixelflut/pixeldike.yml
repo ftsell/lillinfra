@@ -13,29 +13,38 @@ items:
     spec:
       selector: *labels
       ports:
-        - name: pixelflut
+        - name: pixelflut-udp
           port: 1234
-          targetPort: pixelflut
+          protocol: UDP
+          targetPort: pixelflut-udp
+        - name: pixelflut-tcp
+          port: 1234
+          protocol: TCP
+          targetPort: pixelflut-tcp
         - name: pixelflut-ws
           port: 1235
           targetPort: pixelflut-ws
 
-  # service (exposed via load-balancer)
+  # service for external connections
   - apiVersion: v1
     kind: Service
     metadata:
       name: pixeldike-extern
       labels: *labels
-      annotations:
-        metallb.universe.tf/allow-shared-ip: main-sharing-key
-        metallb.universe.tf/ip-allocated-from-pool: main
     spec:
       selector: *labels
-      type: LoadBalancer
+      type: NodePort
       ports:
-        - name: pixelflut
-          port: 1234
-          targetPort: pixelflut
+        - name: pixelflut-udp
+          port: 30000
+          nodePort: 30000
+          protocol: UDP
+          targetPort: pixelflut-udp
+        - name: pixelflut-tcp
+          port: 30000
+          nodePort: 30000
+          protocol: TCP
+          targetPort: pixelflut-tcp
 
   # deployment
   - apiVersion: apps/v1
@@ -61,6 +70,7 @@ items:
             - name: pixeldike
               image: ghcr.io/ftsell/pixeldike
               args:
+                - --verbose
                 - server
                 - --listen=tcp://0.0.0.0:1234
                 - --listen=udp://0.0.0.0:1234
@@ -69,17 +79,18 @@ items:
                 - --snapshot=/srv/data/homepage.pixmap
                 - --rtmp-stream=rtmp://mediamtx:1935/stream/pixelflut
               ports:
-                - name: pixelflut
+                - name: pixelflut-tcp
                   containerPort: 1234
+                  protocol: TCP
+                - name: pixelflut-udp
+                  containerPort: 1234
+                  protocol: UDP
                 - name: pixelflut-ws
                   containerPort: 1235
                   protocol: TCP
               volumeMounts:
                 - name: pixmap
                   mountPath: /srv/data/
-              readinessProbe:
-                tcpSocket:
-                  port: pixelflut
 
   # storage
   - apiVersion: v1
