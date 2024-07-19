@@ -40,7 +40,7 @@ spec:
     - name: smtp
       port: 25
       nodePort: 30025
-      targetPort: smtp
+      targetPort: smtp-haproxy
     - name: submission
       port: 587
       nodePort: 30587

@@ -46,6 +46,8 @@ spec:
           ports:
             - name: smtp
               containerPort: 25
+            - name: smtp-haproxy
+              containerPort: 26
             - name: submission
               containerPort: 587
             - name: imaps
