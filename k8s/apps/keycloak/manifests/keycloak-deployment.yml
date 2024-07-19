@@ -38,3 +38,9 @@ spec:
             httpGet:
               port: http
               path: /health/ready
+          resources:
+            requests:
+              cpu: "0.1"
+              memory: "2G"
+            limits:
+              memory: "2G"

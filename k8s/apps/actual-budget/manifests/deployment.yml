@@ -30,3 +30,9 @@ spec:
           ports:
             - name: http
               containerPort: 5006
+          resources:
+            requests:
+              cpu: "0.1"
+              memory: "100M"
+            limits:
+              memory: "100M"

@@ -30,5 +30,5 @@ spec:
               cpu: "0.5"
               memory: "500M"
             limits:
-              cpu: "1"
+              cpu: "2"
               memory: "1G"

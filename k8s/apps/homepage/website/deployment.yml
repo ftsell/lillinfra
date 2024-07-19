@@ -6,7 +6,6 @@ metadata:
     app.kubernetes.io/name: website
     app.kubernetes.io/component: website-server
 spec:
-  replicas: 3
   selector:
     matchLabels: *labels
   template:
@@ -25,3 +24,9 @@ spec:
               httpHeaders:
                 - name: Host
                   value: ftsell.de
+          resources:
+            requests:
+              cpu: "0.1"
+              memory: "200M"
+            limits:
+              memory: "200M"

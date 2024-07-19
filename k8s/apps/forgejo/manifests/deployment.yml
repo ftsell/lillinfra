@@ -49,3 +49,9 @@ spec:
             httpGet:
               path: /api/healthz
               port: http
+          resources:
+            requests:
+              cpu: "0.5"
+              memory: "500M"
+            limits:
+              memory: "500M"
