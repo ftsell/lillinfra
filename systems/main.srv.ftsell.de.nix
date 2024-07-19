@@ -117,6 +117,31 @@ in
     };
   };
 
+  # user for forgejo ssh access
+  users.groups."git" = {
+    gid = 10000;
+  };
+  users.users."git" = {
+    uid = 10000;
+    group = "git";
+    isSystemUser = true;
+    home = "/var/lib/forgejo";
+    createHome = true;
+    shell = (pkgs.writeShellApplication {
+      name = "forgejo-shell";
+      derivationArgs = {
+        passthru = {
+          shellPath = "/bin/forgejo-shell";
+        };
+      };
+      runtimeInputs = with pkgs; [ openssh ];
+      text = ''
+        shift
+        ssh -p 30022 -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 git@main.srv.ftsell.de "SSH_ORIGINAL_COMMAND=\"$SSH_ORIGINAL_COMMAND\" $*"
+      '';
+    });
+  };
+
   # DO NOT CHANGE
   # this defines the first version of NixOS that was installed on the machine so that programs with non-migratable data files are kept compatible
   home-manager.users.ftsell.home.stateVersion = "24.05";
