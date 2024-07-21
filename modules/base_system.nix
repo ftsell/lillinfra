@@ -16,6 +16,7 @@
     dates = "weekly";
     options = "--delete-older-than 30d";
   };
+  nix.channel.enable = false;
 
   # locale settings
   time.timeZone = lib.mkDefault "Europe/Berlin";
