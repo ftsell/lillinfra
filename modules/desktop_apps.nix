@@ -10,6 +10,7 @@
     thunderbird
     spotify
     drawio
+    discord
   ];
 
   programs.firefox = {
