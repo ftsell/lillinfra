@@ -6,6 +6,9 @@
     nixpkgs-small.url = "github:nixos/nixpkgs?ref=nixos-24.05-small";
     nixpkgs-release.url = "github:nixos/nixpkgs?ref=release-24.05";
 
+    # some helpers for writing flakes with less repitition
+    flake-utils.url = "github:numtide/flake-utils";
+
     # support for special hardware quirks
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
@@ -53,5 +56,16 @@
     # custom output shortcuts
     installer = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux" ] (system: (nixpkgs.legacyPackages.x86_64-linux.nixos [ ./installer-config.nix ]).isoImage);
     wg_vpn = (nixpkgs.lib.filterAttrs (pkgName: _: (builtins.substring 0 14 "wg_vpn-config-") != "") packages.x86_64-linux);
+
+    devShells.x86_64-linux.default = nixpkgs.legacyPackages.x86_64-linux.mkShell {
+      packages = with nixpkgs.legacyPackages.x86_64-linux; [
+        fluxcd
+        kubectl
+        kustomize
+        kubernetes-helm
+        jq
+        cmctl
+      ];
+    };
   };
 }
