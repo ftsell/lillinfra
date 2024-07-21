@@ -11,19 +11,25 @@ let
 
       ./${name}.nix
 
-      {
-        networking.hostName = builtins.head (nixpkgs.lib.strings.splitString "." name);
-      }
+      (
+        let
+          fqdnParts = nixpkgs.lib.strings.splitString "." name;
+        in
+        {
+          networking.hostName = builtins.head fqdnParts;
+          networking.domain = (builtins.concatStringsSep "." (builtins.tail fqdnParts));
+        }
+      )
     ];
   };
 in
 {
-  hosting = mkSystem "x86_64-unknown-linux-gnu" "hosting.srv.ftsell.de" inputs.nixpkgs-small;
-  rt-hosting = mkSystem "x86_64-unknown-linux-gnu" "rt-hosting.srv.ftsell.de" inputs.nixpkgs-small;
-  main-srv = mkSystem "x86_64-unknown-linux-gnu" "main.srv.ftsell.de" inputs.nixpkgs-small;
-  mail-srv = mkSystem "x86_64-unknown-linux-gnu" "mail.srv.ftsell.de" inputs.nixpkgs-small;
+  "hosting.srv.ftsell.de" = mkSystem "x86_64-unknown-linux-gnu" "hosting.srv.ftsell.de" inputs.nixpkgs-small;
+  "rt-hosting.srv.ftsell.de" = mkSystem "x86_64-unknown-linux-gnu" "rt-hosting.srv.ftsell.de" inputs.nixpkgs-small;
+  "main.srv.ftsell.de" = mkSystem "x86_64-unknown-linux-gnu" "main.srv.ftsell.de" inputs.nixpkgs-small;
+  "mail.srv.ftsell.de" = mkSystem "x86_64-unknown-linux-gnu" "mail.srv.ftsell.de" inputs.nixpkgs-small;
   vpn-srv = mkSystem "x86_64-unknown-linux-gnu" "vpn-srv" inputs.nixpkgs-small;
   finnsLaptop = mkSystem "x86_64-unknown-linux-gnu" "finnsLaptop" inputs.nixpkgs;
-  finnsWorkstation = mkSystem "x86_64-unknown-linux-gnu" "finnsWorkstation" inputs.nixpkgs;
-  factorio-z9 = mkSystem "x86_64-unknown-linux-gnu" "factorio.z9.ccchh.net" inputs.nixpkgs;
+  "finnsWorkstation.home.private" = mkSystem "x86_64-unknown-linux-gnu" "finnsWorkstation" inputs.nixpkgs;
+  "factorio.z9.ccchh.net" = mkSystem "x86_64-unknown-linux-gnu" "factorio.z9.ccchh.net" inputs.nixpkgs;
 }
