@@ -9,6 +9,7 @@ let
       inputs.sops-nix.nixosModules.default
       inputs.lix.nixosModules.default
 
+      ../modules/backup.nix
       ./${name}.nix
 
       (

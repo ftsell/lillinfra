@@ -58,6 +58,12 @@
     };
   };
 
+  # backup settings
+  custom.backup.rsync-net = {
+    enable = true;
+    sshPath = "./backups/private-systems";
+  };
+
   # additional packages
   environment.systemPackages = with pkgs; [
     nixpkgs-fmt
@@ -68,6 +74,7 @@
     sops
     git-crypt
     gnupg
+    sieveshell
   ];
 
 
