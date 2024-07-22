@@ -14,6 +14,9 @@
         vscode-extensions.elixir-lsp.vscode-elixir-ls
         vscode-extensions.jnoortheen.nix-ide
         vscode-extensions.charliermarsh.ruff
+        vscode-extensions.golang.go
+        vscode-extensions.ms-vscode.cpptools-extension-pack
+        vscode-extensions.vscjava.vscode-java-pack
       ];
       userSettings = {
         "files.autoSave" = "afterDelay";
