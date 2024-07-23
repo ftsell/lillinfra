@@ -70,7 +70,7 @@
   # backup settings
   custom.backup.rsync-net = {
     enable = true;
-    sshPath = "./backups/private-systems";
+    repoPath = "./backups/private-systems";
   };
 
   services.openssh = {

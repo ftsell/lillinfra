@@ -27,16 +27,27 @@ in
         type = types.str;
         default = "zh4525.rsync.net";
       };
-      sshPath = mkOption {
+      repoPath = mkOption {
         description = "The path on rsync.net which holds the borg repository to which this host is backed up";
         type = types.str;
-        default = "./borgbackup";
+        default = "./backups/${config.networking.fqdnOrHostName}";
       };
       sourceDirectories = mkOption {
-        type = types.listOf types.path;
+        type = types.listOf types.str;
         default = [
           "/home/ftsell"
+          "/root"
         ];
+      };
+      hooks = {
+        beforeBackup = mkOption {
+          type = types.listOf types.str;
+          default = [];
+        };
+        afterBackup = mkOption {
+          type = types.listOf types.str;
+          default = [];
+        };
       };
     };
   };
@@ -48,7 +59,7 @@ in
       repositories = [
         {
           label = "rsync.net";
-          path = "ssh://${cfg.rsync-net.sshUser}@${cfg.rsync-net.sshHost}/${cfg.rsync-net.sshPath}";
+          path = "ssh://${cfg.rsync-net.sshUser}@${cfg.rsync-net.sshHost}/${cfg.rsync-net.repoPath}";
         }
       ];
       one_file_system = true;
@@ -65,6 +76,7 @@ in
         "/home/*/.local/share/pnpm/store"
         "/home/*/.npm"
         "/home/*/Projects/**/target/"
+        "/root/.cache"
         "**/node_modules/"
         "**/cache/"
         "**/Cache/"
@@ -78,6 +90,8 @@ in
       ssh_command = "ssh -i /run/secrets/${cfg.rsync-net.sshKeyPath} -o StrictHostKeyChecking=no";
       extra_borg_options.create = "--list --filter=AME";
       exclude_if_present = [ ".nobackup" ];
+      before_backup = cfg.rsync-net.hooks.beforeBackup;
+      after_backup = cfg.rsync-net.hooks.afterBackup;
     };
 
     systemd.timers.borgmatic.timerConfig.OnCalendar = "hourly";

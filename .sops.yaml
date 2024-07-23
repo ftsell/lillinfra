@@ -3,14 +3,24 @@ keys: &keys
   - &vpn-srv "age13jcav0647guw6pr0f74gkjc06x9j5ensk9ck27dlkkafddsv0u5qqvzn65"
   - &main-srv "age16v8l42yfmdkn6j3v40ggx3axqwxw3euu4ydzlm0erl0zgjdp9yxstglejq"
   - &mail-srv "age1j6u4zps7zwul7dh308a5m702mq2p28xvwhuj326x09yqz46q2q9qclhlc0"
+  - &hosting-srv "age1pzkr2kwn43cc694szra4rr9wqh63c32aqpz3vkr9at7qx294l5wsusj7s2"
   - &fluxcd "age19es5hdfpqhwrz7l6lm4a56kgftmwd2ek7nxfpw2maqzpgt4yt5aq89d4fc"
 creation_rules:
+  # per-host secrets
   - path_regex: "data/secrets/vpn-srv.yml"
     key_groups:
       - age: [ *ftsell, *vpn-srv ]
   - path_regex: "data/secrets/mail.yml"
     key_groups:
       - age: [ *ftsell, *mail-srv ]
+  - path_regex: "data/secrets/main.yml"
+    key_groups:
+      - age: [ *ftsell, *main-srv ]
+  - path_regex: "data/secrets/hosting.yml"
+    key_groups:
+      - age: [ *ftsell, *hosting-srv ]
+  
+  # generic secrets
   - path_regex: "data/secrets/.+.yml"
     key_groups:
       - age: [ *ftsell ]
