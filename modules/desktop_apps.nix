@@ -11,6 +11,7 @@
     spotify
     drawio
     discord
+    vlc
   ];
 
   programs.firefox = {
