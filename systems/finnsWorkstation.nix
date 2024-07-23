@@ -67,6 +67,12 @@
     teams-for-linux
   ];
 
+  # backup settings
+  custom.backup.rsync-net = {
+    enable = true;
+    sshPath = "./backups/private-systems";
+  };
+
   services.openssh = {
     enable = true;
     settings = {

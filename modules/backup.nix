@@ -53,30 +53,31 @@ in
       ];
       one_file_system = true;
       exclude_patterns = [
-        "~/.rustup/toolchains"
-        "~/.vim/undodir"
-        "~/.local/share/containers"
-        "~/.local/share/virtualenvs"
-        "~/.local/share/JetBrains/Toolbox/apps/"
-        "~/Downloads"
-        "~/Games"
-        "~/.cache"
-        "~/.local/share/Trash"
-        "~/.local/share/pnpm/store"
-        "~/.npm"
+        "/home/*/.rustup/toolchains"
+        "/home/*/.vim/undodir"
+        "/home/*/.local/share/containers"
+        "/home/*/.local/share/virtualenvs"
+        "/home/*/.local/share/JetBrains/Toolbox/apps/"
+        "/home/*/Downloads"
+        "/home/*/Games"
+        "/home/*/.cache"
+        "/home/*/.local/share/Trash"
+        "/home/*/.local/share/pnpm/store"
+        "/home/*/.npm"
+        "/home/*/Projects/**/target/"
         "**/node_modules/"
         "**/cache/"
         "**/Cache/"
-        "~/Projects/**/target/"
       ];
       encryption_passcommand = "${pkgs.coreutils}/bin/cat /run/secrets/${cfg.rsync-net.passwordFilePath}";
-      archive_name_format = "{hostname}--user_{user}--{now}";
+      archive_name_format = "{hostname}--{now}";
       relocated_repo_access_is_ok = true;
       keep_hourly = 48;
       keep_daily = 7;
       keep_weekly = 8;
       ssh_command = "ssh -i /run/secrets/${cfg.rsync-net.sshKeyPath} -o StrictHostKeyChecking=no";
-      #extra_borg_options.create = "--info";
+      extra_borg_options.create = "--list --filter=AME";
+      exclude_if_present = [ ".nobackup" ];
     };
 
     systemd.timers.borgmatic.timerConfig.OnCalendar = "hourly";
