@@ -42,17 +42,27 @@ in
       };
       networkConfig = {
         IPv4ProxyARP = true;
+        IPv6ProxyNDP = true;
       };
       address = [
         "${data.network.guests.rt-hosting.ipv4}/32"
+        "2a10:9906:1002:125::1/64"
       ];
       gateway = [
         "37.153.156.1"
+        "2a10:9906:1002:0:125::125"
       ];
       routes = [
         {
+          # hypervisor IPv4 can always be reached directly
           routeConfig = {
             Destination = "37.153.156.1";
+          };
+        }
+        {
+          # hypervisor IPv6 can always be reached directly
+          routeConfig = {
+            Destination = "2a10:9906:1002:0:125::125/64";
           };
         }
       ];

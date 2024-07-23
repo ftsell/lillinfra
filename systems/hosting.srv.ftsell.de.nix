@@ -81,23 +81,26 @@ in
       ];
       gateway = [
         "37.153.156.1"
-        "2a10:9906:1002:0::1"
+        "2a10:9906:1002::1"
       ];
       routes = [
         {
+          # rt-hosting IPv4 can always be reached
+          routeConfig = {
+            Destination = data.network.guests.rt-hosting.ipv4;
+          };
+        }
+        {
+          # rt-hosting IPv6 can always be reached
           routeConfig = {
             Destination = "2a10:9906:1002:125::1/128";
           };
         }
         {
+          # myroot assigned IPv6 can be reached via rt-hosting's IPv6 address
           routeConfig = {
             Destination = "2a10:9906:1002:125::/64";
             Gateway = "2a10:9906:1002:125::1/128";
-          };
-        }
-        {
-          routeConfig = {
-            Destination = data.network.guests.rt-hosting.ipv4;
           };
         }
       ] ++ builtins.map
