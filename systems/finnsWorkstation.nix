@@ -51,6 +51,7 @@
     modesetting.enable = true;
     open = false;
     nvidiaSettings = false;
+    powerManagement.enable = true;
   };
 
   # additional packages
