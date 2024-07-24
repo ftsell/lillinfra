@@ -25,12 +25,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # make nixos configuration available as bootable disk images in more formats
-    nixos-generators = {
-      url = "github:nix-community/nixos-generators";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # secret management
     sops-nix = {
       url = "github:Mic92/sops-nix";
