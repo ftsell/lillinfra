@@ -12,6 +12,7 @@
   # boot config
   boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" "hid_roccat_isku" ];
   boot.initrd.kernelModules = [  ];
+  boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_9;
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
   fileSystems = {

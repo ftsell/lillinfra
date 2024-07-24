@@ -2,8 +2,8 @@
   description = "finnfrastructure - ftsell's infrastructure configuration";
 
   inputs = {
-    #nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.05";
-    nixpkgs.url = "github:nixos/nixpkgs?ref=53e81e790209e41f0c1efa9ff26ff2fd7ab35e27";
+    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.05";
+    #nixpkgs.url = "github:nixos/nixpkgs?ref=53e81e790209e41f0c1efa9ff26ff2fd7ab35e27";
     nixpkgs-small.url = "github:nixos/nixpkgs?ref=nixos-24.05-small";
     nixpkgs-release.url = "github:nixos/nixpkgs?ref=release-24.05";
 
