@@ -21,6 +21,7 @@
         vscode-extensions.vscjava.vscode-java-pack
         vscode-extensions.vscjava.vscode-maven
         vscode-extensions.vscjava.vscode-java-dependency
+        vscode-extensions.nvarner.typst-lsp
       ];
       userSettings = {
         "files.autoSave" = "afterDelay";
