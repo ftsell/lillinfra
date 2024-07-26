@@ -16,7 +16,11 @@
         vscode-extensions.charliermarsh.ruff
         vscode-extensions.golang.go
         vscode-extensions.ms-vscode.cpptools-extension-pack
+        vscode-extensions.redhat.java
+        vscode-extensions.vscjava.vscode-java-debug
         vscode-extensions.vscjava.vscode-java-pack
+        vscode-extensions.vscjava.vscode-maven
+        vscode-extensions.vscjava.vscode-java-dependency
       ];
       userSettings = {
         "files.autoSave" = "afterDelay";
