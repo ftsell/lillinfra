@@ -22,6 +22,7 @@
         vscode-extensions.vscjava.vscode-maven
         vscode-extensions.vscjava.vscode-java-dependency
         vscode-extensions.nvarner.typst-lsp
+        vscode-extensions.tomoki1207.pdf
       ];
       userSettings = {
         "files.autoSave" = "afterDelay";
