@@ -5,6 +5,9 @@ metadata:
   labels: &labels
     app.kubernetes.io/name: mailcalf
 spec:
+  replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels: *labels
   template:
