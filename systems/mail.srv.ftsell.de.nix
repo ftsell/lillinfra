@@ -73,27 +73,6 @@ in {
         mode tcp
         use_backend ingress-https
 
-      frontend smtp
-        bind :25
-        mode tcp
-        timeout client 60000ms
-        use_backend mailcow-smtp
-
-      frontend submission
-        bind :587
-        mode tcp
-        use_backend mailcow-submission
-
-      frontend imaps
-        bind :993
-        mode tcp
-        use_backend mailcow-imaps
-
-      frontend managesieve
-        bind :4190
-        mode tcp
-        use_backend mailcow-managesieve
-      
       backend ingress-http
         mode tcp
         server s1 127.0.0.1:30080 check send-proxy
@@ -101,23 +80,6 @@ in {
       backend ingress-https
         mode tcp
         server s1 127.0.0.1:30443 check send-proxy
-      
-      backend mailcow-smtp
-        mode tcp
-        timeout server 60000ms
-        server s1 127.0.0.1:30025 send-proxy-v2
-
-      backend mailcow-submission
-        mode tcp
-        server s1 127.0.0.1:30587 check
-
-      backend mailcow-imaps
-        mode tcp
-        server s1 127.0.0.1:30993 check
-
-      backend mailcow-managesieve
-        mode tcp
-        server s1 127.0.0.1:30190 check
     '';
   };
 

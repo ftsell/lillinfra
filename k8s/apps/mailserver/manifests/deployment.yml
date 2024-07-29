@@ -19,6 +19,8 @@ spec:
           operator: "Equal"
           value: "mailserver"
 
+      hostNetwork: true
+
       volumes:
         - name: conf
           emptyDir: {}
@@ -43,11 +45,11 @@ spec:
           image: ghcr.io/ftsell/mailcalf
           imagePullPolicy: Always
           stdin: true
+          securityContext:
+            privileged: true
           ports:
             - name: smtp
               containerPort: 25
-            - name: smtp-haproxy
-              containerPort: 26
             - name: submission
               containerPort: 587
             - name: imaps
