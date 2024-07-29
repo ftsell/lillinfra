@@ -51,14 +51,14 @@ It is deployed via [k8s/user-apps/mailserver](../k8s/user-apps/mailserver).
    This record dictates how e-mails for the domain are delivered to different mail servers.
    Multiple records can be specified with different priorities (lower number takes precedence).
 
-   The value of the record should probably be `mail.ftsell.de`.
+   The value of the record should probably be `mail.srv.ftsell.de`.
 
 3. Configure [SPF Policy](https://en.wikipedia.org/wiki/Sender_Policy_Framework) via DNS.
 
    *SPF* stands for *Sender Policy Framework* and tells receiving mail servers which IP addresses are authorized to send emails for the sending domain.
 
    *SPF* is implemented as a *TXT Record* on the domain for which emails should be configured.
-   For example, to allow my mailserver to send emails but forbid all others the policy `v=spf1 +a:main.srv.ftsell.de -all` can be used.
+   For example, to allow my mailserver to send emails but forbid all others the policy `v=spf1 +a:mail.srv.ftsell.de -all` can be used.
    If a more sophisticated policy is desired, the *SPF Record Generator* tool from [PowerDmarc](https://powerdmarc.com/power-dmarc-toolbox/) is a good start.
 
 4. Configure the public [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail) Key via DNS.
