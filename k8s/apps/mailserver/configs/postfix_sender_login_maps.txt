@@ -5,6 +5,7 @@ noreply@ftsell.de           noreply
 @timonengelke.de            tengelke
 @sheaksadi.me               ssheak
 @bastianpermesang.com       bpermesang
+@powolygon.gay              polygon
 
 finn@bit-bots.de            ftsell
 jasper@bit-bots.de          bitbots-jasper
