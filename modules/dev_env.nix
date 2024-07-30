@@ -16,6 +16,7 @@
         vscode-extensions.charliermarsh.ruff
         vscode-extensions.golang.go
         vscode-extensions.ms-vscode.cpptools-extension-pack
+        vscode-extensions.ms-vscode.cpptools
         vscode-extensions.redhat.java
         vscode-extensions.vscjava.vscode-java-debug
         vscode-extensions.vscjava.vscode-java-pack
