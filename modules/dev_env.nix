@@ -73,5 +73,6 @@
     uv
     sshfs
     kubectl
+    pass
   ];
 }
