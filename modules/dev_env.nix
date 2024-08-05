@@ -24,6 +24,7 @@
         vscode-extensions.vscjava.vscode-java-dependency
         vscode-extensions.nvarner.typst-lsp
         vscode-extensions.tomoki1207.pdf
+        vscode-extensions.streetsidesoftware.code-spell-checker
       ];
       userSettings = {
         "files.autoSave" = "afterDelay";
