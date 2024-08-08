@@ -1,4 +1,6 @@
 noreply@ftsell.de               noreply
+dmarc-rua@ftsell.de             dmarc-rua
+dmarc-ruf@ftsell.de             dmarc-ruf
 
 hi@ftsell.de                    ftsell
 wg@ftsell.de                    contact@ftsell.de;contact@oleb.it
