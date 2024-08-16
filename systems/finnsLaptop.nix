@@ -76,6 +76,7 @@
     git-crypt
     gnupg
     sieveshell
+    nftables
   ];
 
 
