@@ -116,6 +116,18 @@ in
 
   services.qemuGuest.enable = true;
 
+  services.bird2 = {
+    enable = true;
+    config = ''
+      debug protocols all;
+      debug channels all;
+      debug tables all;
+
+      protocol device {
+      }
+    '';
+  };
+
   services.kea.dhcp4 = {
     enable = true;
     settings = {
