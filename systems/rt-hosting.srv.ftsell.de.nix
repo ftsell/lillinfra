@@ -119,11 +119,42 @@ in
   services.bird2 = {
     enable = true;
     config = ''
-      debug protocols all;
-      debug channels all;
-      debug tables all;
+      hostname "rt-hosting.srv.ftsell.de";
 
-      protocol device {
+      ipv6 table bgp_exchange6 {}
+      ipv4 table bgp_exchange4 {}
+
+      filter my_net {
+        if net = 2a10:9902:111::/48 then {
+          accept;
+        }
+        reject;
+      }
+
+      protocol device {}
+
+      protocol static my_net_routes {
+        ipv6 { table bgp_exchange6; };
+        route 2a10:9902:111::/48 via 2a10:9906:1002:125::1;
+      }
+
+      protocol bgp myroot {
+        local 37.153.156.168 as 214493;
+        neighbor 37.153.156.2 as 39409;
+        multihop;
+
+        ipv6 {
+          table bgp_exchange6;
+          import all;
+          export filter my_net;
+          debug all;
+        };
+
+        ipv4 {
+          table bgp_exchange4;
+          import none;
+          export none;
+        };
       }
     '';
   };
