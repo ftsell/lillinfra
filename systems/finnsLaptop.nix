@@ -9,6 +9,7 @@
   ];
 
   # boot config
+  # boot.initrd.systemd.enable = true; # TODO Fix booting with systemd. Currently some filesystem (probably swap) is not reached
   boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_9;

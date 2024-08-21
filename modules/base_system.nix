@@ -41,7 +41,7 @@
 
   # vconsole
   console = {
-    font = lib.mkDefault "${pkgs.terminus_font}/share/consolefonts/ter-u32n.psf.gz";
+    font = lib.mkDefault "${pkgs.terminus_font}/share/consolefonts/ter-u16n.psf.gz";
     packages = lib.mkDefault [ pkgs.terminus_font ];
     keyMap = lib.mkDefault "de";
     useXkbConfig = lib.mkDefault true;

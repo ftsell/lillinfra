@@ -62,4 +62,11 @@
   services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
 
   services.displayManager.enable = true;
+
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    pulse.enable = true;
+  };
+  hardware.pulseaudio.enable = false;
 }
