@@ -53,7 +53,7 @@ in
       ];
       routes = [
         {
-          # hypervisor IPv4 can always be reached directly
+          # default gateway can always be reached directly
           routeConfig = {
             Destination = "37.153.156.1";
           };
@@ -61,18 +61,25 @@ in
         {
           # hypervisor IPv6 can always be reached directly
           routeConfig = {
-            Destination = "2a10:9906:1002:0:125::125/128";
+            Destination = "2a10:9906:1002:0:125::125/64";
           };
         }
         {
-          # default IPv6 route for traffic coming from this server (low metric = high priority)
+          # myroot network can be reached directly
           routeConfig = {
-            Destination = "::/0";
-            Gateway = "2a10:9906:1002:0:125::125";
-            Source = "2a10:9906:1002:125::1/64";
-            Metric = 512;
+            Destination = "2a10:9906:1002::/64";
+            # Metric = 512;
           };
         }
+        # {
+        #   # default IPv6 route for traffic coming from this server (low metric = high priority)
+        #   routeConfig = {
+        #     Destination = "::/0";
+        #     Source = "2a10:9906:1002:125::1/128";
+        #     Gateway = "2a10:9906:1002::1";
+        #     # Metric = 512;
+        #   };
+        # }
       ];
     };
     networks.ethVMs = {
@@ -84,13 +91,21 @@ in
         "${data.network.guests.rt-hosting.ipv4}/32"
         "10.0.0.1/24"
       ];
-      routes = builtins.map
+      routes = (builtins.map
         (i: {
           routeConfig = {
             Destination = i.ipv4;
           };
         })
-        data.network.routedGuests;
+        data.network.routedGuests)
+        ++ [
+          {
+            # The part of my own ip space that i am using for hosting on MyRoot
+            routeConfig = {
+              Destination = "2a10:9902:111::/56";
+            };
+          }
+        ];
     };
   };
 
@@ -125,18 +140,15 @@ in
   services.qemuGuest.enable = true;
 
   services.bird2 = {
-    enable = true;
+    enable = false;
     config = ''
       hostname "rt-hosting.srv.ftsell.de";
       debug protocols { states, events };
       debug channels { states, events };
       debug tables { states, events };
 
-      ipv6 table bgp_exchange6 {}
-      ipv4 table bgp_exchange4 {}
-
       filter is_in_my_net {
-        if net = 2a10:9902:111::/56 then accept; else reject;
+        if net = 2a10:9902:111::/48 then accept; else reject;
       }
 
       filter is_default_route {
@@ -148,13 +160,12 @@ in
       }
 
       protocol static {
-        ipv6 { table bgp_exchange6; };
-
+        ipv6;
         # my own IP space that is assigned here
-        route 2a10:9902:111::/56 via "enp8s0";
+        # route 2a10:9902:111::/56 via "enp8s0";
 
-        # MyRoot ip space (bgp peer is there so we need to define how to get there)
-        route 2a10:9906:1002::/64 via 2a10:9906:1002:0:125::125 via "enp1s0";
+        # MyRoot ip space reachable via hypervisor (bgp peer is there so we need to define how to get there)
+        # route 2a10:9906:1002::/64 via 2a10:9906:1002:0:125::125 via "enp1s0";
       }
 
       protocol bgp myroot4 {
@@ -163,9 +174,8 @@ in
         multihop;
 
         ipv4 {
-          table bgp_exchange4;
-          import filter is_default_route;
-          export filter is_in_my_net;
+          import none;
+          export none;
         };
       }
 
@@ -175,18 +185,22 @@ in
         multihop;
 
         ipv6 {
-          table bgp_exchange6;
+          # import filter is_default_route;
           import filter is_default_route;
           export filter is_in_my_net;
         };
       }
 
       protocol kernel {
-        metric 1024;
+        debug all;
+        # metric 1024;
+        learn;
         ipv6 {
-          table bgp_exchange6;
-          import none;
+          import all;
           export none;
+          # export filter {
+          #   if source = RTS_BGP then accept; else reject;
+          # };
         };
       }
     '';

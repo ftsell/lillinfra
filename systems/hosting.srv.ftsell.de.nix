@@ -57,6 +57,9 @@ in
         Kind = "bridge";
         MACAddress = "0c:c4:7a:8e:25:ae";
       };
+      bridgeConfig = {
+        MulticastSnooping = false;
+      };
     };
 
     # instruct the physical ethernet adapter to use the brMyRoot bridge device
@@ -93,16 +96,16 @@ in
         {
           # rt-hosting IPv6 can always be reached
           routeConfig = {
-            Destination = "2a10:9906:1002:125::1/128";
+            Destination = "2a10:9906:1002:125::1/64";
           };
         }
-        {
-          # myroot assigned IPv6 can be reached via rt-hosting's IPv6 address
-          routeConfig = {
-            Destination = "2a10:9906:1002:125::/64";
-            Gateway = "2a10:9906:1002:125::1/128";
-          };
-        }
+        # {
+        #   # myroot routed IPv6 can be reached via rt-hosting's IPv6 address
+        #   routeConfig = {
+        #     Destination = "2a10:9906:1002:125::/64";
+        #     Gateway = "2a10:9906:1002:125::1";
+        #   };
+        # }
       ] ++ builtins.map
         (i: {
           routeConfig = {
