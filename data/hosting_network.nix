@@ -17,7 +17,13 @@ let
   };
 in
 rec {
-  # additional IPs ordered from MyRoot:
+  # hosting.srv.ftsell.de server
+  #   - Main IPv4:       37.153.156.125
+  #   - IPv4 Gateway:    37.153.156.1
+  #   - Main IPv6:       2a10:9906:1002:0:125::125/64
+  #   - Routed IPv6:     2a10:9906:1002:125::/64
+  #   - IPv6 Gateway:    2a10:9906:1002::1
+  # additional IPs ordered from MyRoot
   #   - 37.153.156.168 - 37.153.156.175
   # private subnet
   #    - 10.0.0.0/24

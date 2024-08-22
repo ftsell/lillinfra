@@ -60,6 +60,10 @@
         kubernetes-helm
         jq
         cmctl
+        age
+        python311
+        python311Packages.pynetbox
+        python311Packages.ipython
       ];
     };
   };

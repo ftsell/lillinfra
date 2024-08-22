@@ -1,6 +1,67 @@
 { modulesPath, config, lib, pkgs, ... }:
 let
   data.network = import ../data/hosting_network.nix;
+
+  mkBridgeNetdev = name: {
+    netdevConfig = {
+      Name = name;
+      Kind = "bridge";
+    };
+    bridgeConfig = {
+      STP = true;
+    };
+  };
+
+  mkBridgeNetwork = name: {
+    matchConfig = {
+      Name = name;
+      Kind = "bridge";
+    };
+    linkConfig = {
+      RequiredForOnline = false;
+      ActivationPolicy = "up";
+    };
+    networkConfig = {
+      LinkLocalAddressing = false;
+      ConfigureWithoutCarrier = true;
+    };
+  };
+
+  mkVeth = name: {
+    netdevConfig = {
+      Name = "${name}-up";
+      Description = "veth device for connecting a tenant (down) to brVMs (up)";
+      Kind = "veth";
+    };
+    peerConfig = {
+      Name = "${name}-down";
+    };
+  };
+
+  mkVethConnUp = name: vlan: {
+    matchConfig = {
+      Name = "${name}-up";
+    };
+    networkConfig = {
+      Bridge = "brVMs";
+    };
+    bridgeVLANs = [{
+      bridgeVLANConfig = {
+        VLAN = vlan;
+        EgressUntagged = vlan;
+        PVID = vlan;
+      };
+    }];
+  };
+
+  mkVethConnDown = vethName: brName: {
+    matchConfig = {
+      Name = "${vethName}-down";
+    };
+    networkConfig = {
+      Bridge = brName;
+    };
+  };
 in
 {
   imports = [
@@ -60,7 +121,48 @@ in
       bridgeConfig = {
         MulticastSnooping = false;
       };
+      bridgeConfig = {
+        STP = true;
+      };
     };
+
+    # define a 'master' bridge device to which the routing vm and all tenants are connected
+    netdevs.brVMs = {
+      netdevConfig = {
+        Name = "brVMs";
+        Kind = "bridge";
+      };
+      bridgeConfig = {
+        STP = true;
+        VLANFiltering = true;
+      };
+    };
+    networks.brVMs = mkBridgeNetwork "brVMs";
+
+    # define bridge device and connection for finn (me)
+    netdevs.brFinn = mkBridgeNetdev "brFinn";
+    networks.brFinn = mkBridgeNetwork "brFinn";
+    netdevs.vethFinn = mkVeth "vethFinn";
+    networks."vethFinn-up" = mkVethConnUp "vethFinn" 100;
+    networks."vethFinn-down" = mkVethConnDown "vethFinn" "brFinn";
+
+    netdevs.brBene = mkBridgeNetdev "brBene";
+    networks.brBene = mkBridgeNetwork "brBene";
+    netdevs.vethBene = mkVeth "vethBene";
+    networks."vethBene@up" = mkVethConnUp "vethBene" 101;
+    networks."vethBene@down" = mkVethConnDown "vethBene" "brBene";
+
+    netdevs.brPolygon = mkBridgeNetdev "brPolygon";
+    networks.brPolygon = mkBridgeNetwork "brPolygon";
+    netdevs.vethPolygon = mkVeth "vethPoly";
+    networks."vethPolygon@up" = mkVethConnUp "vethPoly" 102;
+    networks."vethPolygon@down" = mkVethConnDown "vethPoly" "brPolygon";
+
+    netdevs.brVieta = mkBridgeNetdev "brVieta";
+    networks.brVieta = mkBridgeNetwork "brVieta";
+    netdevs.vethVieta = mkVeth "vethVieta";
+    networks."vethVieta@up" = mkVethConnUp "vethVieta" 103;
+    networks."vethVieta@down" = mkVethConnDown "vethVieta" "brVieta";
 
     # instruct the physical ethernet adapter to use the brMyRoot bridge device
     networks.ethMyRoot = {
@@ -153,8 +255,60 @@ in
     enable = true;
     onShutdown = "shutdown";
     parallelShutdown = 10;
+    hooks.qemu =
+      let
+        configure-bridge-vlan-port = pkgs.writeShellApplication {
+          name = "qemu-configure-bridge-vlan-port";
+          runtimeInputs = with pkgs; [ xmlstarlet ];
+          text = ''
+            # Docs: https://www.libvirt.org/hooks.html#etc-libvirt-hooks-network
+            #
+            # Assigns configugres the brVMs network device to allow all tenant VLANs to be forwarded to the routing vm
+            # DOMAIN=$1
+            OPERATION=$2
+            # SUB_OPERATION=$3
+
+            echo "DOMAIN=$1    OPERATION=$2    SUB_OPERATION=$3" >&2
+            DOMAIN_XML="$(xmlstarlet select -t -c /domain -)"
+
+            case $OPERATION in
+              start)
+                IFACE_COUNT=0
+                while true; do
+                  ((++IFACE_COUNT))
+                  IFACE_XML="$(echo "$DOMAIN_XML" | xmlstarlet select -t -c "/domain/devices/interface[$IFACE_COUNT]" || exit 0)"
+                  if [[ -z "$IFACE_XML" ]]; then
+                      # finished
+                      exit 0
+                  fi
+
+                  echo "$IFACE_XML" >&2
+                  SOURCE_IFACE_NAME="$(echo "$IFACE_XML" | xmlstarlet select -t -v /interface/source/@network)"
+                  TARGET_IFACE_NAME="$(echo "$IFACE_XML" | xmlstarlet select -t -v /interface/target/@dev)"
+                  if [[ "$SOURCE_IFACE_NAME" = "brVMs" ]]; then
+                    echo "Enabling VLANs 100-200 for bridge port $TARGET_IFACE_NAME" >&2
+                    bridge vlan add vid 100-200 dev "$TARGET_IFACE_NAME"
+                  else
+                    echo "Ignoring interface $TARGET_IFACE_NAME (bridged to $SOURCE_IFACE_NAME)" >&2
+                  fi
+                done
+                ;;
+              *)
+                echo "qemu hook does not handle operation $OPERATION*" >&2
+                ;;
+            esac
+          '';
+        };
+      in
+      {
+        configure-bridge-vlan-port = "${configure-bridge-vlan-port}/bin/qemu-configure-bridge-vlan-port";
+      };
   };
   users.users.ftsell.extraGroups = [ "libvirtd" ];
+
+  environment.systemPackages = with pkgs; [
+    bridge-utils
+  ];
 
   # backup config
   custom.backup.rsync-net = {

@@ -1,6 +1,32 @@
 { modulesPath, config, lib, pkgs, ... }:
 let
   data.network = import ../data/hosting_network.nix;
+
+  mkVlanNetdev = name: vlan: {
+    netdevConfig = {
+      Name = name;
+      Kind = "vlan";
+    };
+    vlanConfig = {
+      Id = vlan;
+    };
+  };
+  mkVlanNetwork = name: vlan: routedIp4s: {
+    matchConfig = {
+      Name = name;
+      Kind = "vlan";
+    };
+    networkConfig = {
+      Address = [ "10.0.${builtins.toString vlan}.1/24" "fe80:${builtins.toString vlan}::1/64" ];
+    };
+    routes = builtins.map
+      (ip4: {
+        routeConfig = {
+          Destination = ip4;
+        };
+      })
+      routedIp4s;
+  };
 in
 {
   imports = [
@@ -46,7 +72,7 @@ in
       };
       address = [
         "${data.network.guests.rt-hosting.ipv4}/32"
-        "2a10:9906:1002:125::1/64"
+        "2a10:9906:1002:125::1/128"
       ];
       gateway = [
         "37.153.156.1"
@@ -64,69 +90,41 @@ in
             Destination = "2a10:9906:1002:0:125::125/64";
           };
         }
-        {
-          # myroot network can be reached directly
-          routeConfig = {
-            Destination = "2a10:9906:1002::/64";
-            # Metric = 512;
-          };
-        }
-        # {
-        #   # default IPv6 route for traffic coming from this server (low metric = high priority)
-        #   routeConfig = {
-        #     Destination = "::/0";
-        #     Source = "2a10:9906:1002:125::1/128";
-        #     Gateway = "2a10:9906:1002::1";
-        #     # Metric = 512;
-        #   };
-        # }
       ];
     };
+
     networks.ethVMs = {
       matchConfig = {
         Type = "ether";
         MACAddress = "52:54:00:85:6c:df";
       };
-      address = [
-        "${data.network.guests.rt-hosting.ipv4}/32"
-        "10.0.0.1/24"
-      ];
-      routes = (builtins.map
-        (i: {
-          routeConfig = {
-            Destination = i.ipv4;
-          };
-        })
-        data.network.routedGuests)
-        ++ [
-          {
-            # The part of my own ip space that i am using for hosting on MyRoot
-            routeConfig = {
-              Destination = "2a10:9902:111::/56";
-            };
-          }
-        ];
+      linkConfig = {
+        RequiredForOnline = false;
+      };
+      networkConfig = {
+        LinkLocalAddressing = false;
+        VLAN = [ "vlanFinn" "vlanBene" "vlanPolygon" "vlanVieta" ];
+      };
     };
+
+    netdevs."vlanFinn" = mkVlanNetdev "vlanFinn" 100;
+    networks."vlanFinn" = mkVlanNetwork "vlanFinn" 100 [ "37.153.156.169" "37.153.156.170" ];
+
+    netdevs."vlanBene" = mkVlanNetdev "vlanBene" 101;
+    networks."vlanBene" = mkVlanNetwork "vlanBene" 101 [ "37.153.156.172" ];
+
+    netdevs."vlanPolygon" = mkVlanNetdev "vlanPolygon" 102;
+    networks."vlanPolygon" = mkVlanNetwork "vlanPolygon" 102 [ "37.153.156.174" ];
+
+    netdevs."vlanVieta" = mkVlanNetdev "vlanVieta" 103;
+    networks."vlanVieta" = mkVlanNetwork "vlanVieta" 103 [ "37.153.156.173" ];
   };
 
   networking.nftables.enable = true;
   networking.nat = {
     enable = true;
     externalInterface = "enp1s0";
-    internalIPs = [ "10.0.0.0/24" ];
-    forwardPorts = (
-      lib.flatten
-        (builtins.map
-          (iGuest: builtins.map
-            (
-              iPort: {
-                proto = iPort.proto;
-                sourcePort = iPort.src;
-                destination = "${iGuest.ipv4}:${builtins.toString iPort.dst}";
-              }
-            )
-            iGuest.portForwards)
-          data.network.natGuests));
+    internalIPs = [ "10.0.100.0/24" "10.0.101.0/24" "10.0.102.0/24" "10.0.103.0/24" ];
   };
 
   services.openssh = {
@@ -210,7 +208,7 @@ in
     enable = true;
     settings = {
       interfaces-config = {
-        interfaces = [ "enp8s0" ];
+        interfaces = [ "vlanFinn" "vlanBene" "vlanPolygon" "vlanVieta" ];
       };
       lease-database = {
         name = "/var/lib/kea/dhcp4.leases";
@@ -220,58 +218,135 @@ in
       rebind-timer = 2000;
       renew-timer = 1000;
       valid-lifetime = 4000;
-      shared-networks = [{
-        name = "vmNet";
-        subnet4 = [
-          # routed subnet
-          {
-            subnet = "37.153.156.168/29";
-            pools = [
-              {
-                pool = "37.153.156.169 - 37.153.156.175";
-              }
-            ];
-            reservations = (builtins.map
-              (i: {
-                hw-address = i.macAddress;
-                ip-address = i.ipv4;
-              })
-              data.network.routedGuests);
-            option-data = [
-              {
-                name = "domain-name-servers";
-                data = "9.9.9.9";
-              }
-              {
-                name = "routers";
-                data = data.network.guests.rt-hosting.ipv4;
-              }
-            ];
-          }
-          # natted subnet
-          {
-            subnet = "10.0.0.0/24";
-            pools = [{ pool = "10.0.0.0/24"; }];
-            reservations = (builtins.map
-              (i: {
-                hw-address = i.macAddress;
-                ip-address = i.ipv4;
-              })
-              data.network.natGuests);
-            option-data = [
-              {
-                name = "domain-name-servers";
-                data = "9.9.9.9";
-              }
-              {
-                name = "routers";
-                data = "10.0.0.1";
-              }
-            ];
-          }
-        ];
-      }];
+      authoritative = true;
+      option-data = [
+        {
+          name = "domain-name-servers";
+          data = "9.9.9.9";
+        }
+        {
+          name = "routers";
+          data = "37.153.156.168";
+        }
+      ];
+      shared-networks = [
+        {
+          # network for finn
+          name = "finnNet";
+          interface = "vlanFinn";
+          subnet4 = [
+            {
+              subnet = "37.153.156.169/30";
+              pools = [{ pool = "37.153.156.169 - 37.153.156.170"; }];
+              reservations = [
+                {
+                  # main-srv
+                  hw-address = "52:54:00:ba:63:25";
+                  ip-address = "37.153.156.169";
+                }
+                {
+                  # mail-srv
+                  hw-address = "52:54:00:66:e2:38";
+                  ip-address = "37.153.156.170";
+                }
+              ];
+            }
+            {
+              subnet = "10.0.100.0/24";
+              pools = [{ pool = "10.0.100.10 - 10.0.100.254"; }];
+            }
+          ];
+        }
+
+        {
+          # network for bene
+          name = "beneNet";
+          interface = "vlanBene";
+          subnet4 = [
+            {
+              subnet = "37.153.156.172/32";
+              pools = [{ pool = "37.153.156.172 - 37.153.156.172"; }];
+              reservations = [
+                {
+                  # bene-server
+                  hw-address = "52:54:00:13:f8:f9";
+                  ip-address = "37.153.156.172";
+                }
+              ];
+            }
+            {
+              subnet = "10.0.101.0/24";
+              pools = [{ pool = "10.0.101.10 - 10.0.101.254"; }];
+            }
+          ];
+        }
+
+        {
+          # network for polygon
+          name = "polygonNet";
+          interface = "vlanPolygon";
+          subnet4 = [
+            {
+              subnet = "37.153.156.174/32";
+              pools = [{ pool = "37.153.156.174 - 37.153.156.174"; }];
+              reservations = [
+                {
+                  # polygon-server
+                  hw-address = "52:54:00:f9:64:31";
+                  ip-address = "37.153.156.174";
+                }
+              ];
+            }
+            {
+              subnet = "10.0.102.0/24";
+              pools = [{ pool = "10.0.102.10 - 10.0.102.254"; }];
+            }
+          ];
+        }
+
+        {
+          # network for vieta
+          name = "vietaNet";
+          interface = "vlanVieta";
+          subnet4 = [
+            {
+              subnet = "37.153.156.173/32";
+              pools = [{ pool = "37.153.156.173 - 37.153.156.173"; }];
+              reservations = [
+                {
+                  # polygon-server
+                  hw-address = "52:54:00:6d:0e:83";
+                  ip-address = "37.153.156.173";
+                }
+              ];
+            }
+            {
+              subnet = "10.0.103.0/24";
+              pools = [{ pool = "10.0.103.10 - 10.0.103.254"; }];
+            }
+          ];
+        }
+      ];
     };
+  };
+
+  services.radvd = {
+    enable = false;
+    config = ''
+      interface enp8s0 {     
+        AdvSendAdvert on;
+
+        prefix 2a10:9906:1002:125::/64 {
+          # this is the only router so the prefix should be deprecated on router shutdown
+          DeprecatePrefix on;
+          AdvOnLink off;
+        };
+
+        AdvRASrcAddress {
+          fe80::1;
+        };
+      };
+    '';
   };
 
   boot.kernel.sysctl = {
