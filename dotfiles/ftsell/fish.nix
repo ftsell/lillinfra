@@ -8,7 +8,9 @@
     "gl" = "git pull";
     "gp" = "git push";
     "gc" = "git commit";
+    "gb" = "git branch";
     "kubef" = "kubectl --context=ftsell-de";
     "kubem" = "kubectl --context=mafiasi";
+    "nix-shell" = "nix-shell --command=fish";
   };
 }
