@@ -23,8 +23,7 @@
         vscode-extensions.vscjava.vscode-maven
         vscode-extensions.vscjava.vscode-java-dependency
         vscode-extensions.nvarner.typst-lsp
-        vscode-extensions.tomoki1207.pdf
-        vscode-extensions.streetsidesoftware.code-spell-checker
+        vscode-extensions.vue.volar
       ];
       userSettings = {
         "files.autoSave" = "afterDelay";
@@ -51,6 +50,9 @@
         "[python]" = {
             "editor.defaultFormatter" = "charliermarsh.ruff";
             "editor.formatOnSave" = true;
+        };
+        "[vue]" = {
+          "editor.defaultFormatter" = "Vue.volar";
         };
       };
     };
