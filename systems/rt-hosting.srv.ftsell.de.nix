@@ -17,15 +17,20 @@ let
       Kind = "vlan";
     };
     networkConfig = {
-      Address = [ "10.0.${builtins.toString vlan}.1/24" "fe80:${builtins.toString vlan}::1/64" ];
+      Address = [ "10.0.${builtins.toString vlan}.1/24" "fe80::1/64" ];
+      IPv6AcceptRA = false;
     };
-    routes = builtins.map
+    routes = (builtins.map
       (ip4: {
         routeConfig = {
           Destination = ip4;
         };
       })
-      routedIp4s;
+      routedIp4s) ++ [{
+        routeConfig = {
+          Destination = "2a10:9902:111:${builtins.toString vlan}::/64";
+        };
+      }];
   };
 in
 {
@@ -50,6 +55,7 @@ in
 
   boot.initrd.availableKernelModules = [ "ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk" ];
   boot.initrd.kernelModules = [ ];
+  boot.initrd.systemd.enable = true;
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
   boot.loader.systemd-boot = {
@@ -57,6 +63,10 @@ in
     configurationLimit = 10;
     editor = false;
   };
+
+  environment.systemPackages = with pkgs; [
+    traceroute
+  ];
 
   networking.useDHCP = false;
   systemd.network = {
@@ -68,11 +78,10 @@ in
       };
       networkConfig = {
         IPv4ProxyARP = true;
-        IPv6ProxyNDP = true;
       };
       address = [
         "${data.network.guests.rt-hosting.ipv4}/32"
-        "2a10:9906:1002:125::1/128"
+        "2a10:9906:1002:0:125::126/64"
       ];
       gateway = [
         "37.153.156.1"
@@ -82,12 +91,6 @@ in
           # default gateway can always be reached directly
           routeConfig = {
             Destination = "37.153.156.1";
-          };
-        }
-        {
-          # hypervisor IPv6 can always be reached directly
-          routeConfig = {
-            Destination = "2a10:9906:1002:0:125::125/64";
           };
         }
       ];
@@ -107,24 +110,24 @@ in
       };
     };
 
-    netdevs."vlanFinn" = mkVlanNetdev "vlanFinn" 100;
-    networks."vlanFinn" = mkVlanNetwork "vlanFinn" 100 [ "37.153.156.169" "37.153.156.170" ];
+    netdevs."vlanFinn" = mkVlanNetdev "vlanFinn" 10;
+    networks."vlanFinn" = mkVlanNetwork "vlanFinn" 10 [ "37.153.156.169" "37.153.156.170" ];
 
-    netdevs."vlanBene" = mkVlanNetdev "vlanBene" 101;
-    networks."vlanBene" = mkVlanNetwork "vlanBene" 101 [ "37.153.156.172" ];
+    netdevs."vlanBene" = mkVlanNetdev "vlanBene" 11;
+    networks."vlanBene" = mkVlanNetwork "vlanBene" 11 [ "37.153.156.172" ];
 
-    netdevs."vlanPolygon" = mkVlanNetdev "vlanPolygon" 102;
-    networks."vlanPolygon" = mkVlanNetwork "vlanPolygon" 102 [ "37.153.156.174" ];
+    netdevs."vlanPolygon" = mkVlanNetdev "vlanPolygon" 12;
+    networks."vlanPolygon" = mkVlanNetwork "vlanPolygon" 12 [ "37.153.156.174" ];
 
-    netdevs."vlanVieta" = mkVlanNetdev "vlanVieta" 103;
-    networks."vlanVieta" = mkVlanNetwork "vlanVieta" 103 [ "37.153.156.173" ];
+    netdevs."vlanVieta" = mkVlanNetdev "vlanVieta" 13;
+    networks."vlanVieta" = mkVlanNetwork "vlanVieta" 13 [ "37.153.156.173" ];
   };
 
   networking.nftables.enable = true;
   networking.nat = {
     enable = true;
     externalInterface = "enp1s0";
-    internalIPs = [ "10.0.100.0/24" "10.0.101.0/24" "10.0.102.0/24" "10.0.103.0/24" ];
+    internalIPs = [ "10.0.10.0/24" "10.0.11.0/24" "10.0.12.0/24" "10.0.13.0/24" ];
   };
 
   services.openssh = {
@@ -138,16 +141,12 @@ in
   services.qemuGuest.enable = true;
 
   services.bird2 = {
-    enable = false;
+    enable = true;
     config = ''
       hostname "rt-hosting.srv.ftsell.de";
       debug protocols { states, events };
       debug channels { states, events };
       debug tables { states, events };
-
-      filter is_in_my_net {
-        if net = 2a10:9902:111::/48 then accept; else reject;
-      }
 
       filter is_default_route {
         if net = ::/0 || net = 0.0.0.0/0 then accept; else reject;
@@ -159,17 +158,14 @@ in
 
       protocol static {
         ipv6;
-        # my own IP space that is assigned here
-        # route 2a10:9902:111::/56 via "enp8s0";
-
-        # MyRoot ip space reachable via hypervisor (bgp peer is there so we need to define how to get there)
-        # route 2a10:9906:1002::/64 via 2a10:9906:1002:0:125::125 via "enp1s0";
+        route 2a10:9902:111::/48 via "enp1s0";
       }
 
       protocol bgp myroot4 {
         local 37.153.156.168 as 214493;
         neighbor 37.153.156.2 as 39409;
-        multihop;
+        direct;
+        graceful restart on;
 
         ipv4 {
           import none;
@@ -178,27 +174,28 @@ in
       }
 
       protocol bgp myroot6 {
-        local 2a10:9906:1002:125::1 as 214493;
+        local 2a10:9906:1002:0:125::126 as 214493;
         neighbor 2a10:9906:1002::2 as 39409;
-        multihop;
+        direct;
+        graceful restart on;
 
         ipv6 {
-          # import filter is_default_route;
           import filter is_default_route;
-          export filter is_in_my_net;
+          export filter {
+            if source = RTS_STATIC then accept; else reject;
+          };
         };
       }
 
       protocol kernel {
         debug all;
-        # metric 1024;
-        learn;
+        graceful restart on;
+
         ipv6 {
           import all;
-          export none;
-          # export filter {
-          #   if source = RTS_BGP then accept; else reject;
-          # };
+          export filter {
+            if source = RTS_BGP then accept; else reject;
+          };
         };
       }
     '';
@@ -252,8 +249,8 @@ in
               ];
             }
             {
-              subnet = "10.0.100.0/24";
-              pools = [{ pool = "10.0.100.10 - 10.0.100.254"; }];
+              subnet = "10.0.10.0/24";
+              pools = [{ pool = "10.0.10.10 - 10.0.10.254"; }];
             }
           ];
         }
@@ -275,8 +272,8 @@ in
               ];
             }
             {
-              subnet = "10.0.101.0/24";
-              pools = [{ pool = "10.0.101.10 - 10.0.101.254"; }];
+              subnet = "10.0.11.0/24";
+              pools = [{ pool = "10.0.11.10 - 10.0.11.254"; }];
             }
           ];
         }
@@ -298,8 +295,8 @@ in
               ];
             }
             {
-              subnet = "10.0.102.0/24";
-              pools = [{ pool = "10.0.102.10 - 10.0.102.254"; }];
+              subnet = "10.0.12.0/24";
+              pools = [{ pool = "10.0.12.10 - 10.0.12.254"; }];
             }
           ];
         }
@@ -321,8 +318,8 @@ in
               ];
             }
             {
-              subnet = "10.0.103.0/24";
-              pools = [{ pool = "10.0.103.10 - 10.0.103.254"; }];
+              subnet = "10.0.13.0/24";
+              pools = [{ pool = "10.0.13.10 - 10.0.13.254"; }];
             }
           ];
         }
@@ -331,20 +328,26 @@ in
   };
 
   services.radvd = {
-    enable = false;
+    enable = true;
     config = ''
-      interface enp8s0 {     
+      interface vlanFinn {     
         AdvSendAdvert on;
+        prefix 2a10:9902:111:10::/64 {};
+      };
 
-        prefix 2a10:9906:1002:125::/64 {
-          # this is the only router so the prefix should be deprecated on router shutdown
-          DeprecatePrefix on;
-          AdvOnLink off;
-        };
+      interface vlanBene {
+        AdvSendAdvert on;
+        prefix 2a10:9902:111:11::/64 {};
+      };
 
-        AdvRASrcAddress {
-          fe80::1;
-        };
+      interface vlanPolygon {
+        AdvSendAdvert on;
+        prefix 2a10:9902:111:12::/64 {};
+      };
+
+      interface vlanVieta {
+        AdvSendAdvert on;
+        prefix 2a10:9902:111:13::/64 {};
       };
     '';
   };

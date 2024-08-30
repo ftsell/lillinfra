@@ -143,25 +143,25 @@ in
     netdevs.brFinn = mkBridgeNetdev "brFinn";
     networks.brFinn = mkBridgeNetwork "brFinn";
     netdevs.vethFinn = mkVeth "vethFinn";
-    networks."vethFinn-up" = mkVethConnUp "vethFinn" 100;
+    networks."vethFinn-up" = mkVethConnUp "vethFinn" 10;
     networks."vethFinn-down" = mkVethConnDown "vethFinn" "brFinn";
 
     netdevs.brBene = mkBridgeNetdev "brBene";
     networks.brBene = mkBridgeNetwork "brBene";
     netdevs.vethBene = mkVeth "vethBene";
-    networks."vethBene@up" = mkVethConnUp "vethBene" 101;
+    networks."vethBene@up" = mkVethConnUp "vethBene" 11;
     networks."vethBene@down" = mkVethConnDown "vethBene" "brBene";
 
     netdevs.brPolygon = mkBridgeNetdev "brPolygon";
     networks.brPolygon = mkBridgeNetwork "brPolygon";
     netdevs.vethPolygon = mkVeth "vethPoly";
-    networks."vethPolygon@up" = mkVethConnUp "vethPoly" 102;
+    networks."vethPolygon@up" = mkVethConnUp "vethPoly" 12;
     networks."vethPolygon@down" = mkVethConnDown "vethPoly" "brPolygon";
 
     netdevs.brVieta = mkBridgeNetdev "brVieta";
     networks.brVieta = mkBridgeNetwork "brVieta";
     netdevs.vethVieta = mkVeth "vethVieta";
-    networks."vethVieta@up" = mkVethConnUp "vethVieta" 103;
+    networks."vethVieta@up" = mkVethConnUp "vethVieta" 13;
     networks."vethVieta@down" = mkVethConnDown "vethVieta" "brVieta";
 
     # instruct the physical ethernet adapter to use the brMyRoot bridge device
@@ -195,17 +195,11 @@ in
             Destination = data.network.guests.rt-hosting.ipv4;
           };
         }
-        {
-          # rt-hosting IPv6 can always be reached
-          routeConfig = {
-            Destination = "2a10:9906:1002:125::1/64";
-          };
-        }
         # {
         #   # myroot routed IPv6 can be reached via rt-hosting's IPv6 address
         #   routeConfig = {
         #     Destination = "2a10:9906:1002:125::/64";
-        #     Gateway = "2a10:9906:1002:125::1";
+        #     Gateway = "2a10:9906:1002:125::1";  <- wrong
         #   };
         # }
       ] ++ builtins.map
@@ -286,8 +280,8 @@ in
                   SOURCE_IFACE_NAME="$(echo "$IFACE_XML" | xmlstarlet select -t -v /interface/source/@network)"
                   TARGET_IFACE_NAME="$(echo "$IFACE_XML" | xmlstarlet select -t -v /interface/target/@dev)"
                   if [[ "$SOURCE_IFACE_NAME" = "brVMs" ]]; then
-                    echo "Enabling VLANs 100-200 for bridge port $TARGET_IFACE_NAME" >&2
-                    bridge vlan add vid 100-200 dev "$TARGET_IFACE_NAME"
+                    echo "Enabling VLANs 10-99 for bridge port $TARGET_IFACE_NAME" >&2
+                    bridge vlan add vid 10-99 dev "$TARGET_IFACE_NAME"
                   else
                     echo "Ignoring interface $TARGET_IFACE_NAME (bridged to $SOURCE_IFACE_NAME)" >&2
                   fi
@@ -308,6 +302,7 @@ in
 
   environment.systemPackages = with pkgs; [
     bridge-utils
+    traceroute
   ];
 
   # backup config
