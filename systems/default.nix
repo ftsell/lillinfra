@@ -29,6 +29,7 @@ in
   "rt-hosting.srv.ftsell.de" = mkSystem "x86_64-unknown-linux-gnu" "rt-hosting.srv.ftsell.de" inputs.nixpkgs-small;
   "main.srv.ftsell.de" = mkSystem "x86_64-unknown-linux-gnu" "main.srv.ftsell.de" inputs.nixpkgs-small;
   "mail.srv.ftsell.de" = mkSystem "x86_64-unknown-linux-gnu" "mail.srv.ftsell.de" inputs.nixpkgs-small;
+  "gtw.srv.ftsell.de" = mkSystem "x86_64-unknown-linux-gnu" "gtw.srv.ftsell.de" inputs.nixpkgs-small;
   vpn-srv = mkSystem "x86_64-unknown-linux-gnu" "vpn-srv" inputs.nixpkgs-small;
   finnsLaptop = mkSystem "x86_64-unknown-linux-gnu" "finnsLaptop" inputs.nixpkgs;
   "finnsWorkstation.home.private" = mkSystem "x86_64-unknown-linux-gnu" "finnsWorkstation" inputs.nixpkgs;
