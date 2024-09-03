@@ -35,7 +35,7 @@ let
 in
 {
   imports = [
-    (modulesPath + "/profiles/qemu-guest.nix")
+    ../modules/hosting_guest.nix
     ../modules/base_system.nix
     ../modules/user_ftsell.nix
   ];
@@ -51,17 +51,6 @@ in
       device = "/dev/disk/by-uuid/97a94901-3ccb-4eec-8bd0-bafd2fd8408a";
       fsType = "bcachefs";
     };
-  };
-
-  boot.initrd.availableKernelModules = [ "ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk" ];
-  boot.initrd.kernelModules = [ ];
-  boot.initrd.systemd.enable = true;
-  boot.kernelModules = [ "kvm-intel" ];
-  boot.extraModulePackages = [ ];
-  boot.loader.systemd-boot = {
-    enable = true;
-    configurationLimit = 10;
-    editor = false;
   };
 
   environment.systemPackages = with pkgs; [
@@ -137,8 +126,6 @@ in
       PasswordAuthentication = false;
     };
   };
-
-  services.qemuGuest.enable = true;
 
   services.bird2 = {
     enable = true;

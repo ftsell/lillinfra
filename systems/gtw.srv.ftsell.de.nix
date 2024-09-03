@@ -1,6 +1,6 @@
 { modulesPath, config, lib, pkgs, ... }: {
   imports = [
-    (modulesPath + "/profiles/qemu-guest.nix")
+    ../modules/hosting_guest.nix
     ../modules/base_system.nix
     ../modules/user_ftsell.nix
   ];
@@ -17,17 +17,6 @@
       fsType = "bcachefs";
     };
   };
-
-  boot.initrd.availableKernelModules = [ "ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk" ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" ];
-  boot.extraModulePackages = [ ];
-  boot.loader.systemd-boot = {
-    enable = true;
-    configurationLimit = 10;
-    editor = false;
-  };
-  services.qemuGuest.enable = true;
 
   # networking config
   boot.kernel.sysctl = {
@@ -56,14 +45,7 @@
     };
   };
 
-  services.openssh = {
-    enable = true;
-    ports = [ 23 ];
-    settings = {
-      PermitRootLogin = "no";
-      PasswordAuthentication = false;
-    };
-  };
+  services.openssh.ports = [ 23 ];
 
   networking.nftables.enable = true;
   networking.nat = {

@@ -3,7 +3,7 @@ let
   data.network = import ../data/hosting_network.nix;
 in {
   imports = [
-    (modulesPath + "/profiles/qemu-guest.nix")
+    ../modules/hosting_guest.nix
     ../modules/base_system.nix
     ../modules/user_ftsell.nix
   ];
@@ -19,16 +19,6 @@ in {
       device = "/dev/disk/by-uuid/c85524a5-cdda-4793-bca4-8ed9d81820a4";
       fsType = "bcachefs";
     };
-  };
-
-  boot.initrd.availableKernelModules = [ "ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk" ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" ];
-  boot.extraModulePackages = [ ];
-  boot.loader.systemd-boot = {
-    enable = true;
-    configurationLimit = 10;
-    editor = false;
   };
 
   # networking config
@@ -58,8 +48,6 @@ in {
       PasswordAuthentication = false;
     };
   };
-  
-  services.qemuGuest.enable = true;
 
   # haproxy
   services.haproxy = {

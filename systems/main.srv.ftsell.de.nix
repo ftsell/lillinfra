@@ -4,7 +4,7 @@ let
 in
 {
   imports = [
-    (modulesPath + "/profiles/qemu-guest.nix")
+    ../modules/hosting_guest.nix
     ../modules/base_system.nix
     ../modules/user_ftsell.nix
   ];
@@ -20,16 +20,6 @@ in
       device = "/dev/disk/by-uuid/ef98ffbb-63c7-4338-929f-241ded7536e7";
       fsType = "bcachefs";
     };
-  };
-
-  boot.initrd.availableKernelModules = [ "ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk" ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" ];
-  boot.extraModulePackages = [ ];
-  boot.loader.systemd-boot = {
-    enable = true;
-    configurationLimit = 10;
-    editor = false;
   };
 
   # networking config
@@ -52,8 +42,6 @@ in
       PasswordAuthentication = false;
     };
   };
-
-  services.qemuGuest.enable = true;
 
   # database config
   services.postgresql = {
@@ -78,23 +66,24 @@ in
     # TODO add fc00:42::/64 as cluster-cidr and fc00:43::/64 as service-cidr once the server has its own ipv6 address
     extraFlags = "--disable-helm-controller --disable=traefik --disable=servicelb --flannel-backend wireguard-native --cluster-cidr 10.42.0.0/16 --service-cidr 10.43.0.0/16 --egress-selector-mode disabled --tls-san=k8s.ftsell.de";
   };
+
   networking.firewall = {
     # https://docs.k3s.io/installation/requirements#networking
     allowedTCPPorts = [
-      6443    # kubernetes api
-      10250   # kubelet metrics
-      80      # haproxy http
-      443     # haproxy https
-      30189   # mediamtx webrtc
-      30000   # pixelflut server
-      30080   # k8s http
-      30443   # k8s https
+      6443 # kubernetes api
+      10250 # kubelet metrics
+      80 # haproxy http
+      443 # haproxy https
+      30189 # mediamtx webrtc
+      30000 # pixelflut server
+      30080 # k8s http
+      30443 # k8s https
     ];
     allowedUDPPorts = [
-      51820   # k3s networking ip4 (over flannel wireguard)
-      51821   # k3s networking ip6 (over flannel wireguard)
-      30189   # mediamtx webrtc
-      30000   # pixelflut server
+      51820 # k3s networking ip4 (over flannel wireguard)
+      51821 # k3s networking ip6 (over flannel wireguard)
+      30189 # mediamtx webrtc
+      30000 # pixelflut server
     ];
     interfaces = rec {
       "flannel-wg".allowedTCPPorts = [ 5432 ];
