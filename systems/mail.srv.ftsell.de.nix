@@ -42,6 +42,13 @@ in {
       };
       DHCP = "yes";
     };
+    networks.enp8s0 = {
+      matchConfig = {
+        Type = "ether";
+        MACAddress = "52:54:00:7d:ff:7f";
+      };
+      DHCP = "yes";
+    };
   };
 
   services.openssh = {
@@ -87,7 +94,7 @@ in {
   services.k3s = {
     enable = true;
     role = "agent";
-    serverAddr = "https://${data.network.guests.main-srv.ipv4}:6443";
+    serverAddr = "https://10.0.10.10:6443";
     extraFlags = "--node-taint ip-reputation=mailserver:NoExecute --node-taint ip-reputation=mailserver:NoSchedule";
     tokenFile = "/run/secrets/k3s/token";
   };

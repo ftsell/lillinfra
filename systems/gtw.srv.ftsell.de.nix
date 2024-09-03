@@ -30,6 +30,10 @@
   services.qemuGuest.enable = true;
 
   # networking config
+  boot.kernel.sysctl = {
+    "net.ipv4.ip_forward" = "1";
+  };
+
   networking.useDHCP = false;
   systemd.network = {
     enable = true;
@@ -72,11 +76,43 @@
         sourcePort = 51820;
         destination = "10.0.10.11:51820";
       }
+      {
+        proto = "tcp";
+        sourcePort = 6443;
+        destination = "10.0.10.10:6443";
+      }
     ];
   };
+  
+  networking.firewall.allowedTCPPorts = [ 80 443 ];
 
-  boot.kernel.sysctl = {
-    "net.ipv4.ip_forward" = "1";
+  # haproxy
+  services.haproxy = {
+    enable = true;
+    config = ''
+      defaults
+        timeout connect 500ms
+        timeout server 1h
+        timeout client 1h
+
+      frontend http
+        bind :80
+        mode tcp
+        use_backend ingress-http
+      
+      frontend https
+        bind :443
+        mode tcp
+        use_backend ingress-https
+      
+      backend ingress-http
+        mode tcp
+        server s1 10.0.10.10:30080 check send-proxy
+
+      backend ingress-https
+        mode tcp
+        server s1 10.0.10.10:30443 check send-proxy
+    '';
   };
 
   # DO NOT CHANGE

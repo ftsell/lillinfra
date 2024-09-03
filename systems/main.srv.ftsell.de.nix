@@ -70,42 +70,13 @@ in
     '';
   };
 
-  # haproxy
-  services.haproxy = {
-    enable = true;
-    config = ''
-      defaults
-        timeout connect 500ms
-        timeout server 1h
-        timeout client 1h
-
-      frontend http
-        bind :80
-        mode tcp
-        use_backend ingress-http
-      
-      frontend https
-        bind :443
-        mode tcp
-        use_backend ingress-https
-      
-      backend ingress-http
-        mode tcp
-        server s1 127.0.0.1:30080 check send-proxy
-
-      backend ingress-https
-        mode tcp
-        server s1 127.0.0.1:30443 check send-proxy
-    '';
-  };
-
   # k8s config
   services.k3s = {
     enable = true;
     role = "server";
     clusterInit = true;
     # TODO add fc00:42::/64 as cluster-cidr and fc00:43::/64 as service-cidr once the server has its own ipv6 address
-    extraFlags = "--disable-helm-controller --disable=traefik --disable=servicelb --flannel-backend wireguard-native --cluster-cidr 10.42.0.0/16 --service-cidr 10.43.0.0/16 --egress-selector-mode disabled";
+    extraFlags = "--disable-helm-controller --disable=traefik --disable=servicelb --flannel-backend wireguard-native --cluster-cidr 10.42.0.0/16 --service-cidr 10.43.0.0/16 --egress-selector-mode disabled --tls-san=k8s.ftsell.de";
   };
   networking.firewall = {
     # https://docs.k3s.io/installation/requirements#networking
@@ -116,6 +87,8 @@ in
       443     # haproxy https
       30189   # mediamtx webrtc
       30000   # pixelflut server
+      30080   # k8s http
+      30443   # k8s https
     ];
     allowedUDPPorts = [
       51820   # k3s networking ip4 (over flannel wireguard)

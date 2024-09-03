@@ -267,6 +267,11 @@ in
                   hw-address = "52:54:00:8e:97:05";
                   ip-address = "10.0.10.11";
                 }
+                {
+                  # mail.srv.myroot.intern
+                  hw-address = "52:54:00:7d:ff:7f";
+                  ip-address = "10.0.10.12";
+                }
               ];
               option-data = [{
                 name = "routers";
