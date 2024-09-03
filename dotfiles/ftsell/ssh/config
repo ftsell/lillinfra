@@ -1,5 +1,5 @@
 ####
-# Private Hosts
+# Private Hosts @myroot
 #
 
 Host hosting.srv.ftsell.de
@@ -14,14 +14,24 @@ Host rt-hosting.srv.ftsell.de
   User ftsell
   HostName rt-hosting.srv.ftsell.de
 
-Host vpn-srv
+Host gtw.srv.ftsell.de
   User ftsell
-  HostName 10.0.0.101
-  ProxyJump rt-hosting.srv.ftsell.de
+  HostName gtw.srv.ftsell.de
 
-Host main-srv-new
+Host main.srv.myroot.intern
   User ftsell
-  HostName 37.153.156.169
+  HostName 10.0.10.10
+  ProxyJump gtw.srv.ftsell.de
+
+Host vpn.srv.myroot.intern
+  User ftsell
+  HostName 10.0.10.11
+  ProxyJump gtw.srv.ftsell.de
+
+
+####
+# Private Hosts @home
+#
 
 Host proxy.home.private
   User ftsell

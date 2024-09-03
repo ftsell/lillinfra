@@ -40,6 +40,16 @@
       };
       DHCP = "yes";
     };
+    networks.enp7s0 = {
+      matchConfig = {
+        Type = "ether";
+        MACAdreess = "52:54:00:8c:88:66";
+      };
+      DHCP = "yes";
+      networkConfig = {
+        IPv6AcceptRA = false;
+      };
+    };
   };
 
   services.openssh = {
@@ -48,6 +58,25 @@
       PermitRootLogin = "no";
       PasswordAuthentication = false;
     };
+  };
+
+  networking.nftables.enable = true;
+  networking.nat = {
+    enable = true;
+    externalIP = "37.153.156.169";
+    internalIPs = [ "10.0.10.0/24" ];
+    externalInterface = "enp1s0";
+    forwardPorts = [
+      {
+        proto = "udp";
+        sourcePort = 51820;
+        destination = "10.0.10.11:51820";
+      }
+    ];
+  };
+
+  boot.kernel.sysctl = {
+    "net.ipv4.ip_forward" = "1";
   };
 
   # DO NOT CHANGE

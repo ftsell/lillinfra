@@ -27,10 +27,10 @@ let
         };
       })
       routedIp4s) ++ [{
-        routeConfig = {
-          Destination = "2a10:9902:111:${builtins.toString vlan}::/64";
-        };
-      }];
+      routeConfig = {
+        Destination = "2a10:9902:111:${builtins.toString vlan}::/64";
+      };
+    }];
   };
 in
 {
@@ -237,8 +237,8 @@ in
               pools = [{ pool = "37.153.156.169 - 37.153.156.170"; }];
               reservations = [
                 {
-                  # main-srv
-                  hw-address = "52:54:00:ba:63:25";
+                  # gtw.srv.ftsell.de
+                  hw-address = "52:54:00:43:ff:c6";
                   ip-address = "37.153.156.169";
                 }
                 {
@@ -251,6 +251,27 @@ in
             {
               subnet = "10.0.10.0/24";
               pools = [{ pool = "10.0.10.10 - 10.0.10.254"; }];
+              reservations = [
+                {
+                  # gtw.srv.myroot.intern
+                  hw-address = "52:54:00:8c:88:66";
+                  ip-address = "10.0.10.2";
+                }
+                {
+                  # main.srv.myroot.intern
+                  hw-address = "52:54:00:ba:63:25";
+                  ip-address = "10.0.10.10";
+                }
+                {
+                  # vpn.srv.myroot.intern
+                  hw-address = "52:54:00:8e:97:05";
+                  ip-address = "10.0.10.11";
+                }
+              ];
+              option-data = [{
+                name = "routers";
+                data = "10.0.10.2";
+              }];
             }
           ];
         }
