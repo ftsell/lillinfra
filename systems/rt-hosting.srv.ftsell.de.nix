@@ -259,6 +259,11 @@ in
                   hw-address = "52:54:00:7d:ff:7f";
                   ip-address = "10.0.10.12";
                 }
+                {
+                  # monitoring.srv.myroot.intern
+                  hw-address = "52:54:00:00:47:69";
+                  ip-address = "10.0.10.13";
+                }
               ];
               option-data = [{
                 name = "routers";
