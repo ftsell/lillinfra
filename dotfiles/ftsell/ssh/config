@@ -17,6 +17,7 @@ Host rt-hosting.srv.ftsell.de
 Host gtw.srv.ftsell.de
   User ftsell
   HostName gtw.srv.ftsell.de
+  Port 23
 
 Host main.srv.myroot.intern
   User ftsell

@@ -58,6 +58,7 @@
 
   services.openssh = {
     enable = true;
+    ports = [ 23 ];
     settings = {
       PermitRootLogin = "no";
       PasswordAuthentication = false;
@@ -81,9 +82,14 @@
         sourcePort = 6443;
         destination = "10.0.10.10:6443";
       }
+      {
+        proto = "tcp";
+        sourcePort = 22;
+        destination = "10.0.10.10:30022";
+      }
     ];
   };
-  
+
   networking.firewall.allowedTCPPorts = [ 80 443 ];
 
   # haproxy
