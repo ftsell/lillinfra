@@ -5,6 +5,21 @@
     ../modules/user_ftsell.nix
   ];
 
+  boot.initrd.systemd.repart.enable = true;
+  systemd.repart.partitions = {
+    "10-esp" = {
+      Type = "esp";
+      Label = "esp";
+      SizeMinBytes = "500M";
+      SizeMaxBytes = "500M";
+      Format = "vfat";
+    };
+    "20-root" = {
+      Type = "root";
+      Label = "monitoring-root";
+    };
+  };
+
   # boot config
   fileSystems = {
     "/boot" = {

@@ -29,6 +29,11 @@ Host vpn.srv.myroot.intern
   HostName 10.0.10.11
   ProxyJump gtw.srv.ftsell.de
 
+Host monitoring.srv.myroot.intern
+  User ftsell
+  HostName 10.0.10.13
+  ProxyJump gtw.srv.ftsell.de
+
 
 ####
 # Private Hosts @home
