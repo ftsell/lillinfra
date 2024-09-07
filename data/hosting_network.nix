@@ -36,6 +36,7 @@ rec {
     bene-server = mkRouted "52:54:00:13:f8:f9" "37.153.156.172";
     vieta-server = mkRouted "52:54:00:6d:0e:83" "37.153.156.173";
     polygon-server = mkRouted "52:54:00:f9:64:31" "37.153.156.174";
+    timon-server = mkRouted "52:54:00:00:c9:09" "37.153.156.171";
     # nat guests
     vpn-srv = mkNat "52:54:00:8e:97:05" "10.0.0.101" [
       { proto = "udp"; src = 51820; dst = 51820; }

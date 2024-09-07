@@ -95,7 +95,7 @@ in
       };
       networkConfig = {
         LinkLocalAddressing = false;
-        VLAN = [ "vlanFinn" "vlanBene" "vlanPolygon" "vlanVieta" ];
+        VLAN = [ "vlanFinn" "vlanBene" "vlanPolygon" "vlanVieta" "vlanTimon" ];
       };
     };
 
@@ -110,6 +110,9 @@ in
 
     netdevs."vlanVieta" = mkVlanNetdev "vlanVieta" 13;
     networks."vlanVieta" = mkVlanNetwork "vlanVieta" 13 [ "37.153.156.173" ];
+
+    netdevs."vlanTimon" = mkVlanNetdev "vlanTimon" 14;
+    networks."vlanTimon" = mkVlanNetwork "vlanTimon" 14 [ "37.153.156.171" ];
   };
 
   networking.nftables.enable = true;
@@ -192,7 +195,7 @@ in
     enable = true;
     settings = {
       interfaces-config = {
-        interfaces = [ "vlanFinn" "vlanBene" "vlanPolygon" "vlanVieta" ];
+        interfaces = [ "vlanFinn" "vlanBene" "vlanPolygon" "vlanVieta" "vlanTimon" ];
       };
       lease-database = {
         name = "/var/lib/kea/dhcp4.leases";
@@ -341,6 +344,29 @@ in
             }
           ];
         }
+
+        {
+          # network for timon
+          name = "timonNet";
+          interface = "vlanTimon";
+          subnet4 = [
+            {
+              subnet = "37.153.156.171/32";
+              pools = [{ pool = "37.153.156.171 - 37.153.156.171"; }];
+              reservations = [
+                {
+                  # timon-server
+                  hw-address = "52:54:00:00:c9:09";
+                  ip-address = "37.153.156.171";
+                }
+              ];
+            }
+            {
+              subnet = "10.0.14.0/24";
+              pools = [{ pool = "10.0.14.10 - 10.0.14.254"; }];
+            }
+          ];
+        }
       ];
     };
   };
@@ -366,6 +392,11 @@ in
       interface vlanVieta {
         AdvSendAdvert on;
         prefix 2a10:9902:111:13::/64 {};
+      };
+
+      interface vlanTimon {
+        AdvSendAdvert on;
+        prefix 2a10:9902:111:14::/64 {};
       };
     '';
   };
