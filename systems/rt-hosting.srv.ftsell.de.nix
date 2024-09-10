@@ -130,8 +130,48 @@ in
     };
   };
 
+  services.frr = {
+    mgmt.enable = true;
+    zebra.enable = true;
+
+    static = {
+      enable = true;
+      config = ''
+        ipv6 route 2a10:9902:111::/48 2a10:9906:1002:0:125::126 enp1s0
+      '';
+    };
+
+    bgp = {
+      enable = true;
+      extraOptions = [ "--listenon=2a10:9906:1002:0:125::126" ];
+      config = ''
+        router bgp 214493
+          no bgp default ipv4-unicast
+          bgp default ipv6-unicast
+          
+          neighbor myroot peer-group
+          neighbor myroot remote-as 39409
+          neighbor myroot capability dynamic
+          neighbor 2a10:9906:1002::2 peer-group myroot
+
+          # neighbor myroot prefix-list pl-allowed-import in
+          # neighbor myroot prefix-list pl-allowed-export out
+
+          address-family ipv6 unicast
+             network 2a10:9902:111::/48
+             # neighbor myroot prefix-list pl-allowed-export out
+             neighbor myroot prefix-list pl-allowed-import in
+          exit-address-family
+        
+        ip prefix-list pl-allowed-import seq 5 permit ::/0
+
+        ip prefix-list pl-allowed-export seq 5 permit 2a10:9902:111::/48
+      '';
+    };
+  };
+
   services.bird2 = {
-    enable = true;
+    enable = false;
     config = ''
       hostname "rt-hosting.srv.ftsell.de";
       debug protocols { states, events };
