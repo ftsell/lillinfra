@@ -66,6 +66,16 @@ in
     # TODO add fc00:42::/64 as cluster-cidr and fc00:43::/64 as service-cidr once the server has its own ipv6 address
     extraFlags = "--disable-helm-controller --disable=traefik --disable=servicelb --flannel-backend wireguard-native --cluster-cidr 10.42.0.0/16 --service-cidr 10.43.0.0/16 --egress-selector-mode disabled --tls-san=k8s.ftsell.de";
   };
+  system.activationScripts.k3sLongStartTimeout = {
+    deps = [ "specialfs" ];
+    text = ''
+      ${pkgs.coreutils}/bin/mkdir -p /run/systemd/system/k3s.service.d/
+      cat >/run/systemd/system/k3s.service.d/override.conf <<EOF
+        [Service]
+        TimeoutStartSec=5min
+      EOF
+    '';
+  };
 
   networking.firewall = {
     # https://docs.k3s.io/installation/requirements#networking

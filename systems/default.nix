@@ -32,7 +32,7 @@ in
   "gtw.srv.ftsell.de" = mkSystem "x86_64-unknown-linux-gnu" "gtw.srv.ftsell.de" inputs.nixpkgs-small;
 
   # internal hosts at myroot
-  "main.srv.myroot.intern" = mkSystem "x86_64-unknown-linux-gnu" "main.srv.mroot.intern" inputs.nixpkgs-small;
+  "main.srv.myroot.intern" = mkSystem "x86_64-unknown-linux-gnu" "main.srv.myroot.intern" inputs.nixpkgs-small;
   "vpn.srv.myroot.intern" = mkSystem "x86_64-unknown-linux-gnu" "vpn.srv.myroot.intern" inputs.nixpkgs-small;
   "monitoring.srv.myroot.intern" = mkSystem "x86_64-unknown-linux-gnu" "monitoring.srv.myroot.intern" inputs.nixpkgs-small;
 
