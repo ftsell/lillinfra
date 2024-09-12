@@ -12,7 +12,7 @@
   # boot.initrd.systemd.enable = true; # TODO Fix booting with systemd. Currently some filesystem (probably swap) is not reached
   boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" ];
   boot.initrd.kernelModules = [ ];
-  boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_9;
+  # boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_9;
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
   fileSystems = {
@@ -48,7 +48,6 @@
   };
   hardware.nvidia = {
     modesetting.enable = true;
-    open = false;
     nvidiaSettings = false;
     prime = {
       intelBusId = "PCI:0:2:0";
@@ -58,6 +57,14 @@
         enableOffloadCmd = true;
       };
     };
+    package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
+       version = "555.58.02";
+       sha256_64bit = "sha256-xctt4TPRlOJ6r5S54h5W6PT6/3Zy2R4ASNFPu8TSHKM=";
+       sha256_aarch64 = "sha256-wb20isMrRg8PeQBU96lWJzBMkjfySAUaqt4EgZnhyF8=";
+       openSha256 = "sha256-8hyRiGB+m2hL3c9MDA/Pon+Xl6E788MZ50WrrAGUVuY=";
+       settingsSha256 = "sha256-ZpuVZybW6CFN/gz9rx+UJvQ715FZnAOYfHn5jt5Z2C8=";
+       persistencedSha256 = "sha256-a1D7ZZmcKFWfPjjH1REqPM5j/YLWKnbkP9qfRyIyxAw=";
+     };
   };
 
   # backup settings
