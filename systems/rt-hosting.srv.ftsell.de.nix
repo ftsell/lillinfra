@@ -307,6 +307,11 @@ in
                   hw-address = "52:54:00:00:47:69";
                   ip-address = "10.0.10.13";
                 }
+                {
+                  # nas.srv.myroot.intern
+                  hw-address = "52:54:00:2e:74:29";
+                  ip-address = "10.0.10.14";
+                }
               ];
               option-data = [{
                 name = "routers";

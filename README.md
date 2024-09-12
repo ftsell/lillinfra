@@ -46,6 +46,14 @@ nix build --print-out-paths --no-link '.#installer.x86_64-linux'
    ```
 5. Reboot the system
 
+### How to build a systems hard drive
+
+If a system has nixos-generators enabled, its hard drive can be build using the following command:
+
+```shell
+nix build --no-link --print-out-paths '.#nixosConfigurations."nas.srv.myroot.intern".config.formats.qcow-efi'
+```
+
 ### How to get the public age key of a host
 
 ```shell
