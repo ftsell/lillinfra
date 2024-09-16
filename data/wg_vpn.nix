@@ -22,7 +22,7 @@ let
 in
 {
   peers = {
-    vpn-srv = mkServer "vpn.ftsell.de:51820" "1" [ "10.20.30.0/24" ] [ "fc10:20:30::/64" ] "SRVfDEjWZCEcxynQoK1iibpzVeDN61ghTEQPps3pmSY=";
+    vpn = mkServer "vpn.ftsell.de:51820" "1" [ "10.20.30.0/24" ] [ "fc10:20:30::/64" ] "SRVfDEjWZCEcxynQoK1iibpzVeDN61ghTEQPps3pmSY=";
     finnsLaptop = mkClient "101" false "LAPcOludjQrjfza0M+XA+fuwxpVfmqRKjBawAxWDyDY=";
     finnsPhone = mkClient "102" false "PHN5Srlsv3x7+ehWF4SPz0eezcYlm7c0pIU5jXYuYG4=";
     home-proxy = mkClient "103" true "GTWotNqG3way+5NacVVs9bDwbLXplo/afSwZzU2XzkU=";

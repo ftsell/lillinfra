@@ -9,12 +9,12 @@ let
 in
 {
   imports = [
-    (modulesPath + "/profiles/qemu-guest.nix")
+    ../modules/hosting_guest.nix
     ../modules/base_system.nix
     ../modules/user_ftsell.nix
   ];
 
-  # boot config
+  # filesystem mount config
   fileSystems = {
     "/boot" = {
       device = "/dev/disk/by-uuid/E9D6-069D";
@@ -27,17 +27,7 @@ in
     };
   };
 
-  boot.initrd.availableKernelModules = [ "ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk" ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" ];
-  boot.extraModulePackages = [ ];
-  boot.loader.systemd-boot = {
-    enable = true;
-    configurationLimit = 10;
-    editor = false;
-  };
-
-  # enable port-forwarding so that wireguard peers can communicate with each other
+  # enable ip forwarding so that wireguard peers can communicate with each other
   boot.kernel.sysctl = {
     "net.ipv4.ip_forward" = "1";
     "net.ipv6.conf.all.forwarding" = "1";
@@ -48,17 +38,18 @@ in
   ];
 
   # networking config
+  networking.firewall.allowedUDPPorts = [ 51820 ];
+
   networking.useDHCP = false;
   systemd.network = {
     enable = true;
     networks.enp1s0 = {
-      matchConfig = {
-        Type = "ether";
-        MACAddress = data.network.guests.vpn-srv.macAddress;
-      };
+      matchConfig."Type" = "ether";
+      networkConfig."IPv6AcceptRA" = true;
       DHCP = "yes";
     };
 
+    # wireguard NetDev config
     netdevs.wgVpn = {
       netdevConfig = {
         Kind = "wireguard";
@@ -80,6 +71,8 @@ in
           })
           vpn_clients);
     };
+
+    # wireguard Network config
     networks.wgVpn = {
       matchConfig = {
         Name = "wgVpn";
@@ -114,18 +107,6 @@ in
         ));
     };
   };
-
-  networking.firewall.allowedUDPPorts = [ 51820 ];
-
-  services.openssh = {
-    enable = true;
-    settings = {
-      PermitRootLogin = "no";
-      PasswordAuthentication = false;
-    };
-  };
-
-  services.qemuGuest.enable = true;
 
   sops.secrets = {
     "wg_vpn/privkey" = {
