@@ -91,14 +91,12 @@ in
                 {
                   routeConfig = {
                     Destination = iPeer.ownIp4;
-                    Source = data.wg_vpn.peers.${config.networking.hostName}.ownIp4;
                   };
                 }
                 # ip6 route
                 {
                   routeConfig = {
                     Destination = iPeer.ownIp6;
-                    Source = data.wg_vpn.peers.${config.networking.hostName}.ownIp6;
                   };
                 }
               ]
@@ -106,6 +104,17 @@ in
             vpn_clients
         ));
     };
+  };
+
+  # knot authorative dns server
+  services.knot = {}; # TODO
+
+  # knot resolver
+  services.kresd = {
+    enable = true;
+    listenPlain = [ "10.20.30.1:53" "[fc10:20:30::1]:53" ];
+    extraConfig = ''
+    '';
   };
 
   sops.secrets = {
