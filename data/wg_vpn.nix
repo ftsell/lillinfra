@@ -21,6 +21,7 @@ let
   };
 in
 {
+  dnsAddr = [ "10.20.30.1" "fc10:20:30::1" ];
   peers = {
     vpn = mkServer "vpn.ftsell.de:51820" "1" [ "10.20.30.0/24" ] [ "fc10:20:30::/64" ] "SRVfDEjWZCEcxynQoK1iibpzVeDN61ghTEQPps3pmSY=";
     finnsLaptop = mkClient "101" false "LAPcOludjQrjfza0M+XA+fuwxpVfmqRKjBawAxWDyDY=";

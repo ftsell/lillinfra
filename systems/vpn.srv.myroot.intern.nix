@@ -107,13 +107,33 @@ in
   };
 
   # knot authorative dns server
-  services.knot = {}; # TODO
+  services.knot = {
+    enable = true;
+    settings = {
+      server = {
+        listen = "127.0.0.1@8053";
+      };
+      template = [{
+        id = "default";
+        storage = "/etc/knot/zones";
+      }];
+      zone = [{
+        domain = "vpn.intern";
+      }];
+    };
+  };
+  environment.etc."knot/zones/vpn.intern.zone".text = builtins.readFile ../data/zones/vpn.intern.zone;
 
   # knot resolver
   services.kresd = {
     enable = true;
     listenPlain = [ "10.20.30.1:53" "[fc10:20:30::1]:53" ];
     extraConfig = ''
+      -- forward queries belonging to internal domains to the authorative vpn.intern. server
+      policy.add(policy.suffix(
+        policy.STUB('127.0.0.1@8053'), 
+        policy.todnames({'vpn.intern'})
+      ))
     '';
   };
 
