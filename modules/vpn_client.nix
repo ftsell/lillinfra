@@ -13,6 +13,7 @@ in
       data.wg_vpn.peers.${config.networking.hostName}.ownIp4
       data.wg_vpn.peers.${config.networking.hostName}.ownIp6
     ];
+    dns = [ "10.20.30.1" "fc10:20:30::1" ];
     peers = (
       builtins.map
         (iPeer: {

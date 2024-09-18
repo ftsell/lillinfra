@@ -25,6 +25,7 @@ let
         PrivateKey = $PRIVKEY
         Address = ${vpnData.ownIp4}
         Address = ${vpnData.ownIp6}
+        DNS = 10.20.30.1,fc10:20:30::1
         
         [Peer]
         PublicKey = ${data.wg_vpn.peers.vpn-srv.pub}

@@ -38,7 +38,10 @@ in
   ];
 
   # networking config
-  networking.firewall.allowedUDPPorts = [ 51820 ];
+  networking.firewall = {
+    allowedUDPPorts = [ 51820 ];
+    interfaces."wgVpn".allowedUDPPorts = [ 53 ];
+  };
 
   networking.useDHCP = false;
   systemd.network = {
