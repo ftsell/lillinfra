@@ -16,8 +16,8 @@ in {
       options = [ "fmask=0077" "dmask=0077" ];
     };
     "/" = {
-      device = "/dev/disk/by-uuid/c85524a5-cdda-4793-bca4-8ed9d81820a4";
-      fsType = "bcachefs";
+      device = "/dev/disk/by-uuid/55cc058d-7b2b-4a01-ac2c-59ba6261bc8c";
+      fsType = "ext4";
     };
   };
 
@@ -38,20 +38,15 @@ in {
         MACAddress = "52:54:00:7d:ff:7f";
       };
       DHCP = "yes";
-    };
-  };
-
-  services.openssh = {
-    enable = true;
-    settings = {
-      PermitRootLogin = "no";
-      PasswordAuthentication = false;
+      networkConfig = {
+        IPv6AcceptRA = false;
+      };
     };
   };
 
   # haproxy
   services.haproxy = {
-    enable = true;
+    enable = false;
     config = ''
       defaults
         timeout connect 500ms
@@ -80,7 +75,7 @@ in {
 
   # k8s config
   services.k3s = {
-    enable = true;
+    enable = false;
     role = "agent";
     serverAddr = "https://10.0.10.10:6443";
     extraFlags = "--node-taint ip-reputation=mailserver:NoExecute --node-taint ip-reputation=mailserver:NoSchedule";
