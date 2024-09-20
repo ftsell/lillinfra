@@ -134,13 +134,6 @@ in
     mgmt.enable = true;
     zebra.enable = true;
 
-    static = {
-      enable = true;
-      config = ''
-        ipv6 route 2a10:9902:111::/48 2a10:9906:1002:0:125::126 enp1s0
-      '';
-    };
-
     bgp = {
       enable = true;
       extraOptions = [ "--listenon=2a10:9906:1002:0:125::126" ];
@@ -149,6 +142,7 @@ in
           no bgp default ipv4-unicast
           bgp default ipv6-unicast
           bgp ebgp-requires-policy
+          no bgp network import-check
           
           neighbor myroot peer-group
           neighbor myroot remote-as 39409
@@ -156,7 +150,9 @@ in
           neighbor 2a10:9906:1002::2 peer-group myroot
 
           address-family ipv6 unicast
-            redistribute static
+            network 2a10:9902:111::/48
+            # redistribute kernel
+            # aggregate-address 2a10:9902:111::/48 summary-only
             neighbor myroot prefix-list pl-allowed-export out
             neighbor myroot prefix-list pl-allowed-import in
           exit-address-family
@@ -165,67 +161,6 @@ in
         ip prefix-list pl-allowed-export seq 5 permit 2a10:9902:111::/48
       '';
     };
-  };
-
-  services.bird2 = {
-    enable = false;
-    config = ''
-      hostname "rt-hosting.srv.ftsell.de";
-      debug protocols { states, events };
-      debug channels { states, events };
-      debug tables { states, events };
-
-      filter is_default_route {
-        if net = ::/0 || net = 0.0.0.0/0 then accept; else reject;
-      }
-
-      protocol device {
-        debug { states };
-      }
-
-      protocol static {
-        ipv6;
-        route 2a10:9902:111::/48 via "enp1s0";
-      }
-
-      protocol bgp myroot4 {
-        local 37.153.156.168 as 214493;
-        neighbor 37.153.156.2 as 39409;
-        direct;
-        graceful restart on;
-
-        ipv4 {
-          import none;
-          export none;
-        };
-      }
-
-      protocol bgp myroot6 {
-        local 2a10:9906:1002:0:125::126 as 214493;
-        neighbor 2a10:9906:1002::2 as 39409;
-        direct;
-        graceful restart on;
-
-        ipv6 {
-          import filter is_default_route;
-          export filter {
-            if source = RTS_STATIC then accept; else reject;
-          };
-        };
-      }
-
-      protocol kernel {
-        debug all;
-        graceful restart on;
-
-        ipv6 {
-          import all;
-          export filter {
-            if source = RTS_BGP then accept; else reject;
-          };
-        };
-      }
-    '';
   };
 
   services.kea.dhcp4 = {
