@@ -39,6 +39,11 @@ Host nas.srv.myroot.intern
   HostName 10.0.10.14
   ProxyJump gtw.srv.ftsell.de
 
+Host k8s.srv.myroot.intern
+  User ftsell
+  HostName 10.0.10.15
+  ProxyJump gtw.srv.ftsell.de
+
 
 ####
 # Private Hosts @home

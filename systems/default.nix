@@ -36,6 +36,7 @@ in
   "vpn.srv.myroot.intern" = mkSystem "x86_64-unknown-linux-gnu" "vpn.srv.myroot.intern" inputs.nixpkgs-small;
   "monitoring.srv.myroot.intern" = mkSystem "x86_64-unknown-linux-gnu" "monitoring.srv.myroot.intern" inputs.nixpkgs-small;
   "nas.srv.myroot.intern" = mkSystem "x86_64-unknown-linux-gnu" "nas.srv.myroot.intern" inputs.nixpkgs-small;
+  "k8s.srv.myroot.intern" = mkSystem "x86_64-unknown-linux-gnu" "k8s.srv.myroot.intern" inputs.nixpkgs-small;
 
   # private systems
   finnsLaptop = mkSystem "x86_64-unknown-linux-gnu" "finnsLaptop" inputs.nixpkgs;

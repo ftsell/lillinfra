@@ -244,6 +244,11 @@ in
                   hw-address = "52:54:00:2e:74:29";
                   ip-address = "10.0.10.14";
                 }
+                {
+                  # k8s.srv.myroot.intern
+                  hw-address = "52:54:00:43:04:ff";
+                  ip-address = "10.0.10.15";
+                }
               ];
               option-data = [{
                 name = "routers";
