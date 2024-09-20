@@ -1,0 +1,65 @@
+{ modulesPath, config, lib, pkgs, ... }:
+let
+  data.network = import ../data/hosting_network.nix;
+in
+{
+  imports = [
+    ../modules/hosting_guest.nix
+    ../modules/base_system.nix
+    ../modules/user_ftsell.nix
+  ];
+
+  # boot config
+  fileSystems = {
+    "/boot" = {
+      device = "/dev/disk/by-uuid/94A7-6995";
+      fsType = "vfat";
+      options = [ "fmask=0077" "dmask=0077" ];
+    };
+    "/" = {
+      device = "/dev/disk/by-uuid/4e0b7ea5-8c74-478f-a4e3-ddc5691e4065";
+      fsType = "ext4";
+    };
+    "/srv/data/k8s" = {
+      device = "10.0.10.14:/srv/data/k8s";
+      fsType = "nfs";
+      options = [ "defaults" "_netdev" ];
+    };
+  };
+
+  # networking config
+  networking.useDHCP = false;
+  systemd.network = {
+    enable = true;
+    networks.enp1s0 = {
+      matchConfig = {
+        Type = "ether";
+        MACAddress = data.network.guests.mail-srv.macAddress;
+      };
+      DHCP = "yes";
+    };
+  };
+
+  # k8s config
+  # services.k3s = {
+  #   enable = true;
+  #   role = "agent";
+  #   serverAddr = "https://10.0.10.15:6443";
+  #   tokenFile = "/run/secrets/k3s/token";
+  # };
+  # networking.firewall = {
+  #   # https://docs.k3s.io/installation/requirements#networking
+  #   allowedTCPPorts = [
+  #     10250 # kubelet metrics
+  #   ];
+  # };
+
+  # sops.secrets = {
+  #   "k3s/token" = { };
+  # };
+
+  # DO NOT CHANGE
+  # this defines the first version of NixOS that was installed on the machine so that programs with non-migratable data files are kept compatible
+  home-manager.users.ftsell.home.stateVersion = "24.05";
+  system.stateVersion = "24.05";
+}
