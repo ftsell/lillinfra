@@ -12,12 +12,12 @@ in
   # boot config
   fileSystems = {
     "/boot" = {
-      device = "/dev/disk/by-uuid/94A7-6995";
+      device = "/dev/disk/by-uuid/90B5-97F3";
       fsType = "vfat";
       options = [ "fmask=0077" "dmask=0077" ];
     };
     "/" = {
-      device = "/dev/disk/by-uuid/4e0b7ea5-8c74-478f-a4e3-ddc5691e4065";
+      device = "/dev/disk/by-uuid/ca0700a0-ae52-4fae-ac7e-562b8ec6ea16";
       fsType = "ext4";
     };
     "/srv/data/services" = {
