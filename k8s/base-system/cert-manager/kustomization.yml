@@ -6,7 +6,7 @@ commonLabels:
 resources:
   - https://github.com/cert-manager/cert-manager/releases/download/v1.14.1/cert-manager.yaml
   - hetzner-webhook.yml
-  - http-issuer.yml
+  - issuers.yml
 
 secretGenerators:
   - name: hetzner-secret
