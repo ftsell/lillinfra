@@ -46,6 +46,8 @@ in
   networking.firewall = {
     allowedTCPPorts = [
       10250 # k8s kubelet metrics
+      30080 # ingress http
+      30443 # ingress https
     ];
     allowedUDPPorts = [
       8472 # k8s flannel vxlan
