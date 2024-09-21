@@ -55,7 +55,7 @@ in
     # https://docs.k3s.io/installation/requirements#networking
     allowedTCPPorts = [
       10250 # kubelet metrics
-      # 25 # mail smtp
+      25 # mail smtp
       587 # mail submission
       993 # mail imap
       4190 # mail sieve-manage
