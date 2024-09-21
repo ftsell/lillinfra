@@ -5,7 +5,10 @@
     ../modules/user_ftsell.nix
   ];
 
-  # boot config
+  # filesystem config (including zfs which adds additional mountpoints automatically)
+  boot.supportedFilesystems = [ "zfs" ];
+  boot.zfs.forceImportRoot = false;
+  networking.hostId = "d1c39a07";
   fileSystems = {
     "/boot" = {
       device = "/dev/disk/by-uuid/C669-0126";
@@ -15,10 +18,6 @@
     "/" = {
       device = "/dev/disk/by-uuid/9ce95a64-55d6-442d-a41f-8bbbb3332269";
       fsType = "ext4";
-    };
-    "/srv/data/server-myroot" = {
-      device = "/dev/disk/by-uuid/8cc75af5-bc8a-4366-bbea-a7ca7dd62e87";
-      fsType = "bcachefs";
     };
   };
 
@@ -30,8 +29,56 @@
       matchConfig = {
         Type = "ether";
       };
+      networkConfig = {
+        IPv6AcceptRA = false;
+      };
       DHCP = "yes";
     };
+  };
+
+  # postgres config
+  services.postgresql = {
+    enable = true;
+    enableTCPIP = true;
+    ensureDatabases = [ "ftsell" ];
+    ensureUsers = [{
+      name = "ftsell";
+      ensureDBOwnership = true;
+      ensureClauses.superuser = true;
+    }];
+    authentication = ''
+      host all all 10.0.10.0/24 md5
+      host all all 2a10:9902:111:10::/64 md5
+    '';
+  };
+
+  # nfs server config
+  services.nfs.server = {
+    enable = true;
+    statdPort = 4000;
+    lockdPort = 4001;
+    mountdPort = 4002;
+    exports = ''
+      /srv/data/k8s 10.0.10.0/24(rw,mp,no_root_squash) 2a10:9902:111:10::/64(rw,mp,no_root_squash)
+    '';
+  };
+
+  # open firewall for filesystem access
+  networking.nftables.enable = true;
+  networking.firewall = {
+    allowedTCPPorts = [
+      5432  # postgresql
+      2049  # nfs
+      config.services.nfs.server.statdPort
+      config.services.nfs.server.lockdPort
+      config.services.nfs.server.mountdPort
+    ];
+    allowedUDPPorts = [
+      2049  # nfs
+      config.services.nfs.server.statdPort
+      config.services.nfs.server.lockdPort
+      config.services.nfs.server.mountdPort
+    ];
   };
 
   # DO NOT CHANGE

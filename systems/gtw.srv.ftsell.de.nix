@@ -55,20 +55,23 @@
     externalInterface = "enp1s0";
     forwardPorts = [
       {
+        # VPN
         proto = "udp";
         sourcePort = 51820;
         destination = "10.0.10.11:51820";
       }
       {
+        # k8s api
         proto = "tcp";
         sourcePort = 6443;
-        destination = "10.0.10.10:6443";
+        destination = "10.0.10.15:6443";
       }
-      {
-        proto = "tcp";
-        sourcePort = 22;
-        destination = "10.0.10.10:30022";
-      }
+      # {
+      #   # forgejo git over ssh
+      #   proto = "tcp";
+      #   sourcePort = 22;
+      #   destination = "10.0.10.10:30022";
+      # }
     ];
   };
 

@@ -20,8 +20,8 @@ in
       device = "/dev/disk/by-uuid/ca0700a0-ae52-4fae-ac7e-562b8ec6ea16";
       fsType = "ext4";
     };
-    "/srv/data/services" = {
-      device = "10.0.10.14:/srv/data/services";
+    "/srv/data/k8s" = {
+      device = "10.0.10.14:/srv/data/k8s";
       fsType = "nfs";
       options = [ "defaults" "_netdev" ];
     };
@@ -34,7 +34,7 @@ in
     networks.enp1s0 = {
       matchConfig = {
         Type = "ether";
-        Kind = "!veth";
+        MACAddress = "52:54:00:58:93:1a";
       };
       networkConfig = {
         IPv6AcceptRA = false;
@@ -43,12 +43,22 @@ in
     };
   };
 
+  networking.firewall = {
+    allowedTCPPorts = [
+      6443  # k8s api server
+      10250 # k8s kubelet metrics
+    ];
+    allowedUDPPorts = [
+      8472 # k8s flannel vxlan
+    ];
+  };
+
   # kubernetes setup
   services.k3s = {
     enable = true;
     role = "server";
     clusterInit = false;
-    extraFlags = "--disable-helm-controller --disable=traefik --disable=servicelb --disable=local-storage --flannel-backend wireguard-native --cluster-cidr 10.42.0.0/16 --service-cidr 10.43.0.0/16 --egress-selector-mode disabled --tls-san=k8s.ftsell.de";
+    extraFlags = "--disable-helm-controller --disable=traefik --disable=servicelb --disable=local-storage --flannel-backend=vxlan --cluster-cidr 10.42.0.0/16 --service-cidr 10.43.0.0/16 --egress-selector-mode disabled --tls-san=k8s.ftsell.de --node-taint node-role.kubernetes.io/control-plane=:NoSchedule";
   };
 
   # DO NOT CHANGE

@@ -34,29 +34,32 @@ in
     networks.enp1s0 = {
       matchConfig = {
         Type = "ether";
-        MACAddress = data.network.guests.mail-srv.macAddress;
+        MACAddress = "52:54:00:e6:1f:51";
+      };
+      networkConfig = {
+        IPv6AcceptRA = false;
       };
       DHCP = "yes";
     };
   };
 
-  # k8s config
-  # services.k3s = {
-  #   enable = true;
-  #   role = "agent";
-  #   serverAddr = "https://10.0.10.15:6443";
-  #   tokenFile = "/run/secrets/k3s/token";
-  # };
-  # networking.firewall = {
-  #   # https://docs.k3s.io/installation/requirements#networking
-  #   allowedTCPPorts = [
-  #     10250 # kubelet metrics
-  #   ];
-  # };
+  networking.firewall = {
+    allowedTCPPorts = [
+      10250 # k8s kubelet metrics
+    ];
+    allowedUDPPorts = [
+      8472 # k8s flannel vxlan
+    ];
+  };
 
-  # sops.secrets = {
-  #   "k3s/token" = { };
-  # };
+  # k8s setup
+  services.k3s = {
+    enable = true;
+    role = "agent";
+    serverAddr = "https://10.0.10.15:6443";
+    tokenFile = "/run/secrets/k3s/token";
+  };
+  sops.secrets."k3s/token" = { };
 
   # DO NOT CHANGE
   # this defines the first version of NixOS that was installed on the machine so that programs with non-migratable data files are kept compatible

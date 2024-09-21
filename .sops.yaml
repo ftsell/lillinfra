@@ -1,21 +1,24 @@
 keys: &keys
   - &ftsell "age19h7xtfmt3py3ydgl8d8fgh8uakxqxjr74flrxev3pgmvvx94kvtq5d932d"
   - &vpn-srv "age13jcav0647guw6pr0f74gkjc06x9j5ensk9ck27dlkkafddsv0u5qqvzn65"
-  - &main-srv "age16v8l42yfmdkn6j3v40ggx3axqwxw3euu4ydzlm0erl0zgjdp9yxstglejq"
-  - &mail-srv "age1j6u4zps7zwul7dh308a5m702mq2p28xvwhuj326x09yqz46q2q9qclhlc0"
+  - &mail-srv "age1ayrlyw9c9mwumujrvx7x3s30a42emn9k2tf9v2kw2vkcx70fvf5sj63fe6"
   - &hosting-srv "age1pzkr2kwn43cc694szra4rr9wqh63c32aqpz3vkr9at7qx294l5wsusj7s2"
+  - &k8s-worker1-srv "age1g2uxex88r5fya0lgjqthp0tekalz6hq3fc8m8hhnwr36q5ylafaqcnt2hq"
   - &fluxcd "age19es5hdfpqhwrz7l6lm4a56kgftmwd2ek7nxfpw2maqzpgt4yt5aq89d4fc"
 creation_rules:
   # per-host secrets
   - path_regex: "data/secrets/vpn.yml"
     key_groups:
       - age: [ *ftsell, *vpn-srv ]
+
   - path_regex: "data/secrets/mail.yml"
     key_groups:
       - age: [ *ftsell, *mail-srv ]
-  - path_regex: "data/secrets/main.yml"
+
+  - path_regex: "data/secrets/k8s-worker1.yml"
     key_groups:
-      - age: [ *ftsell, *main-srv ]
+      - age: [ *ftsell, *k8s-worker1-srv ]
+      
   - path_regex: "data/secrets/hosting.yml"
     key_groups:
       - age: [ *ftsell, *hosting-srv ]

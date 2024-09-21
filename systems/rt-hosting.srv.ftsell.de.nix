@@ -220,11 +220,6 @@ in
                   ip-address = "10.0.10.2";
                 }
                 {
-                  # main.srv.myroot.intern
-                  hw-address = "52:54:00:ba:63:25";
-                  ip-address = "10.0.10.10";
-                }
-                {
                   # vpn.srv.myroot.intern
                   hw-address = "52:54:00:8e:97:05";
                   ip-address = "10.0.10.11";
@@ -245,9 +240,14 @@ in
                   ip-address = "10.0.10.14";
                 }
                 {
-                  # k8s.srv.myroot.intern
-                  hw-address = "52:54:00:43:04:ff";
+                  # k8s-ctl.srv.myroot.intern
+                  hw-address = "52:54:00:58:93:1a";
                   ip-address = "10.0.10.15";
+                }
+                {
+                  # k8s-worker1.srv.myroot.intern
+                  hw-address = "52:54:00:e6:1f:51";
+                  ip-address = "10.0.10.16";
                 }
               ];
               option-data = [{

@@ -66,6 +66,7 @@
         jq
         cmctl
         age
+        ssh-to-age
         python311
         python311Packages.pynetbox
         python311Packages.ipython

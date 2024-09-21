@@ -19,11 +19,6 @@ Host gtw.srv.ftsell.de
   HostName gtw.srv.ftsell.de
   Port 23
 
-Host main.srv.myroot.intern
-  User ftsell
-  HostName 10.0.10.10
-  ProxyJump gtw.srv.ftsell.de
-
 Host vpn.srv.myroot.intern
   User ftsell
   HostName 10.0.10.11
@@ -39,9 +34,14 @@ Host nas.srv.myroot.intern
   HostName 10.0.10.14
   ProxyJump gtw.srv.ftsell.de
 
-Host k8s.srv.myroot.intern
+Host k8s-ctl.srv.myroot.intern
   User ftsell
   HostName 10.0.10.15
+  ProxyJump gtw.srv.ftsell.de
+
+Host k8s-worker1.srv.myroot.intern
+  User ftsell
+  HostName 10.0.10.16
   ProxyJump gtw.srv.ftsell.de
 
 
