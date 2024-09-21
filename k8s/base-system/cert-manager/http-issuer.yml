@@ -5,9 +5,9 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
+    email: dev@ftsell.de
     privateKeySecretRef:
       name: letsencrypt-account-key
-    email: dev@ftsell.de
     solvers:
     - http01:
         ingress:

@@ -36,6 +36,10 @@ spec:
   interval: 1m0s
   path: ./k8s/base-system/cert-manager
   prune: true
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-keys
   sourceRef:
     kind: GitRepository
     name: finnfrastructure
