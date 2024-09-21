@@ -10,6 +10,7 @@ resources:
 
 secretGenerator:
   - name: hetzner-secret
+    namespace: cert-manager
     options:
       disableNameSuffixHash: true
     files:
