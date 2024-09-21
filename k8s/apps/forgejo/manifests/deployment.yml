@@ -15,16 +15,10 @@ spec:
       labels: *labels
     spec:
 
-      nodeSelector:
-        kubernetes.io/hostname: main
-
       volumes:
         - name: data
           persistentVolumeClaim:
             claimName: forgejo-data
-        - name: ssh-auth
-          hostPath:
-            path: /var/lib/forgejo/.ssh/
 
       containers:
         - name: forgejo
@@ -38,8 +32,6 @@ spec:
           volumeMounts:
             - mountPath: /data
               name: data
-            - name: ssh-auth
-              mountPath: /data/git/.ssh/
           ports:
             - containerPort: 22
               name: ssh
