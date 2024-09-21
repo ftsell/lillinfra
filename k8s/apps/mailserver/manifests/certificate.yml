@@ -5,7 +5,7 @@ metadata:
 spec:
   issuerRef:
     kind: ClusterIssuer
-    name: letsencrypt-dns
+    name: letsencrypt-http
   secretName: tls-mail.ftsell.de
   dnsNames:
     - "mail.ftsell.de"
