@@ -10,5 +10,7 @@ resources:
 
 secretGenerators:
   - name: hetzner-secret
+    options:
+      disableNameSuffixHash: true
     files:
       - "api-key=hetzner-api-key.secret.txt"
