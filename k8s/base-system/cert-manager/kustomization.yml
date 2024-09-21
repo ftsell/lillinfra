@@ -8,7 +8,7 @@ resources:
   - hetzner-webhook.yml
   - issuers.yml
 
-secretGenerators:
+secretGenerator:
   - name: hetzner-secret
     options:
       disableNameSuffixHash: true
