@@ -20,8 +20,8 @@ in
       device = "/dev/disk/by-uuid/55cc058d-7b2b-4a01-ac2c-59ba6261bc8c";
       fsType = "ext4";
     };
-    "/srv/data/services" = {
-      device = "10.0.10.14:/srv/data/services";
+    "/srv/data/k8s" = {
+      device = "10.0.10.14:/srv/data/k8s";
       fsType = "nfs";
       options = [ "defaults" "_netdev" ];
     };
@@ -55,10 +55,12 @@ in
     # https://docs.k3s.io/installation/requirements#networking
     allowedTCPPorts = [
       10250 # kubelet metrics
-      25 # mail smtp
+      # 25 # mail smtp
       587 # mail submission
       993 # mail imap
       4190 # mail sieve-manage
+      80  # http
+      443 # https
     ];
     allowedUDPPorts = [
       8472 # k8s flannel vxlan
@@ -73,6 +75,35 @@ in
     tokenFile = "/run/secrets/k3s/token";
   };
   sops.secrets."k3s/token" = { };
+
+  # haproxy (for certificate generation)
+  services.haproxy = {
+    enable = true;
+    config = ''
+      defaults
+        timeout connect 500ms
+        timeout server 1h
+        timeout client 1h
+
+      frontend http
+        bind :80
+        mode tcp
+        use_backend ingress-http
+      
+      frontend https
+        bind :443
+        mode tcp
+        use_backend ingress-https
+      
+      backend ingress-http
+        mode tcp
+        server s1 10.0.10.16:30080 check send-proxy
+
+      backend ingress-https
+        mode tcp
+        server s1 10.0.10.16:30443 check send-proxy
+    '';
+  };
 
   # DO NOT CHANGE
   # this defines the first version of NixOS that was installed on the machine so that programs with non-migratable data files are kept compatible

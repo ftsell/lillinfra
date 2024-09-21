@@ -98,11 +98,11 @@
       
       backend ingress-http
         mode tcp
-        server s1 10.0.10.10:30080 check send-proxy
+        server s1 10.0.10.16:30080 check send-proxy
 
       backend ingress-https
         mode tcp
-        server s1 10.0.10.10:30443 check send-proxy
+        server s1 10.0.10.16:30443 check send-proxy
     '';
   };
 

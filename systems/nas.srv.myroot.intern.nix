@@ -59,7 +59,7 @@
     lockdPort = 4001;
     mountdPort = 4002;
     exports = ''
-      /srv/data/k8s 10.0.10.0/24(rw,mp,no_root_squash) 2a10:9902:111:10::/64(rw,mp,no_root_squash)
+      /srv/data/k8s 10.0.10.0/24(rw,mp,no_root_squash,crossmnt)
     '';
   };
 
