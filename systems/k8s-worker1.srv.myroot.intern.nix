@@ -48,6 +48,7 @@ in
       10250 # k8s kubelet metrics
       30080 # ingress http
       30443 # ingress https
+      30022 # forgejo ssh
     ];
     allowedUDPPorts = [
       8472 # k8s flannel vxlan

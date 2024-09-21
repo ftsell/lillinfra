@@ -66,12 +66,12 @@
         sourcePort = 6443;
         destination = "10.0.10.15:6443";
       }
-      # {
-      #   # forgejo git over ssh
-      #   proto = "tcp";
-      #   sourcePort = 22;
-      #   destination = "10.0.10.10:30022";
-      # }
+      {
+        # forgejo ssh
+        proto = "tcp";
+        sourcePort = 22;
+        destination = "10.0.10.16:30022";
+      }
     ];
   };
 
@@ -98,11 +98,11 @@
       
       backend ingress-http
         mode tcp
-        server s1 10.0.10.16:30080 check send-proxy
+        server k8s-worker1 10.0.10.16:30080 check send-proxy
 
       backend ingress-https
         mode tcp
-        server s1 10.0.10.16:30443 check send-proxy
+        server k8s-worker1 10.0.10.16:30443 check send-proxy
     '';
   };
 
