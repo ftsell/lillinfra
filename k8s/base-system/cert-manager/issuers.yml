@@ -33,4 +33,5 @@ spec:
             solverName: hetzner
             config:
               secretName: hetzner-secret
+              zoneName: ftsell.de
               apiUrl: https://dns.hetzner.com/api/v1
