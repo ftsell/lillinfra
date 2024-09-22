@@ -3,8 +3,9 @@ let
   data.network = import ../data/hosting_network.nix;
   data.wg_vpn = import ../data/wg_vpn.nix;
 
-  vpn_clients = (builtins.attrValues
-    (lib.filterAttrs (peerName: iPeer: peerName != config.networking.hostName)
+  vpnClients = (builtins.attrValues
+    (lib.filterAttrs
+      (peerName: iPeer: peerName != config.networking.fqdn)
       data.wg_vpn.peers));
 in
 {
@@ -37,12 +38,13 @@ in
     wireguard-tools
   ];
 
-  # networking config
+  # firewall config
   networking.firewall = {
     allowedUDPPorts = [ 51820 ];
     interfaces."wgVpn".allowedUDPPorts = [ 53 ];
   };
 
+  # generic network config
   networking.useDHCP = false;
   systemd.network = {
     enable = true;
@@ -62,17 +64,16 @@ in
         ListenPort = 51820;
         PrivateKeyFile = "/run/secrets/wg_vpn/privkey";
       };
-      wireguardPeers = (
-        builtins.map
-          (iPeer: {
-            wireguardPeerConfig = {
-              PublicKey = iPeer.pub;
-              AllowedIPs = [ iPeer.ownIp4 iPeer.ownIp6 ] ++ iPeer.routedIp4 ++ iPeer.routedIp6;
-              Endpoint = lib.mkIf (iPeer.endpoint != null) iPeer.endpoint;
-              PersistentKeepalive = lib.mkIf iPeer.keepalive 25;
-            };
-          })
-          vpn_clients);
+      wireguardPeers = (builtins.map
+        (iPeer: {
+          wireguardPeerConfig = {
+            PublicKey = iPeer.pub;
+            AllowedIPs = [ iPeer.ownIp4 iPeer.ownIp6 ] ++ iPeer.routedIp4 ++ iPeer.routedIp6;
+            Endpoint = lib.mkIf (iPeer.endpoint != null) iPeer.endpoint;
+            PersistentKeepalive = lib.mkIf iPeer.keepalive 25;
+          };
+        })
+        vpnClients);
     };
 
     # wireguard Network config
@@ -81,35 +82,53 @@ in
         Name = "wgVpn";
       };
       address = [
-        data.wg_vpn.peers.${config.networking.hostName}.ownIp4
-        data.wg_vpn.peers.${config.networking.hostName}.ownIp6
+        data.wg_vpn.peers.${config.networking.fqdn}.ownIp4
+        data.wg_vpn.peers.${config.networking.fqdn}.ownIp6
       ];
-      routes = (
-        lib.flatten (
-          builtins.map
-            (iPeer:
-              [
-                # ip4 route
-                # TODO: Generate routes for the routedIp4 and routedIp6 attrs too
-                {
-                  routeConfig = {
-                    Destination = iPeer.ownIp4;
-                  };
-                }
-                # ip6 route
-                {
-                  routeConfig = {
-                    Destination = iPeer.ownIp6;
-                  };
-                }
-              ]
+      routes = (lib.flatten
+        (builtins.map
+          (iPeer:
+            [
+              # ip4 route
+              {
+                routeConfig = {
+                  Destination = iPeer.ownIp4;
+                };
+              }
+              # ip6 route
+              {
+                routeConfig = {
+                  Destination = iPeer.ownIp6;
+                };
+              }
+            ] ++
+            # routed IPv4 via peers IPv4
+            (builtins.map
+              (iRoute: {
+                routeConfig = {
+                  Gateway = iPeer.ownIp4;
+                  Destination = iRoute;
+                };
+              })
+              iPeer.routedIp4
+            ) ++
+            # routed IPv6 via peers IPv6
+            (builtins.map
+              (iRoute: {
+                routeConfig = {
+                  Gateway = iPeer.ownIp6;
+                  Destination = iRoute;
+                };
+              })
+              iPeer.routedIp6
             )
-            vpn_clients
+          )
+          vpnClients
         ));
     };
   };
 
-  # knot authorative dns server
+  # knot authorative dns server config
   services.knot = {
     enable = true;
     settings = {
@@ -127,7 +146,8 @@ in
   };
   environment.etc."knot/zones/vpn.intern.zone".text = builtins.readFile ../data/zones/vpn.intern.zone;
 
-  # knot resolver
+  # knot caching resolver config
+  # serves as a resolver from the root zone in additiona to diverting to the vpn.intern authorative server defined above
   services.kresd = {
     enable = true;
     listenPlain = [ "10.20.30.1:53" "[fc10:20:30::1]:53" ];
