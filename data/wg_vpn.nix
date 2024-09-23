@@ -19,7 +19,7 @@ in
     "vpn.srv.myroot.intern" = mkPeer "vpn.ftsell.de:51820" "1" [ "10.20.30.0/24" ] [ "fc10:20:30::/64" ] "SRVfDEjWZCEcxynQoK1iibpzVeDN61ghTEQPps3pmSY=" false true;
 
     # simple clients
-    "nas.srv.myroot.intern" = mkSimpleClient "2" "NASFYFuG6XOw+S/0Bu5prkrGrT8t86fJcZdpIEBjynU=";
+    "nas.srv.myroot.intern" = mkPeer "10.0.10.14:51820" "2" [] [] "NASFYFuG6XOw+S/0Bu5prkrGrT8t86fJcZdpIEBjynU=" false false;
     finnsLaptop = mkSimpleClient "101" "LAPcOludjQrjfza0M+XA+fuwxpVfmqRKjBawAxWDyDY=";
     finnsPhone = mkSimpleClient "102" "PHN5Srlsv3x7+ehWF4SPz0eezcYlm7c0pIU5jXYuYG4=";
 

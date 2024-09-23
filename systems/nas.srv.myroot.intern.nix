@@ -1,4 +1,10 @@
-{ modulesPath, config, lib, pkgs, ... }: {
+{ modulesPath, config, lib, pkgs, ... }:
+let
+  data.wg_vpn = import ../data/wg_vpn.nix;
+  wgServer = data.wg_vpn.peers."vpn.srv.myroot.intern";
+  wgSelf = data.wg_vpn.peers."nas.srv.myroot.intern";
+in
+{
   imports = [
     ../modules/hosting_guest.nix
     ../modules/base_system.nix
@@ -21,19 +27,88 @@
     };
   };
 
+  environment.systemPackages = with pkgs; [
+    wireguard-tools
+  ];
+
   # networking config
   networking.useDHCP = false;
   systemd.network = {
     enable = true;
-    networks.default-ether = {
+
+    # default network interface
+    networks.enp1s0 = {
       matchConfig = {
         Type = "ether";
+        MACAddress = "52:54:00:2e:74:29";
       };
-      networkConfig = {
-        IPv6AcceptRA = false;
-      };
+      networkConfig.IPv6AcceptRA = false;
       DHCP = "yes";
     };
+
+    # vpn client config
+    netdevs.wgVpn = {
+      netdevConfig = {
+        Kind = "wireguard";
+        Name = "wgVpn";
+      };
+      wireguardConfig = {
+        ListenPort = 51820;
+        PrivateKeyFile = "/run/secrets/wg_vpn/privkey";
+      };
+      wireguardPeers = [{
+        wireguardPeerConfig = {
+          PublicKey = wgServer.pub;
+          AllowedIPs = [ wgServer.ownIp4 wgServer.ownIp6 ] ++ wgServer.routedIp4 ++ wgServer.routedIp6;
+          Endpoint = "10.0.10.11";
+        };
+      }];
+    };
+    networks.wgVpn = {
+      matchConfig = {
+        Name = "wgVpn";
+      };
+      address = [ wgSelf.ownIp4 wgSelf.ownIp6 ];
+      routes = [
+        {
+          # direct ip4
+          routeConfig = {
+            Destination = wgServer.ownIp4;
+          };
+        }
+        {
+          # direct ip6
+          routeConfig = {
+            Destination = wgServer.ownIp6;
+          };
+        }
+      ] ++
+      # routed ip4
+      (builtins.map
+        (iRoute: {
+          routeConfig = {
+            Gateway = wgServer.ownIp4;
+            Destination = iRoute;
+          };
+        })
+        wgServer.routedIp4
+      ) ++
+      # routed ip6
+      (builtins.map
+        (iRoute: {
+          routeConfig = {
+            Gateway = wgServer.ownIp6;
+            Destination = iRoute;
+          };
+        })
+        wgServer.routedIp6
+      )
+      ;
+    };
+  };
+
+  sops.secrets."wg_vpn/privkey" = {
+    owner = "systemd-network";
   };
 
   # postgres config
@@ -67,14 +142,15 @@
   networking.nftables.enable = true;
   networking.firewall = {
     allowedTCPPorts = [
-      5432  # postgresql
-      2049  # nfs
+      5432 # postgresql
+      2049 # nfs
       config.services.nfs.server.statdPort
       config.services.nfs.server.lockdPort
       config.services.nfs.server.mountdPort
     ];
     allowedUDPPorts = [
-      2049  # nfs
+      2049 # nfs
+      51820 # wireguard
       config.services.nfs.server.statdPort
       config.services.nfs.server.lockdPort
       config.services.nfs.server.mountdPort

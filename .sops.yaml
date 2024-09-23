@@ -5,6 +5,7 @@ keys: &keys
   - &hosting-srv "age1pzkr2kwn43cc694szra4rr9wqh63c32aqpz3vkr9at7qx294l5wsusj7s2"
   - &k8s-worker1-srv "age1g2uxex88r5fya0lgjqthp0tekalz6hq3fc8m8hhnwr36q5ylafaqcnt2hq"
   - &fluxcd "age19es5hdfpqhwrz7l6lm4a56kgftmwd2ek7nxfpw2maqzpgt4yt5aq89d4fc"
+  - &nas-myroot "age13c2vll0rel2pj62sdfgrvlr0mvauqhzclqh8hyqgdue8ws2t45xsuslxg6"
 creation_rules:
   # per-host secrets
   - path_regex: "data/secrets/vpn.srv.myroot.intern.yml"
@@ -22,6 +23,10 @@ creation_rules:
   - path_regex: "data/secrets/hosting.srv.ftsell.de.yml"
     key_groups:
       - age: [ *ftsell, *hosting-srv ]
+
+  - path_regex: "data/secrets/nas.srv.myroot.intern.yml"
+    key_groups:
+      - age: [ *ftsell, *nas-myroot ]
   
   # generic secrets
   - path_regex: "data/secrets/.+.yml"
