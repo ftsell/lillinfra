@@ -5,7 +5,6 @@
     ../modules/gnome.nix
     ../modules/user_ftsell.nix
     ../modules/dev_env.nix
-    ../modules/vpn_client.nix
   ];
 
   # boot config

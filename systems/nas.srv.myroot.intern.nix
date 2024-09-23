@@ -60,7 +60,7 @@ in
         wireguardPeerConfig = {
           PublicKey = wgServer.pub;
           AllowedIPs = [ wgServer.ownIp4 wgServer.ownIp6 ] ++ wgServer.routedIp4 ++ wgServer.routedIp6;
-          Endpoint = "10.0.10.11";
+          Endpoint = "10.0.10.11:51820";
         };
       }];
     };
@@ -87,7 +87,6 @@ in
       (builtins.map
         (iRoute: {
           routeConfig = {
-            Gateway = wgServer.ownIp4;
             Destination = iRoute;
           };
         })
@@ -97,7 +96,6 @@ in
       (builtins.map
         (iRoute: {
           routeConfig = {
-            Gateway = wgServer.ownIp6;
             Destination = iRoute;
           };
         })

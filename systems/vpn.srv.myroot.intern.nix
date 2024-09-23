@@ -45,6 +45,7 @@ in
   };
 
   # generic network config
+  networking.nftables.enable = true;
   networking.useDHCP = false;
   systemd.network = {
     enable = true;
