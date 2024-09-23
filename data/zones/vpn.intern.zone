@@ -27,5 +27,5 @@ home-proxy      IN  AAAA    fc10:20:30::103
 finnsWorkstation IN A       10.20.30.104
 finnsWorkstation IN AAAA    fc10:20:30::104
 
-nas             IN  A       10.20.30.105
-nas             IN  AAAA    fc10:20:30::105
+nas             IN  A       10.20.30.2
+nas             IN  AAAA    fc10:20:30::2
