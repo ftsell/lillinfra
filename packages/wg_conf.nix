@@ -2,6 +2,8 @@
 let
   data.wg_vpn = import ../data/wg_vpn.nix;
 
+  vpnServer = data.wg_vpn.peers."vpn.srv.myroot.intern";
+
   mkVpnConfigFilePackage = (systemName: vpnData: {
     name = "wg_vpn-config-${systemName}";
     value = pkgs.writeShellApplication {
@@ -28,10 +30,10 @@ let
         DNS = 10.20.30.1,fc10:20:30::1
         
         [Peer]
-        PublicKey = ${data.wg_vpn.peers.vpn-srv.pub}
-        AllowedIPs = ${builtins.concatStringsSep "," (data.wg_vpn.peers.vpn-srv.routedIp4 ++ data.wg_vpn.peers.vpn-srv.routedIp6)}
-        Endpoint = ${data.wg_vpn.peers.vpn-srv.endpoint}
-        PersistentKeepalive = ${if vpnData.keepalive then "25" else "off"}
+        PublicKey = ${vpnServer.pub}
+        AllowedIPs = ${builtins.concatStringsSep "," (vpnServer.routedIp4 ++ vpnServer.routedIp6)}
+        Endpoint = ${vpnServer.endpoint}
+        PersistentKeepalive = ${if vpnData.keepalive then "25" else "0"}
         END
         }
 
