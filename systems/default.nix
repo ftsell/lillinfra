@@ -18,7 +18,7 @@ let
         in
         {
           networking.hostName = builtins.head fqdnParts;
-          networking.domain = (builtins.concatStringsSep "." (builtins.tail fqdnParts));
+          networking.domain = if ((builtins.length fqdnParts) > 1) then (builtins.concatStringsSep "." (builtins.tail fqdnParts)) else null;
         }
       )
     ];
