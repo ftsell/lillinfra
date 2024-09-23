@@ -148,17 +148,30 @@ in
 
   # knot caching resolver config
   # serves as a resolver from the root zone in additiona to diverting to the vpn.intern authorative server defined above
-  services.kresd = {
-    enable = true;
-    listenPlain = [ "10.20.30.1:53" "[fc10:20:30::1]:53" ];
-    extraConfig = ''
-      -- forward queries belonging to internal domains to the authorative vpn.intern. server
-      policy.add(policy.suffix(
-        policy.STUB('127.0.0.1@8053'), 
-        policy.todnames({'vpn.intern'})
-      ))
-    '';
-  };
+  services.kresd =
+    let
+      rpz = pkgs.fetchurl {
+        url = "https://raw.githubusercontent.com/hagezi/dns-blocklists/c531bbd2ef45d5dbdadc1535ad71a14bb11fe990/rpz/pro.txt";
+        hash = "sha256-fsM+v7uIR4nP5lQ0jAYyui3mrHrGbr6g46yKluJlb9Y=";
+      };
+    in
+    {
+      enable = true;
+      listenPlain = [ "10.20.30.1:53" "[fc10:20:30::1]:53" ];
+      extraConfig = ''
+        -- forward queries belonging to internal domains to the authorative vpn.intern. server
+        policy.add(policy.suffix(
+          policy.STUB('127.0.0.1@8053'), 
+          policy.todnames({'vpn.intern'})
+        ))
+
+        -- use response policy zone
+        policy.add(policy.rpz(
+          policy.DENY,
+          '${rpz}'
+        ))
+      '';
+    };
 
   sops.secrets = {
     "wg_vpn/privkey" = {
