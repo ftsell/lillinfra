@@ -87,7 +87,6 @@
     nftables
   ];
 
-
   virtualisation.podman = {
     enable = true;
     dockerSocket.enable = true;
@@ -96,6 +95,7 @@
   };
   services.printing.enable = true;
   services.earlyoom.enable = true;
+  services.resolved.enable = true;
   programs.gnupg.agent.enable = true;
 
   sops.age.keyFile = /home/ftsell/.config/sops/age/keys.txt;
