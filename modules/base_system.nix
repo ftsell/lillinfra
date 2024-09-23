@@ -50,8 +50,9 @@
   # software settings
   home-manager.useGlobalPkgs = lib.mkDefault true;
 
-  # derive sops key from ssh key if ssh is enabled
+  # derive sops key from ssh key if ssh is enable and configure host sepcific secrets
   sops.age.sshKeyPaths = lib.mkIf config.services.openssh.enable [ "/etc/ssh/ssh_host_ed25519_key" ];
+  sops.defaultSopsFile = ../data/secrets + "/${config.networking.fqdnOrHostName}.yml";
 
   # additional apps
   environment.systemPackages = with pkgs; [
@@ -66,7 +67,4 @@
     VISUAL = "hx";
   };
   environment.localBinInPath = true;
-
-  # configure host sepcific secrets
-  sops.defaultSopsFile = ../data/secrets + "/${config.networking.hostName}.yml";
 }
