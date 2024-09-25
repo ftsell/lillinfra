@@ -99,5 +99,10 @@ in
     sshfs
     kubectl
     pass
+    sshuttle
+    jetbrains.webstorm
+    jetbrains.rust-rover
+    jetbrains.pycharm-professional
+    jetbrains.datagrip
   ];
 }
