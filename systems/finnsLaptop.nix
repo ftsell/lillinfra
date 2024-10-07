@@ -84,6 +84,7 @@
     gnupg
     sieveshell
     nftables
+    file
   ];
 
   virtualisation.podman = {
