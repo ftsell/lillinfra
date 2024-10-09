@@ -95,7 +95,7 @@ in
       };
       networkConfig = {
         LinkLocalAddressing = false;
-        VLAN = [ "vlanFinn" "vlanBene" "vlanPolygon" "vlanVieta" "vlanTimon" ];
+        VLAN = [ "vlanFinn" "vlanBene" "vlanPolygon" "vlanVieta" "vlanTimon" "vlanIsabell" ];
       };
     };
 
@@ -113,6 +113,9 @@ in
 
     netdevs."vlanTimon" = mkVlanNetdev "vlanTimon" 14;
     networks."vlanTimon" = mkVlanNetwork "vlanTimon" 14 [ "37.153.156.171" ];
+
+    netdevs."vlanIsabell" = mkVlanNetdev "vlanIsabell" 15;
+    networks."vlanIsabell" = mkVlanNetwork "vlanIsabell" 15 [ "37.153.156.175" ];
   };
 
   networking.nftables.enable = true;
@@ -167,7 +170,7 @@ in
     enable = true;
     settings = {
       interfaces-config = {
-        interfaces = [ "vlanFinn" "vlanBene" "vlanPolygon" "vlanVieta" "vlanTimon" ];
+        interfaces = [ "vlanFinn" "vlanBene" "vlanPolygon" "vlanVieta" "vlanTimon" "vlanIsabell" ];
       };
       lease-database = {
         name = "/var/lib/kea/dhcp4.leases";
@@ -346,6 +349,29 @@ in
             {
               subnet = "10.0.14.0/24";
               pools = [{ pool = "10.0.14.10 - 10.0.14.254"; }];
+            }
+          ];
+        }
+
+        {
+          # network for isabell
+          name = "isabellNet";
+          interface = "vlanIsabell";
+          subnet4 = [
+            {
+              subnet = "37.153.156.175/32";
+              pools = [{ pool = "37.153.156.175 - 37.153.156.175"; }];
+              reservations = [
+                {
+                  # isabell-server
+                  hw-address = "52:54:00:2d:2a:26";
+                  ip-address = "37.153.156.175";
+                }
+              ];
+            }
+            {
+              subnet = "10.0.15.0/24";
+              pools = [{ pool = "10.0.15.10 - 10.0.15.254"; }];
             }
           ];
         }

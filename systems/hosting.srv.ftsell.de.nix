@@ -170,6 +170,12 @@ in
     networks."vethTimon@up" = mkVethConnUp "vethTimon" 14;
     networks."vethTimon@down" = mkVethConnDown "vethTimon" "brTimon";
 
+    netdevs.brIsabell = mkBridgeNetdev "brIsabell";
+    networks.brIsabell = mkBridgeNetwork "brIsabell";
+    netdevs.vethIsabell = mkVeth "vethIsa";
+    networks."vethIsa@up" = mkVethConnUp "vethIsa" 15;
+    networks."vethIsa@down" = mkVethConnDown "vethIsa" "brIsabell";
+
     # instruct the physical ethernet adapter to use the brMyRoot bridge device
     networks.ethMyRoot = {
       matchConfig = {
