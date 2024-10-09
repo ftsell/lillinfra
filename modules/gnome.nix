@@ -31,6 +31,12 @@
         button-layout = "appmenu:minimize,close";
         focus-mode = "mouse";
       };
+      "/org/gnome/shell" = {
+        favorite-apps = [ "org.gnome.Nautilus.desktop" "org.keepassxc.KeePassXC.desktop" "thunderbird.desktop" "firefox.desktop" "org.gnome.Console.desktop" ];
+      };
+      "/org/gnome/Console" = {
+        theme = "auto";
+      };
     };
   };
 
