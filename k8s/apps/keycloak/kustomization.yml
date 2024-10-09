@@ -12,7 +12,7 @@ resources:
 
 images:
   - name: quay.io/keycloak/keycloak
-    newTag: "25.0"
+    newTag: "26.0"
 
 configMapGenerator:
   - name: keycloak
