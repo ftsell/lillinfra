@@ -8,6 +8,10 @@ labels:
     pairs:
       app.kubernetes.io/part-of: memos
 
+images:
+  - name: ghcr.io/usememos/memos
+    newTag: "0.22"
+
 resources:
 - manifests/namespace.yml
 - manifests/storage.yml
