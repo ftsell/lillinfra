@@ -22,7 +22,7 @@ spec:
         - name: keycloak
           image: quay.io/keycloak/keycloak
           imagePullPolicy: Always
-          args: [ start ]
+          args: [ "start" ]
           envFrom:
             - configMapRef:
                 name: keycloak
