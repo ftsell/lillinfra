@@ -5,7 +5,7 @@ commonLabels:
   app.kubernetes.io/part-of: ingress-nginx
 
 resources:
-  - github.com/kubernetes/ingress-nginx/deploy/static/provider/baremetal?ref=controller-v1.7.0
+  - github.com/kubernetes/ingress-nginx/deploy/static/provider/baremetal?ref=controller-v1.11.3
 
 patches:
   - target:
