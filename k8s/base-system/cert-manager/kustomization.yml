@@ -4,5 +4,5 @@ commonLabels:
   app.kubernetes.io/part-of: cert-manager
 
 resources:
-  - https://github.com/cert-manager/cert-manager/releases/download/v1.14.1/cert-manager.yaml
+  - https://github.com/cert-manager/cert-manager/releases/download/v1.16.1/cert-manager.yaml
   - issuers.yml
