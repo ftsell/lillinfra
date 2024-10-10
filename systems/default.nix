@@ -7,7 +7,7 @@ let
       inputs.disko.nixosModules.disko
       inputs.home-manager.nixosModules.home-manager
       inputs.sops-nix.nixosModules.default
-      inputs.lix.nixosModules.default
+      inputs.lix.nixosModules.lixFromNixpkgs
 
       ../modules/backup.nix
       ./${name}.nix
