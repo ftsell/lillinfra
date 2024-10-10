@@ -44,6 +44,7 @@ in
       vscode-extensions.vscjava.vscode-java-dependency
       vscode-extensions.nvarner.typst-lsp
       vscode-extensions.vue.volar
+      vscode-extensions.tamasfe.even-better-toml
       # custom extensions
       vscode-extension-vscode-zonefile
     ];
