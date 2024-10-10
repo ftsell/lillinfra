@@ -5,7 +5,7 @@ commonLabels:
   app.kubernetes.io/part-of: local-path-provisioner
 
 resources:
-  - https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.29/deploy/local-path-storage.yaml
+  - https://github.com/rancher/local-path-provisioner//deploy?ref=v0.0.30
 
 patches:
   - target:
