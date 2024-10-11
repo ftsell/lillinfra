@@ -6,14 +6,16 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-http
 spec:
   tls:
-    - secretName: tls-ftsell.de
+    - secretName: tls-li.lly.sh
       hosts:
+        - li.lly.sh
+        - lly.sh
         - ftsell.de
         - www.ftsell.de
         - finn-thorben.me
         - www.finn-thorben.me
   rules:
-    - host: ftsell.de
+    - host: li.lly.sh
       http: &http
         paths:
           - path: /
@@ -44,6 +46,10 @@ spec:
                 name: website-riddles
                 port:
                   name: http
+    - host: lly.sh
+      http: *http
+    - host: ftsell.de
+      http: *http
     - host: www.ftsell.de
       http: *http
     - host: finn-thorben.me
