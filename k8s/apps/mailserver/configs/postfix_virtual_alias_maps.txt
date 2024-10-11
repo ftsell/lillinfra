@@ -1,4 +1,5 @@
-noreply@ftsell.de               noreply
+noreply@lly.sh                  noreply
+@noreply.lly.sh                 noreply
 dmarc-reports@ftsell.de         dmarc-reports
 
 hi@ftsell.de                    ftsell

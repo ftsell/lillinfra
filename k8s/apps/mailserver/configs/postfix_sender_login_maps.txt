@@ -1,8 +1,9 @@
-noreply@ftsell.de           noreply
+@noreply.lly.sh             noreply
+noreply@lly.sh              noreply
 
 @ftsell.de                  ftsell
 @finn-thorben.me            ftsell
-@lly.sheaksadi              ftsell
+@lly.sh                     ftsell
 @timonengelke.de            tengelke
 @sheaksadi.me               ssheak
 @bastianpermesang.com       bpermesang
