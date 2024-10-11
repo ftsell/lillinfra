@@ -2,6 +2,7 @@ noreply@ftsell.de           noreply
 
 @ftsell.de                  ftsell
 @finn-thorben.me            ftsell
+@lly.sheaksadi              ftsell
 @timonengelke.de            tengelke
 @sheaksadi.me               ssheak
 @bastianpermesang.com       bpermesang
