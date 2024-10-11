@@ -6,6 +6,9 @@ wg@ftsell.de                    contact@ftsell.de;contact@oleb.it
 @ftsell.de                      hi@ftsell.de
 @finn-thorben.me                hi@ftsell.de
 
+li@lly.sh                       ftsell
+@lly.sh                         li@lly.sh
+
 contact@timonengelke.de         tengelke
 @timonengelke.de                tengelke
 
