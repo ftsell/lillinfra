@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: renovate
+spec:
+  schedule: '@hourly'
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          volumes:
+            - name: cache
+              emptyDir: {}
+          restartPolicy: Never
+          containers:
+            - name: renovate
+              image: docker.io/renovate/renovate
+              envFrom:
+                - secretRef:
+                    name: renovatebot-config
+              volumeMounts:
+                - name: cache
+                  mountPath: /tmp/renovate/
