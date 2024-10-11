@@ -1,13 +1,16 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: tls-mail.ftsell.de
+  name: tls-mail.lly.sh
 spec:
   issuerRef:
     kind: ClusterIssuer
     name: letsencrypt-http
-  secretName: tls-mail.ftsell.de
+  secretName: tls-mail.lly.sh
   dnsNames:
+    - "mail.lly.sh"
+    - "mail.srv.lly.sh"
+    - "rspamd.mail.lly.sh"
     - "mail.ftsell.de"
     - "mail.srv.ftsell.de"
     - "rspamd.mail.ftsell.de"

@@ -35,7 +35,7 @@ spec:
             secretName: mailserver
         - name: tls
           secret:
-            secretName: tls-mail.ftsell.de
+            secretName: tls-mail.lly.sh
         - name: mails
           persistentVolumeClaim:
             claimName: mailserver-mails
