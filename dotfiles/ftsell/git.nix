@@ -1,8 +1,6 @@
 # Configuration for Home-Managers programs.git options
-{
+{ lib, pkgs }: {
   enable = true;
-  diff-so-fancy.enable = true;
-  diff-so-fancy.rulerWidth = 110;
   ignores = [
     "**/.*.swp"
     "**/__pycache__"
@@ -30,49 +28,54 @@
   };
   extraConfig = {
     user = {
-      name = "ftsell";
-      email = "dev@ftsell.de";
+      name = "lilly";
+      email = "li@lly.sh";
+      signingkey = "key::ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPohjBYcg4GR9hKH6vdT5V2OA+rpTBkDOJZzipnotpR+ li@lly.sh";
     };
     core = {
       autocrlf = "input";
       fscache = true;
     };
-    pull = {
-      rebase = true;
-    };
-    color = {
-      ui = "auto";
-    };
-    init = {
-      defaultBranch = true;
-    };
-    push = {
-      autoSetupRemote = true;
-    };
+    pull.rebase = true;
+    color.ui = "auto";
+    init.defaultBranch = true;
+    push.autoSetupRemote = true;
+    gpg.format = "ssh";
+    gpg.ssh.allowedSignersFile = "${pkgs.writeText "trusted-git-signers" ''
+      li@lly.sh,dev@ftsell.de ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPohjBYcg4GR9hKH6vdT5V2OA+rpTBkDOJZzipnotpR+
+    ''}";
+    commit.gpgsign = true;
+    tag.gpgsign = true;
   };
   includes =
     let
-      workConfig = {
+      vcaConfig = {
         user = {
           name = "ftsell";
           email = "f.sell@vivaconagua.org";
         };
       };
+      b1Config = {
+        user = {
+          name = "Lilly Sell";
+          email = "sell@b1-systems.de";
+        };
+      };
       cccConfig = {
         user = {
-          name = "finn";
-          email = "ccc@ftsell.de";
+          name = "lilly";
+          email = "ccc@lly.sh";
         };
       };
     in
     [
       {
         condition = "hasconfig:remote.origin.url:git@github.com/viva-con-agua/**";
-        contents = workConfig;
+        contents = vcaConfig;
       }
       {
         condition = "hasconfig:remote.origin.url:https://github.com/viva-con-agua/**";
-        contents = workConfig;
+        contents = vcaConfig;
       }
       {
         condition = "hasconfig:remote.origin.url:forgejo@git.hamburg.ccc.de:*/**";

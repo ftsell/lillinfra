@@ -8,7 +8,7 @@ in
   users.users.ftsell = {
     createHome = true;
     extraGroups = [ "wheel" "networkmanager" ]
-      ++ (if config.virtualisation.podman.dockerSocket.enable then [ "podman" ] else []);
+      ++ (if config.virtualisation.podman.dockerSocket.enable then [ "podman" ] else [ ]);
     home = "/home/ftsell";
     shell = pkgs.fish;
     openssh.authorizedKeys.keys = [
@@ -29,7 +29,7 @@ in
     };
     programs.direnv = import ../dotfiles/ftsell/direnv;
     programs.ssh.enable = true;
-    programs.git = import ../dotfiles/ftsell/git.nix;
+    programs.git = import ../dotfiles/ftsell/git.nix { inherit lib pkgs; };
     programs.fish = import ../dotfiles/ftsell/fish.nix;
   };
 }
