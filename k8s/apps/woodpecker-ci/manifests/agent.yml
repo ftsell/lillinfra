@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: List
+items:
+
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: woodpecker-agent
+      labels: &labels
+        app.kubernetes.io/name: woodpecker-agent
+        app.kubernetes.io/component: ci-runner
+    spec:
+      selector: *labels
+      clusterIP: None
+
+  - apiVersion: apps/v1
+    kind: StatefulSet
+    metadata:
+      name: woodpecker-agent
+      labels: *labels
+    spec:
+      serviceName: woodpecker-agent
+      replicas: 1
+      selector:
+        matchLabels: *labels
+
+      volumeClaimTemplates:
+        - metadata:
+            name: agent-config
+          spec:
+            storageClassName: local-path
+            accessModes: [ "ReadWriteMany" ]
+            resources:
+              requests:
+                storage: "1G"
+
+      template:
+        metadata:
+          labels: *labels
+        spec:
+          serviceAccountName: woodpecker-agent
+          containers:
+            - name: agent
+              image: docker.io/woodpeckerci/woodpecker-agent
+              imagePullPolicy: Always
+              envFrom:
+                - configMapRef:
+                    name: woodpecker-agent
+              env:
+                - name: WOODPECKER_AGENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: woodpecker-server
+                      key: WOODPECKER_AGENT_SECRET
+              volumeMounts:
+                - name: agent-config
+                  mountPath: /etc/woodpecker
+              ports:
+                - name: http
+                  containerPort: 3000
+              resources:
+                requests:
+                  cpu: "0.2"
+                  memory: "32M"
+                limits:
+                  memory: "50M"

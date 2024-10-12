@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: List
+items:
+
+  # https://woodpecker-ci.org/docs/next/administration/backends/kubernetes#volumes
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: woodpecker-cache
+    spec:
+      storageClassName: local-path
+      accessModes: [ "ReadWriteMany" ]
+      resources:
+        requests:
+          storage: "10G"
