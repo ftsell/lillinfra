@@ -33,7 +33,6 @@ in
       vscode-extensions.vadimcn.vscode-lldb
       vscode-extensions.elixir-lsp.vscode-elixir-ls
       vscode-extensions.jnoortheen.nix-ide
-      vscode-extensions.charliermarsh.ruff
       vscode-extensions.golang.go
       vscode-extensions.ms-vscode.cpptools-extension-pack
       vscode-extensions.ms-vscode.cpptools

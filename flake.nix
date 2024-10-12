@@ -67,6 +67,7 @@
         cmctl
         age
         ssh-to-age
+        woodpecker-cli
         python311
         python311Packages.pynetbox
         python311Packages.ipython
