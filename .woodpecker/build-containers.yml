@@ -1,0 +1,27 @@
+matrix:
+  CONTAINER: [ "pre-commit" ]
+
+steps:
+  - name: build ${CONTAINER} container image
+    when:
+      - event: push
+      - event: cron
+      - event: manual
+    image: quay.io/containers/podman
+    privileged: true
+    commands:
+      - podman build -t git.lly.sh/ftsell/lillinfra-${CONTAINER} -f containers/${CONTAINER}.Containerfile containers
+      - podman save -o ${CONTAINER}.tar git.lly.sh/ftsell/lillinfra-${CONTAINER}
+
+  - name: publish ${CONTAINER} container image
+    when:
+      - event: manual
+        branch: main
+      - event: push
+        branch: main
+      - event: cron
+        cron: periodic-rebuild
+    image: quay.io/containers/skopeo
+    secrets: [ "FORGEJO_PACKAGES_ACCESS" ]
+    commands:
+      - skopeo copy --dest-username ftsell --dest-password $FORGEJO_PACKAGES_ACCESS docker-archive:${CONTAINER}.tar docker://git.lly.sh/ftsell/lillinfra-${CONTAINER}
