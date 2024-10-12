@@ -22,6 +22,8 @@ spec:
               envFrom:
                 - secretRef:
                     name: renovatebot-config
+                - configMapRef:
+                    name: renovatebot-config
               volumeMounts:
                 - name: cache
                   mountPath: /tmp/renovate/

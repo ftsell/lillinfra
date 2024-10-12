@@ -8,6 +8,11 @@ resources:
   - cronjob.yml
   - namespace.yml
 
+configMapGenerator:
+  - name: renovatebot-config
+    envs:
+      - config.env
+
 secretGenerator:
   - name: renovatebot-config
     envs:
