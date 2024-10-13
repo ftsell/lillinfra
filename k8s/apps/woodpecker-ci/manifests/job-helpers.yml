@@ -13,14 +13,3 @@ items:
       resources:
         requests:
           storage: "10G"
-
-  - apiVersion: v1
-    kind: PersistentVolumeClaim
-    metadata:
-      name: woodpecker-job-nix-store
-    spec:
-      storageClassName: local-path
-      accessModes: [ "ReadWriteMany" ]
-      resources:
-        requests:
-          storage: "10G"
