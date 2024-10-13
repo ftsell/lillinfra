@@ -5,6 +5,7 @@ steps:
   - name: build ${CONTAINER} container image
     when:
       - event: push
+        path: [ ".woodpecker/build-containers.yml", "containers/${CONTAINER}.Containerfile" ]
       - event: cron
       - event: manual
     image: quay.io/containers/podman
@@ -19,6 +20,7 @@ steps:
         branch: main
       - event: push
         branch: main
+        path: [ ".woodpecker/build-containers.yml", "containers/${CONTAINER}.Containerfile" ]
       - event: cron
         cron: periodic-rebuild
     image: quay.io/containers/skopeo
