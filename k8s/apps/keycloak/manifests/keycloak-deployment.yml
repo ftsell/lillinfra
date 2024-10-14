@@ -17,6 +17,8 @@ spec:
         - name: secrets
           secret:
             secretName: keycloak
+        - name: custom-providers
+          emptyDir: {}
 
       containers:
         - name: keycloak
@@ -36,6 +38,8 @@ spec:
           volumeMounts:
             - name: secrets
               mountPath: "/opt/jboss/secrets"
+            - name: custom-providers
+              mountPath: "/opt/keycloak/providers"
           readinessProbe:
             httpGet:
               port: mgmt
@@ -46,3 +50,18 @@ spec:
               memory: "2G"
             limits:
               memory: "2G"
+
+      initContainers:
+        - name: install-restrict-client-auth
+          image: quay.io/curl/curl
+          volumeMounts:
+            - name: custom-providers
+              mountPath: "/opt/keycloak/providers"
+          command: [ "sh", "-c" ]
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1
+          args:
+            - |
+              set -x
+              curl -sSL https://github.com/sventorben/keycloak-restrict-client-auth/releases/download/v26.0.0/keycloak-restrict-client-auth.jar -o /opt/keycloak/providers/keycloak-restrict-client-auth-26.0.0.jar
