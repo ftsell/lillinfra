@@ -11,13 +11,23 @@
 
   # boot config
   boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" "hid_roccat_isku" ];
-  boot.initrd.kernelModules = [  ];
   boot.kernelModules = [ "kvm-intel" ];
-  boot.extraModulePackages = [ ];
+  boot.zfs.extraPools = [ "lillyPc" ];
   fileSystems = {
     "/" = {
-      device = "/dev/disk/by-uuid/cfa942ff-75c5-4fe3-bc0d-7c50e1072f4a";
-      fsType = "bcachefs";
+      device = "lillyPc/root";
+      fsType = "zfs";
+      options = [ "zfsutil" ];
+    };
+    "/nix" = {
+      device = "lillyPc/nix";
+      fsType = "zfs";
+      options = [ "zfsutil" ];
+    };
+    "/home" = {
+      device = "lillyPc/home";
+      fsType = "zfs";
+      options = [ "zfsutil" ];
     };
     "/boot" = {
       device = "/dev/disk/by-uuid/5620-B429";
@@ -39,7 +49,6 @@
     device = "nodev";
   };
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.supportedFilesystems = [ "bcachefs" ];
 
   # hardware config
   services.xserver.videoDrivers = [ "nvidia" ];
@@ -112,4 +121,5 @@
   # this defines the first version of NixOS that was installed on the machine so that programs with non-migratable data files are kept compatible
   home-manager.users.ftsell.home.stateVersion = "24.05";
   system.stateVersion = "24.05";
+  networking.hostId = "0744a9ed";
 }
