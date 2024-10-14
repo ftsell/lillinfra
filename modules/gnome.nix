@@ -37,6 +37,9 @@
       "org/gnome/Console" = {
         theme = "auto";
       };
+      "org/gnome/nautilus/preferences" = {
+        "default-folder-viewer" = "list-view";
+      };
     };
   };
 
