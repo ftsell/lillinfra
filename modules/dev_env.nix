@@ -104,5 +104,6 @@ in
     jetbrains.rust-rover
     jetbrains.pycharm-professional
     jetbrains.datagrip
+    jetbrains.idea-ultimate
   ];
 }
