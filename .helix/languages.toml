@@ -1,0 +1,3 @@
+[language-server.yaml-language-server.config.yaml.schemas]
+kubernetes = [ "k8s/**/*.yml" ]
+
