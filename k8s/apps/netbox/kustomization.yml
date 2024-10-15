@@ -26,6 +26,7 @@ configMapGenerator:
       - "extra.py=config/extra_config.py"
       - "logging.py=config/logging.py"
       - "plugins.py=config/plugins.py"
+      - "local_requirements.txt"
 
 secretGenerator:
   - name: netbox-env

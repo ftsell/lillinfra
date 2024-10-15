@@ -76,6 +76,9 @@ items:
                 - name: config
                   subPath: plugins.py
                   mountPath: /etc/netbox/config/plugins.py
+                - name: config
+                  subPath: local_requirements.txt
+                  mountPath: /opt/netbox/local_requirements.txt
               ports:
                 - name: http
                   containerPort: 8080

@@ -1,0 +1,4 @@
+netbox-bgp>=0.14.0
+netbox-floorplan-plugin>=0.4.1
+netbox-qrcode>=0.0.13
+netbox-topology-views>=4.1.0
