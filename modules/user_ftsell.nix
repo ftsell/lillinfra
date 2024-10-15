@@ -21,7 +21,6 @@ in
   home-manager.users.ftsell = {
     home.preferXdgDirectories = true;
     xdg.configFile = {
-      "helix/config.toml".source = ../dotfiles/ftsell/helix/config.toml;
       "wezterm/wezterm,lua".source = ../dotfiles/ftsell/wezterm/wezterm.lua;
     };
     home.file = {
@@ -31,5 +30,6 @@ in
     programs.ssh.enable = true;
     programs.git = import ../dotfiles/ftsell/git.nix { inherit lib pkgs; };
     programs.fish = import ../dotfiles/ftsell/fish.nix;
+    programs.helix = import ../dotfiles/ftsell/helix.nix { inherit lib pkgs; };
   };
 }
