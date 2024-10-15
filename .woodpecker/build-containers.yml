@@ -1,5 +1,5 @@
 matrix:
-  CONTAINER: [ "pre-commit" ]
+  CONTAINER: [ "pre-commit", "netbox" ]
 
 steps:
   - name: build ${CONTAINER} container image
