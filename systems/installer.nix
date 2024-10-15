@@ -1,9 +1,9 @@
 { config, modulesPath, lib, pkgs, home-manager, sops-nix, lix, ... }: {
   imports = [
-    (modulesPath + "/installer/cd-dvd/installation-cd-minimal-new-kernel-no-zfs.nix")
+    (modulesPath + "/installer/cd-dvd/installation-cd-minimal.nix")
     home-manager.nixosModules.default
     sops-nix.nixosModules.default
-    lix.nixosModules.default
+    lix.nixosModules.lixFromNixpkgs
     ../modules/base_system.nix
     ../modules/user_ftsell.nix
   ];
