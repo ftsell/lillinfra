@@ -5,10 +5,7 @@
 # See https://github.com/netbox-community/netbox-docker/wiki/Using-Netbox-Plugins
 
 PLUGINS = [
-    "netbox_topology_views",
     "netbox_qrcode",
-    # "netbox_floorplan",
-    "netbox_bgp"
 ]
 
 # PLUGINS_CONFIG = {
