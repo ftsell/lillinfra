@@ -1,9 +1,8 @@
 {
-  description = "finnfrastructure - ftsell's infrastructure configuration";
+  description = "lillinfra - lillys infrastructure configuration";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.05";
-    #nixpkgs.url = "github:nixos/nixpkgs?ref=53e81e790209e41f0c1efa9ff26ff2fd7ab35e27";
     nixpkgs-small.url = "github:nixos/nixpkgs?ref=nixos-24.05-small";
     nixpkgs-release.url = "github:nixos/nixpkgs?ref=release-24.05";
 
@@ -46,16 +45,11 @@
   };
 
   outputs = inputs@{ self, nixpkgs, ... }: rec {
-    nixosConfigurations = import ./systems {
-      inherit inputs;
-    };
-    packages = nixpkgs.lib.attrsets.genAttrs nixpkgs.lib.systems.flakeExposed (system: import ./packages {
+    nixosConfigurations = import ./nix/systems { inherit inputs; };
+    packages = nixpkgs.lib.attrsets.genAttrs nixpkgs.lib.systems.flakeExposed (system: import ./nix/packages {
       inherit system inputs;
       pkgs = nixpkgs.legacyPackages.${system};
     });
-
-    # custom output shortcuts
-    wg_vpn = (nixpkgs.lib.filterAttrs (pkgName: _: (builtins.substring 0 14 "wg_vpn-config-") != "") packages.x86_64-linux);
 
     devShells.x86_64-linux.default = nixpkgs.legacyPackages.x86_64-linux.mkShell {
       packages = with nixpkgs.legacyPackages.x86_64-linux; [
