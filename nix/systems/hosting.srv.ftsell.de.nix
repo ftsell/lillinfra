@@ -71,10 +71,24 @@ in
   ];
 
   # boot config
+  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+    boot.initrd.availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usbhid" "sd_mod" ];
+    boot.kernelModules = [ "kvm-intel" ];
+    boot.loader.grub = {
+      enable = true;
+      device = "/dev/disk/by-id/ata-WDC_WD120EFBX-68B0EN0_D7HE49WN";
+    };
+  boot.zfs.extraPools = [ "hdd" ];
   fileSystems = {
     "/" = {
-      device = "/dev/disk/by-uuid/88eabac5-5476-49c1-b5d6-dd1f29ff3660";
-      fsType = "bcachefs";
+      device = "hdd/root";
+      fsType = "zfs";
+      options = [ "zfsutil" ];
+    };
+    "/nix" = {
+      device = "hdd/nix";
+      fsType = "zfs";
+      options = [ "zfsutil" ];
     };
     "/boot" = {
       device = "/dev/disk/by-uuid/C85B-5816";
@@ -85,16 +99,6 @@ in
   swapDevices = [{
     device = "/dev/disk/by-uuid/58ccf5a8-6b0f-45b3-bfe0-fe9db08b3338";
   }];
-
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usbhid" "sd_mod" ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" ];
-  boot.extraModulePackages = [ ];
-  boot.loader.grub = {
-    enable = true;
-    device = "/dev/disk/by-id/ata-WDC_WD120EFBX-68B0EN0_D7HE49WN";
-  };
 
   # networking config
   networking.useDHCP = false;
@@ -327,4 +331,5 @@ in
   # this defines the first version of NixOS that was installed on the machine so that programs with non-migratable data files are kept compatible
   home-manager.users.ftsell.home.stateVersion = "24.05";
   system.stateVersion = "23.11";
+  networking.hostId = "eaad9974";
 }
