@@ -43,13 +43,13 @@ in
   # boot config
   fileSystems = {
     "/boot" = {
-      device = "/dev/disk/by-uuid/9A39-E1DA";
+      device = "/dev/disk/by-uuid/83DB-8B4E";
       fsType = "vfat";
       options = [ "fmask=0077" "dmask=0077" ];
     };
     "/" = {
-      device = "/dev/disk/by-uuid/97a94901-3ccb-4eec-8bd0-bafd2fd8408a";
-      fsType = "bcachefs";
+      device = "/dev/disk/by-uuid/ac4a51da-dea7-4c32-b949-073dd9fbc592";
+      fsType = "ext4";
     };
   };
 
