@@ -13,8 +13,8 @@
       options = [ "fmask=0077" "dmask=0077" ];
     };
     "/" = {
-      device = "/dev/disk/by-uuid/5ce5853d-da2a-41db-8520-bf504e702a5e";
-      fsType = "bcachefs";
+      device = "/dev/disk/by-uuid/2802674f-bd98-44b8-ab13-3292515e21e1";
+      fsType = "ext4";
     };
   };
 
