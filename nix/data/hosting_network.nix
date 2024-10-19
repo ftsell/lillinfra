@@ -1,4 +1,4 @@
-let
+{ lib }: let
   mkExposed = macAddress: ipv4: {
     _type = "exposedGuest";
     ipv4 = ipv4;
@@ -15,6 +15,16 @@ let
     macAddress = macAddress;
     portForwards = portForwards;
   };
+
+  mkTenant = tenantId: {
+    _type = "tenant";
+    inherit tenantId;
+  };
+
+  mkDhcp4Lease = tenant: hostname: macAddr: ipAddr: {
+    _type = "dhcp4Lease";
+    inherit tenant hostname macAddr ipAddr;
+  };
 in
 rec {
   # hosting.srv.ftsell.de server
@@ -27,6 +37,26 @@ rec {
   #   - 37.153.156.168 - 37.153.156.175
   # private subnet
   #    - 10.0.0.0/24
+
+  rt-hosting.ip4 = "37.153.156.168";
+  rt-hosting.ip6 = "";
+
+  # contains the IP address range from 37.153.156.168 to 37.153.156.179
+  # https://netbox.ftsell.de/ipam/ip-ranges/1/
+  guestIPs = builtins.map
+    (i: "37.153.156.${builtins.toString i}")
+    (lib.range 169 179);
+
+  # https://netbox.ftsell.de/tenancy/tenants/?group_id=1
+  tenants = {
+    lilly = mkTenant 10;
+    bene = mkTenant 11;
+    polygon = mkTenant 12;
+    vieta = mkTenant 13;
+    timon = mkTenant 14;
+    isabell = mkTenant 15;
+  };
+
   guests = {
     # exposed guests
     rt-hosting = mkExposed "52:54:00:af:bc:45" "37.153.156.168";

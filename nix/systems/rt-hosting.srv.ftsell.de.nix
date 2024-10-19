@@ -1,6 +1,6 @@
 { modulesPath, config, lib, pkgs, ... }:
 let
-  data.network = import ../data/hosting_network.nix;
+  data.network = import ../data/hosting_network.nix { inherit lib; };
 
   mkVlanNetdev = name: vlan: {
     netdevConfig = {

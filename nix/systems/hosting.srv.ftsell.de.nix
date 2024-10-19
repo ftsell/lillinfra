@@ -1,6 +1,12 @@
 { modulesPath, config, lib, pkgs, ... }:
 let
-  data.network = import ../data/hosting_network.nix;
+  data.network = import ../data/hosting_network.nix { inherit lib; };
+
+  capitalize = str:
+    lib.concatStrings [
+      (lib.strings.toUpper (builtins.substring 0 1 str))
+      (builtins.substring 1 (lib.stringLength str) str)
+    ];
 
   mkBridgeNetdev = name: {
     netdevConfig = {
@@ -14,7 +20,7 @@ let
 
   mkBridgeNetwork = name: {
     matchConfig = {
-      Name = name;
+      Name = builtins.substring 0 15 name;
       Kind = "bridge";
     };
     linkConfig = {
@@ -29,21 +35,21 @@ let
 
   mkVeth = name: {
     netdevConfig = {
-      Name = "${name}-up";
+      Name = "${builtins.substring 0 (15-3) name}-up";
       Description = "veth device for connecting a tenant (down) to brVMs (up)";
       Kind = "veth";
     };
     peerConfig = {
-      Name = "${name}-down";
+      Name = "${builtins.substring 0 (15-5) name}-down";
     };
   };
 
   mkVethConnUp = name: vlan: {
     matchConfig = {
-      Name = "${name}-up";
+      Name = config.systemd.network.netdevs."${name}".netdevConfig.Name;
     };
     networkConfig = {
-      Bridge = "brVMs";
+      Bridge = config.systemd.network.netdevs.brVMs.netdevConfig.Name;
     };
     bridgeVLANs = [{
       bridgeVLANConfig = {
@@ -56,10 +62,10 @@ let
 
   mkVethConnDown = vethName: brName: {
     matchConfig = {
-      Name = "${vethName}-down";
+      Name = config.systemd.network.netdevs."${vethName}".peerConfig.Name;
     };
     networkConfig = {
-      Bridge = brName;
+      Bridge = config.systemd.network.netdevs."${brName}".netdevConfig.Name;
     };
   };
 in
@@ -114,119 +120,121 @@ in
   systemd.network = {
     enable = true;
 
-    # define a bridge device for physical network connections
-    netdevs.brMyRoot = {
-      netdevConfig = {
-        Name = "brMyRoot";
-        Description = "The bridge device connected to the physical network";
-        Kind = "bridge";
-        MACAddress = "0c:c4:7a:8e:25:ae";
-      };
-      bridgeConfig = {
-        MulticastSnooping = false;
-      };
-      bridgeConfig = {
-        STP = true;
-      };
-    };
-
-    # define a 'master' bridge device to which the routing vm and all tenants are connected
-    netdevs.brVMs = {
-      netdevConfig = {
-        Name = "brVMs";
-        Kind = "bridge";
-      };
-      bridgeConfig = {
-        STP = true;
-        VLANFiltering = true;
-      };
-    };
-    networks.brVMs = mkBridgeNetwork "brVMs";
-
-    # define bridge device and connection for finn (me)
-    netdevs.brFinn = mkBridgeNetdev "brFinn";
-    networks.brFinn = mkBridgeNetwork "brFinn";
-    netdevs.vethFinn = mkVeth "vethFinn";
-    networks."vethFinn-up" = mkVethConnUp "vethFinn" 10;
-    networks."vethFinn-down" = mkVethConnDown "vethFinn" "brFinn";
-
-    netdevs.brBene = mkBridgeNetdev "brBene";
-    networks.brBene = mkBridgeNetwork "brBene";
-    netdevs.vethBene = mkVeth "vethBene";
-    networks."vethBene@up" = mkVethConnUp "vethBene" 11;
-    networks."vethBene@down" = mkVethConnDown "vethBene" "brBene";
-
-    netdevs.brPolygon = mkBridgeNetdev "brPolygon";
-    networks.brPolygon = mkBridgeNetwork "brPolygon";
-    netdevs.vethPolygon = mkVeth "vethPoly";
-    networks."vethPolygon@up" = mkVethConnUp "vethPoly" 12;
-    networks."vethPolygon@down" = mkVethConnDown "vethPoly" "brPolygon";
-
-    netdevs.brVieta = mkBridgeNetdev "brVieta";
-    networks.brVieta = mkBridgeNetwork "brVieta";
-    netdevs.vethVieta = mkVeth "vethVieta";
-    networks."vethVieta@up" = mkVethConnUp "vethVieta" 13;
-    networks."vethVieta@down" = mkVethConnDown "vethVieta" "brVieta";
-
-    netdevs.brTimon = mkBridgeNetdev "brTimon";
-    networks.brTimon = mkBridgeNetwork "brTimon";
-    netdevs.vethTimon = mkVeth "vethTimon";
-    networks."vethTimon@up" = mkVethConnUp "vethTimon" 14;
-    networks."vethTimon@down" = mkVethConnDown "vethTimon" "brTimon";
-
-    netdevs.brIsabell = mkBridgeNetdev "brIsabell";
-    networks.brIsabell = mkBridgeNetwork "brIsabell";
-    netdevs.vethIsabell = mkVeth "vethIsa";
-    networks."vethIsa@up" = mkVethConnUp "vethIsa" 15;
-    networks."vethIsa@down" = mkVethConnDown "vethIsa" "brIsabell";
-
-    # instruct the physical ethernet adapter to use the brMyRoot bridge device
-    networks.ethMyRoot = {
-      matchConfig = {
-        Type = "ether";
-        MACAddress = "0c:c4:7a:8e:25:ae";
-      };
-      networkConfig = {
-        Bridge = "brMyRoot";
-      };
-    };
-
-    # assign IP addresses for the server itself on the bridge device
-    networks.brMyRoot = {
-      matchConfig = {
-        Name = "brMyRoot";
-      };
-      address = [
-        "37.153.156.125/24"
-        "2a10:9906:1002:0:125::125/64"
-      ];
-      gateway = [
-        "37.153.156.1"
-        "2a10:9906:1002::1"
-      ];
-      routes = [
+    netdevs = lib.mergeAttrs
+        # statically defined netdevs
         {
-          # rt-hosting IPv4 can always be reached
-          routeConfig = {
-            Destination = data.network.guests.rt-hosting.ipv4;
-          };
+            # define a bridge device for physical network connections
+            brMyRoot = {
+              netdevConfig = {
+                Name = "brMyRoot";
+                Description = "The bridge device connected to the physical network";
+                Kind = "bridge";
+                MACAddress = "0c:c4:7a:8e:25:ae";
+              };
+              bridgeConfig = {
+                MulticastSnooping = false;
+              };
+              bridgeConfig = {
+                STP = true;
+              };
+            };
+
+            # define a 'master' bridge device to which the routing vm and all tenant bridges are connected
+            brVMs = {
+              netdevConfig = {
+                Name = "brVMs";
+                Kind = "bridge";
+              };
+              bridgeConfig = {
+                STP = true;
+                VLANFiltering = true;
+              };
+            };
         }
-        # {
-        #   # myroot routed IPv6 can be reached via rt-hosting's IPv6 address
-        #   routeConfig = {
-        #     Destination = "2a10:9906:1002:125::/64";
-        #     Gateway = "2a10:9906:1002:125::1";  <- wrong
-        #   };
-        # }
-      ] ++ builtins.map
-        (i: {
-          routeConfig = {
-            Destination = i.ipv4;
-            Gateway = data.network.guests.rt-hosting.ipv4;
-          };
-        })
-        data.network.routedGuests;
-    };
+        # netdevs generated from hosting_network.nix
+        (lib.attrsets.concatMapAttrs
+            (name: data: {
+                "br${capitalize name}" = mkBridgeNetdev "br${capitalize name}";
+                "veth${capitalize name}" = mkVeth "veth${capitalize name}";
+            })
+            data.network.tenants);
+
+    networks = lib.mergeAttrs
+        # statically defined network configs
+        {
+            # instruct the physical ethernet adapter to bring up the brMyRoot bridge device
+            ethMyRoot = {
+              matchConfig = {
+                Type = "ether";
+                MACAddress = "0c:c4:7a:8e:25:ae";
+              };
+              networkConfig = {
+                Bridge = config.systemd.network.netdevs.brMyRoot.netdevConfig.Name;
+              };
+            };
+
+            # assign IP addresses for the server itself on the bridge device
+            brMyRoot = {
+              matchConfig = {
+                Name = config.systemd.network.netdevs.brMyRoot.netdevConfig.Name;
+              };
+              address = [
+                "37.153.156.125/24"
+                "2a10:9906:1002:0:125::125/64"
+              ];
+              gateway = [
+                "37.153.156.1"
+                "2a10:9906:1002::1"
+              ];
+              routes = [
+                {
+                  # rt-hosting IPv4 can always be reached
+                  routeConfig = {
+                    Destination = data.network.rt-hosting.ip4;
+                  };
+                }
+              ] ++ builtins.map
+                # guestIPs can be reached via rt-hosting
+                (i: {
+                  routeConfig = {
+                    Destination = i;
+                    Gateway = data.network.guests.rt-hosting.ipv4;
+                  };
+                })
+                data.network.guestIPs;
+            };
+
+            # an empty network on the VM bridge
+            brVMs = mkBridgeNetwork "brVMs";
+        }
+        # network configs generated from hosting_network.nix
+        (lib.attrsets.concatMapAttrs
+            (name: data: {
+                "br${capitalize name}" = mkBridgeNetwork config.systemd.network.netdevs."br${capitalize name}".netdevConfig.Name;
+                "veth${capitalize name}-up" = mkVethConnUp "veth${capitalize name}" data.tenantId;
+                "veth${capitalize name}-down" = mkVethConnDown "veth${capitalize name}" config.systemd.network.netdevs."br${capitalize name}".netdevConfig.Name;
+            })
+            data.network.tenants);
+#        {
+#            brFinn = mkBridgeNetwork "brFinn";
+#            "vethFinn-up" = mkVethConnUp "vethFinn" 10;
+#            "vethFinn-down" = mkVethConnDown "vethFinn" "brFinn";
+#            brBene = mkBridgeNetwork "brBene";
+#            "vethBene@up" = mkVethConnUp "vethBene" 11;
+#            "vethBene@down" = mkVethConnDown "vethBene" "brBene";
+#            brPolygon = mkBridgeNetwork "brPolygon";
+#            "vethPolygon@up" = mkVethConnUp "vethPoly" 12;
+#            "vethPolygon@down" = mkVethConnDown "vethPoly" "brPolygon";
+#            brVieta = mkBridgeNetwork "brVieta";
+#            "vethVieta@up" = mkVethConnUp "vethVieta" 13;
+#            "vethVieta@down" = mkVethConnDown "vethVieta" "brVieta";
+#            brTimon = mkBridgeNetwork "brTimon";
+#            "vethTimon@up" = mkVethConnUp "vethTimon" 14;
+#            "vethTimon@down" = mkVethConnDown "vethTimon" "brTimon";
+#            brIsabell = mkBridgeNetwork "brIsabell";
+#            "vethIsa@up" = mkVethConnUp "vethIsa" 15;
+#            "vethIsa@down" = mkVethConnDown "vethIsa" "brIsabell";
+#        };
   };
 
   boot.kernel.sysctl = {
