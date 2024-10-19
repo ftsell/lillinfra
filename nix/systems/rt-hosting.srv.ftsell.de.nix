@@ -2,6 +2,12 @@
 let
   data.network = import ../data/hosting_network.nix { inherit lib; };
 
+  capitalize = str:
+    lib.concatStrings [
+      (lib.strings.toUpper (builtins.substring 0 1 str))
+      (builtins.substring 1 (lib.stringLength str) str)
+    ];
+
   mkVlanNetdev = name: vlan: {
     netdevConfig = {
       Name = name;
@@ -11,6 +17,7 @@ let
       Id = vlan;
     };
   };
+
   mkVlanNetwork = name: vlan: routedIp4s: {
     matchConfig = {
       Name = name;
@@ -32,6 +39,7 @@ let
       };
     }];
   };
+
 in
 {
   imports = [
@@ -60,6 +68,17 @@ in
   networking.useDHCP = false;
   systemd.network = {
     enable = true;
+
+    netdevs = lib.mergeAttrs
+      # statically defined netdevs
+      {}
+      # netdevs derived from hosting_network.nix
+      (lib.attrsets.concatMapAttrs
+        (name: data: {
+          "vlan${capitalize name}" = mkVlanNetdev "vlan${capitalize name}" data.tenantId;
+        })
+        data.network.tenants);
+
     networks.ethMyRoot = {
       matchConfig = {
         Type = "ether";
@@ -95,26 +114,15 @@ in
       };
       networkConfig = {
         LinkLocalAddressing = false;
-        VLAN = [ "vlanFinn" "vlanBene" "vlanPolygon" "vlanVieta" "vlanTimon" "vlanIsabell" ];
+        VLAN = [ "vlanLilly" "vlanBene" "vlanPolygon" "vlanVieta" "vlanTimon" "vlanIsabell" ];
       };
     };
 
-    netdevs."vlanFinn" = mkVlanNetdev "vlanFinn" 10;
-    networks."vlanFinn" = mkVlanNetwork "vlanFinn" 10 [ "37.153.156.169" "37.153.156.170" ];
-
-    netdevs."vlanBene" = mkVlanNetdev "vlanBene" 11;
+    networks."vlanLilly" = mkVlanNetwork "vlanLilly" 10 [ "37.153.156.169" "37.153.156.170" ];
     networks."vlanBene" = mkVlanNetwork "vlanBene" 11 [ "37.153.156.172" ];
-
-    netdevs."vlanPolygon" = mkVlanNetdev "vlanPolygon" 12;
     networks."vlanPolygon" = mkVlanNetwork "vlanPolygon" 12 [ "37.153.156.174" ];
-
-    netdevs."vlanVieta" = mkVlanNetdev "vlanVieta" 13;
     networks."vlanVieta" = mkVlanNetwork "vlanVieta" 13 [ "37.153.156.173" ];
-
-    netdevs."vlanTimon" = mkVlanNetdev "vlanTimon" 14;
     networks."vlanTimon" = mkVlanNetwork "vlanTimon" 14 [ "37.153.156.171" ];
-
-    netdevs."vlanIsabell" = mkVlanNetdev "vlanIsabell" 15;
     networks."vlanIsabell" = mkVlanNetwork "vlanIsabell" 15 [ "37.153.156.175" ];
   };
 
@@ -170,7 +178,7 @@ in
     enable = true;
     settings = {
       interfaces-config = {
-        interfaces = [ "vlanFinn" "vlanBene" "vlanPolygon" "vlanVieta" "vlanTimon" "vlanIsabell" ];
+        interfaces = [ "vlanLilly" "vlanBene" "vlanPolygon" "vlanVieta" "vlanTimon" "vlanIsabell" ];
       };
       lease-database = {
         name = "/var/lib/kea/dhcp4.leases";
@@ -195,7 +203,7 @@ in
         {
           # network for finn
           name = "finnNet";
-          interface = "vlanFinn";
+          interface = "vlanLilly";
           subnet4 = [
             {
               subnet = "37.153.156.169/30";
@@ -382,7 +390,7 @@ in
   services.radvd = {
     enable = true;
     config = ''
-      interface vlanFinn {     
+      interface vlanLilly {     
         AdvSendAdvert on;
         prefix 2a10:9902:111:10::/64 {};
       };
