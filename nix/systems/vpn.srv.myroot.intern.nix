@@ -18,13 +18,13 @@ in
   # filesystem mount config
   fileSystems = {
     "/boot" = {
-      device = "/dev/disk/by-uuid/E9D6-069D";
+      device = "/dev/disk/by-uuid/9124-3481";
       fsType = "vfat";
       options = [ "fmask=0077" "dmask=0077" ];
     };
     "/" = {
-      device = "/dev/disk/by-uuid/27a157c7-50b0-4778-a9e2-2747cb59b5e0";
-      fsType = "bcachefs";
+      device = "/dev/disk/by-uuid/0ea6f61b-84b7-4903-8ba9-7dba9adba39a";
+      fsType = "ext4";
     };
   };
 
