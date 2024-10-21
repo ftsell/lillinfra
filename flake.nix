@@ -65,6 +65,7 @@
         python311
         python311Packages.pynetbox
         python311Packages.ipython
+        pre-commit
       ];
     };
   };
