@@ -154,7 +154,7 @@ in
           bgp default ipv6-unicast
           bgp ebgp-requires-policy
           no bgp network import-check
-          
+
           neighbor myroot peer-group
           neighbor myroot remote-as 39409
           neighbor myroot capability dynamic
@@ -167,7 +167,7 @@ in
             neighbor myroot prefix-list pl-allowed-export out
             neighbor myroot prefix-list pl-allowed-import in
           exit-address-family
-        
+
         ip prefix-list pl-allowed-import seq 5 permit ::/0
         ip prefix-list pl-allowed-export seq 5 permit 2a10:9902:111::/48
       '';
@@ -390,7 +390,7 @@ in
   services.radvd = {
     enable = true;
     config = ''
-      interface vlanLilly {     
+      interface vlanLilly {
         AdvSendAdvert on;
         prefix 2a10:9902:111:10::/64 {};
       };

@@ -2,12 +2,12 @@ $ORIGIN vpn.intern.
 $TTL 3600
 
 ; zone management
-vpn.intern.     IN  SOA   ns.vpn.intern. dev.ftsell.de. ( 
+vpn.intern.     IN  SOA   ns.vpn.intern. dev.ftsell.de. (
     2 ;serial
     7200 ;refresh
     3600 ;retry
     1209600 ;expire
-    3600 ;negative response caching ttl 
+    3600 ;negative response caching ttl
 )
 vpn.intern.     IN  NS  ns
 

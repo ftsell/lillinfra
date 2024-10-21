@@ -97,10 +97,10 @@ in
     systemd.timers.borgmatic.timerConfig.OnCalendar = "hourly";
 
     sops.secrets = {
-      ${cfg.rsync-net.sshKeyPath} = { 
+      ${cfg.rsync-net.sshKeyPath} = {
         mode = "0400";
       };
-      ${cfg.rsync-net.passwordFilePath} = { 
+      ${cfg.rsync-net.passwordFilePath} = {
         mode = "0400";
       };
     };

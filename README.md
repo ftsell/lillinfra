@@ -25,7 +25,7 @@ nix build --print-out-paths --no-link '.#installer.x86_64-linux'
 
 2. In the installer, create and mount filesystems.
 3. Enter filesystem config into this repository for that server and commit changes.
-   
+
    ```nix
     fileSystems = {
         "/boot" = {
@@ -59,4 +59,3 @@ nix build --no-link --print-out-paths '.#nixosConfigurations."nas.srv.myroot.int
 ```shell
 nix-shell -p ssh-to-age --run 'ssh-keyscan example.com | ssh-to-age'
 ```
-

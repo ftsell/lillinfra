@@ -28,7 +28,7 @@ let
         Address = ${vpnData.ownIp4}
         Address = ${vpnData.ownIp6}
         DNS = 10.20.30.1,fc10:20:30::1
-        
+
         [Peer]
         PublicKey = ${vpnServer.pub}
         AllowedIPs = ${builtins.concatStringsSep "," (vpnServer.routedIp4 ++ vpnServer.routedIp6)}

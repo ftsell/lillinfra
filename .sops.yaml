@@ -19,7 +19,7 @@ creation_rules:
   - path_regex: "data/secrets/k8s-worker1.srv.myroot.intern.yml"
     key_groups:
       - age: [ *ftsell, *k8s-worker1-srv ]
-      
+
   - path_regex: "data/secrets/hosting.srv.ftsell.de.yml"
     key_groups:
       - age: [ *ftsell, *hosting-srv ]
@@ -31,7 +31,7 @@ creation_rules:
   - path_regex: "data/secrets/gtw.srv.ftsell.de.yml"
     key_groups:
       - age: [ *ftsell, *gtw-myroot ]
-  
+
   # generic secrets
   - path_regex: "data/secrets/.+.yml"
     key_groups:

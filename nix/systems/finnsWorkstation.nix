@@ -106,7 +106,7 @@
       net EPSON79DA90.home.private
     '';
   };
-  
+
   sops.age.keyFile = /home/ftsell/.config/sops/age/keys.txt;
 
   # DO NOT CHANGE

@@ -15,7 +15,7 @@ items:
         - name: http
           port: 8080
           targetPort: http
-  
+
   - apiVersion: v1
     kind: PersistentVolumeClaim
     metadata:
@@ -27,7 +27,7 @@ items:
       resources:
         requests:
           storage: 10G
-  
+
   - apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -43,7 +43,7 @@ items:
           enableServiceLinks: false
           volumes: &volumes
             - name: data
-              persistentVolumeClaim: 
+              persistentVolumeClaim:
                 claimName: netbox
             - name: config
               configMap:
@@ -110,7 +110,7 @@ items:
                 - rqworker
               envFrom: *envFrom
               volumeMounts: *volumeMounts
-  
+
   - apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -135,4 +135,3 @@ items:
                 - /opt/netbox/housekeeping.sh
               envFrom: *envFrom
               volumeMounts: *volumeMounts
-      

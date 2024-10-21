@@ -101,12 +101,12 @@
         bind :80
         mode tcp
         use_backend ingress-http
-      
+
       frontend https
         bind :443
         mode tcp
         use_backend ingress-https
-      
+
       backend ingress-http
         mode tcp
         server k8s-worker1 10.0.10.16:30080 check send-proxy

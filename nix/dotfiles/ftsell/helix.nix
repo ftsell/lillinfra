@@ -1,12 +1,12 @@
 { lib, pkgs }: {
   enable = true;
   defaultEditor = true;
-  extraPackages = with pkgs; [ 
-    yaml-language-server 
-    nil 
-    marksman 
-    python312Packages.python-lsp-server 
-    python312Packages.python-lsp-ruff 
+  extraPackages = with pkgs; [
+    yaml-language-server
+    nil
+    marksman
+    python312Packages.python-lsp-server
+    python312Packages.python-lsp-ruff
     rust-analyzer
   ];
   settings = {

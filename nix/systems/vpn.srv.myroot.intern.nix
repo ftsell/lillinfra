@@ -162,7 +162,7 @@ in
       extraConfig = ''
         -- forward queries belonging to internal domains to the authorative vpn.intern. server
         policy.add(policy.suffix(
-          policy.STUB('127.0.0.1@8053'), 
+          policy.STUB('127.0.0.1@8053'),
           policy.todnames({'vpn.intern'})
         ))
 
