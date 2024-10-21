@@ -1,11 +1,11 @@
-keys: &keys
+keys:
   - &ftsell "age19h7xtfmt3py3ydgl8d8fgh8uakxqxjr74flrxev3pgmvvx94kvtq5d932d"
-  - &vpn-srv "age13jcav0647guw6pr0f74gkjc06x9j5ensk9ck27dlkkafddsv0u5qqvzn65"
+  - &vpn-srv "age1hylsuhm7zweqwwf37u6evva2ssjz0us5m229u8crghtj6n3qup5smu52a6"
   - &mail-srv "age1ayrlyw9c9mwumujrvx7x3s30a42emn9k2tf9v2kw2vkcx70fvf5sj63fe6"
-  - &hosting-srv "age1pzkr2kwn43cc694szra4rr9wqh63c32aqpz3vkr9at7qx294l5wsusj7s2"
+  - &hosting-srv "age1cqx8gxslaum3uk3weqdd6ur473mlsfvc6kt5l3pl9sdxpyg84azq0g7fqh"
   - &k8s-worker1-srv "age1g2uxex88r5fya0lgjqthp0tekalz6hq3fc8m8hhnwr36q5ylafaqcnt2hq"
-  - &fluxcd "age19es5hdfpqhwrz7l6lm4a56kgftmwd2ek7nxfpw2maqzpgt4yt5aq89d4fc"
   - &nas-myroot "age13c2vll0rel2pj62sdfgrvlr0mvauqhzclqh8hyqgdue8ws2t45xsuslxg6"
+  - &gtw-myroot "age186x5sfsv6txmtu8f9dfd84td6fq7cxup25nrtxlr43327xrqvpzsvqe6sv"
 creation_rules:
   # per-host secrets
   - path_regex: "data/secrets/vpn.srv.myroot.intern.yml"
@@ -27,6 +27,10 @@ creation_rules:
   - path_regex: "data/secrets/nas.srv.myroot.intern.yml"
     key_groups:
       - age: [ *ftsell, *nas-myroot ]
+
+  - path_regex: "data/secrets/gtw.srv.ftsell.de.yml"
+    key_groups:
+      - age: [ *ftsell, *gtw-myroot ]
   
   # generic secrets
   - path_regex: "data/secrets/.+.yml"
@@ -35,12 +39,3 @@ creation_rules:
   - path_regex: "dotfiles/.+\\.secret\\..+"
     key_groups:
       - age: [ *ftsell ]
-  
-  # kubernetes
-  - path_regex: "k8s/(.+\\.secret\\.yml)"
-    encrypted_regex: "^(data|stringData)$"
-    key_groups:
-      - age: [ *ftsell, *fluxcd ]
-  - path_regex: "k8s/(.+\\.secret\\..+)"
-    key_groups:
-      - age: [ *ftsell, *fluxcd ]
