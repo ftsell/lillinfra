@@ -78,4 +78,9 @@
     pulse.enable = true;
   };
   hardware.pulseaudio.enable = false;
+
+  home-manager.users.ftsell = {
+    programs.wezterm.enable = true;
+    programs.wezterm.extraConfig = builtins.readFile ../dotfiles/ftsell/wezterm/wezterm.lua;
+  };
 }
