@@ -35,7 +35,7 @@
       };
       address = [ "37.153.156.169/32" "2a10:9902:111:10:42:42:42:42/64" "2a10:9902:111:10:5054:ff:fe43:ffc6/64" ];
       gateway = [ "37.153.156.168" "fe80::1" ];
-      routes = [ { routeConfig = { Destination = "37.153.156.168"; }; } ];
+      routes = [ { routeConfig = { Destination = "37.153.156.168"; }; } { routeConfig = { Destination = "37.153.156.170"; }; } ];
       networkConfig = {
         DHCP = "no";
         IPv6AcceptRA = false;
