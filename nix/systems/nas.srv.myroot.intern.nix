@@ -113,12 +113,19 @@ in
   services.postgresql = {
     enable = true;
     enableTCPIP = true;
-    ensureDatabases = [ "ftsell" ];
-    ensureUsers = [{
-      name = "ftsell";
-      ensureDBOwnership = true;
-      ensureClauses.superuser = true;
-    }];
+    ensureDatabases = [ "ftsell" "root" ];
+    ensureUsers = [
+      {
+        name = "ftsell";
+        ensureDBOwnership = true;
+        ensureClauses.superuser = true;
+      }
+      {
+        name = "root";
+        ensureDBOwnership = true;
+        ensureClauses.superuser = true;
+      }
+    ];
     authentication = ''
       host all all 10.0.10.0/24 md5
       host all all 2a10:9902:111:10::/64 md5
@@ -153,6 +160,21 @@ in
       config.services.nfs.server.lockdPort
       config.services.nfs.server.mountdPort
     ];
+  };
+
+   # backup config
+  custom.backup.rsync-net = {
+    enable = true;
+    sourceDirectories = [ "/root" "/home/ftsell" "/srv/data/k8s/" ];
+    backupPostgres = true;
+    #hooks.beforeBackup = with pkgs; [
+    #  "${zfs}/bin/zfs snapshot server-myroot-hdd/postgres@pre-backup"
+    #  "${zfs}/bin/zfs snapshot server-myroot-hdd/k8s@pre-backup"
+    #];
+    #hooks.afterBackup = with pkgs; [
+    #  "${zfs}/bin/zfs destroy server-myroot-hdd/postgres@pre-backup"
+    #  "${zfs}/bin/zfs destroy server-myroot-hdd/k8s@pre-backup"
+    #];
   };
 
   # DO NOT CHANGE

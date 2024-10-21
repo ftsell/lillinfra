@@ -39,6 +39,10 @@ in
           "/root"
         ];
       };
+      backupPostgres = mkOption {
+        type = types.bool;
+        default = false;
+      };
       hooks = {
         beforeBackup = mkOption {
           type = types.listOf types.str;
@@ -80,6 +84,7 @@ in
         "**/node_modules/"
         "**/cache/"
         "**/Cache/"
+        "**/*.cache"
       ];
       encryption_passcommand = "${pkgs.coreutils}/bin/cat /run/secrets/${cfg.rsync-net.passwordFilePath}";
       archive_name_format = "{hostname}--{now}";
@@ -90,8 +95,23 @@ in
       ssh_command = "ssh -i /run/secrets/${cfg.rsync-net.sshKeyPath} -o StrictHostKeyChecking=no";
       extra_borg_options.create = "--list --filter=AME";
       exclude_if_present = [ ".nobackup" ];
+      postgresql_databases = lib.mkIf cfg.rsync-net.backupPostgres [{
+        name = "all";
+        format = "directory";
+        psql_command = with pkgs; "${postgresql}/bin/psql";
+        pg_dump_command = with pkgs; "${postgresql}/bin/pg_dump";
+      }];
       before_backup = cfg.rsync-net.hooks.beforeBackup;
       after_backup = cfg.rsync-net.hooks.afterBackup;
+    };
+
+    # create overwrites for the systemd unit to make it work in my system
+    systemd.services."borgmatic" = {
+      serviceConfig = {
+        #LockPersonality = false;
+        PrivateDevices = false;
+        #ProtectKernelTunables = false;
+      };
     };
 
     systemd.timers.borgmatic.timerConfig.OnCalendar = "hourly";
