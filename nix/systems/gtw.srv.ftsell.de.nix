@@ -26,20 +26,31 @@
   networking.useDHCP = false;
   systemd.network = {
     enable = true;
+
+    # external interface
     networks.enp1s0 = {
       matchConfig = {
         Type = "ether";
         MACAddress = "52:54:00:43:ff:c6";
       };
-      DHCP = "yes";
+      address = [ "37.153.156.169/32" "2a10:9902:111:10:42:42:42:42/64" "2a10:9902:111:10:5054:ff:fe43:ffc6/64" ];
+      gateway = [ "37.153.156.168" "fe80::1" ];
+      routes = [ { routeConfig = { Destination = "37.153.156.168"; }; } ];
+      networkConfig = {
+        DHCP = "no";
+        IPv6AcceptRA = false;
+      };
     };
+
+    # internal interface
     networks.enp7s0 = {
       matchConfig = {
         Type = "ether";
         MACAdreess = "52:54:00:8c:88:66";
       };
-      DHCP = "yes";
+      address = [ "10.0.10.2/24" ];
       networkConfig = {
+        DHCP = "no";
         IPv6AcceptRA = false;
       };
     };
