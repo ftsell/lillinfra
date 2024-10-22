@@ -1,0 +1,6 @@
+name: Keycloak
+issuer: https://auth.ftsell.de/realms/shared
+clientID: argocd
+clientSecret: $oidc.keycloak.clientSecret
+# Optional set of OIDC scopes to request. If omitted, defaults to: ["openid", "profile", "email", "groups"]
+requestedScopes: ["openid", "profile", "email" ]

@@ -1,0 +1,73 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: argocd
+
+labels:
+- includeSelectors: true
+  pairs:
+    app.kubernetes.io/part-of: argocd
+
+resources:
+  - https://raw.githubusercontent.com/argoproj/argo-cd/v2.12.6/manifests/install.yaml
+  - manifests/namespace.yml
+  - manifests/ingress.yml
+  - config/repo-creds.secret.yml
+  - ./cd-config
+
+patches:
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: argocd-repo-server
+    path: manifests/repo-server-gpg.patch.yml
+
+images:
+  - name: quay.io/argoproj/argocd
+    newName: ghcr.io/ftsell/argocd-git-crypt
+
+replicas:
+  - name: argocd-dex-server
+    count: 0
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+# See configuration documentation
+# https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#atomic-configuration
+configMapGenerator:
+    - name: argocd-cm
+      behavior: merge
+      envs:
+        - config/argocd.env
+      files:
+        - oidc.config=config/argocd-oidc.yml
+
+    - name: argocd-cmd-params-cm
+      behavior: merge
+      envs:
+        - config/argocd-params.env
+
+    - name: argocd-rbac-cm
+      behavior: merge
+      envs:
+        - config/rbac.env
+      files:
+        - policy.csv=config/rbac-policy.csv
+
+    - name: argocd-ssh-known-hosts-cm
+      behavior: replace
+      files:
+        - ssh_known_hosts=config/ssh-known-hosts
+        
+
+secretGenerator:
+  - name: argocd-secret
+    behavior: replace
+    envs:
+      - config/argocd-secret.env
+
+  - name: argocd-gpg-keys
+    files:
+      - 5B275C0ADDBDF2F6=config/git-crypt-key.secret.gpg
+

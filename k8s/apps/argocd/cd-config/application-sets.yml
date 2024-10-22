@@ -1,0 +1,26 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: lillinfra-basic-cluster
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - git:
+        repoURL: "git@git.lly.sh:ftsell/lillinfra.git"
+        revision: main
+        directories:
+          - path: "k8s/*/*"
+  template:
+    metadata:
+      name: "{{ .path.basenameNormalized }}"
+    spec:
+      project: "{{ index .path.segments 1 }}"
+      source:
+        repoURL: "git@git.lly.sh:ftsell/lillinfra.git"
+        targetRevision: main
+        path: "{{ .path.path }}"
+      destination:
+        name: "in-cluster"
+
