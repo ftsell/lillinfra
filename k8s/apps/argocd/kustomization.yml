@@ -65,7 +65,7 @@ secretGenerator:
   - name: argocd-secret
     behavior: replace
     envs:
-      - config/argocd-secret.env
+      - config/argocd.secret.env
 
   - name: argocd-gpg-keys
     files:
