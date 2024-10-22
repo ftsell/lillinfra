@@ -70,18 +70,21 @@
         proto = "udp";
         sourcePort = 51820;
         destination = "10.0.10.11:51820";
+        loopbackIPs = [ "37.153.156.169" ];
       }
       {
         # k8s api
         proto = "tcp";
         sourcePort = 6443;
         destination = "10.0.10.15:6443";
+        loopbackIPs = [ "37.153.156.169" ];
       }
       {
         # forgejo ssh
         proto = "tcp";
         sourcePort = 22;
         destination = "10.0.10.16:30022";
+        loopbackIPs = [ "37.153.156.169" ];
       }
     ];
   };
