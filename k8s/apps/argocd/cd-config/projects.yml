@@ -8,7 +8,6 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   description: basic-cluster configuration from lillinfra
-  permitOnlyProjectScopedClusters: true
   sourceRepos: 
     - "git@git.lly.sh:ftsell/lillinfra.git"
   destinations:
