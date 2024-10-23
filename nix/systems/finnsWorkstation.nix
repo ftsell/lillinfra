@@ -6,6 +6,7 @@
     ../modules/gnome.nix
     ../modules/user_ftsell.nix
     ../modules/dev_env.nix
+    ../modules/syncthing.nix
     # ../modules/vpn_client.nix
   ];
 
@@ -108,6 +109,8 @@
       net EPSON79DA90.home.private
     '';
   };
+
+  custom.user-syncthing.enable = true;
 
   sops.age.keyFile = /home/ftsell/.config/sops/age/keys.txt;
 
