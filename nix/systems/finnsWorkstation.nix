@@ -74,6 +74,8 @@
     gnupg
     mumble
     teams-for-linux
+    openssl
+    tree
   ];
 
   # backup settings
