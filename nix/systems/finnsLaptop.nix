@@ -5,6 +5,7 @@
     ../modules/gnome.nix
     ../modules/user_ftsell.nix
     ../modules/dev_env.nix
+    ../modules/syncthing.nix
   ];
 
   # boot config
@@ -79,6 +80,7 @@
   services.earlyoom.enable = true;
   services.resolved.enable = true;
   programs.gnupg.agent.enable = true;
+  custom.user-syncthing.enable = true;
 
   sops.age.keyFile = /home/ftsell/.config/sops/age/keys.txt;
 
