@@ -66,6 +66,10 @@ Host home.vpn.private
   User ftsell
   HostName 10.20.30.103
 
+Host priv.srv.home.intern
+  User ftsell
+  HostName 192.168.20.104
+
 Host rsync.net zh4525.rsync.net
   User zh4525
   HostName zh4525.rsync.net

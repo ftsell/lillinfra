@@ -38,8 +38,11 @@ in
   "monitoring.srv.myroot.intern" = mkSystem "x86_64-unknown-linux-gnu" "monitoring.srv.myroot.intern" inputs.nixpkgs-small;
   "nas.srv.myroot.intern" = mkSystem "x86_64-unknown-linux-gnu" "nas.srv.myroot.intern" inputs.nixpkgs-small;
 
+  # servers at home
+  "priv.srv.home.intern" = mkSystem "aarch64-unknown-linux-gnu" "priv.srv.home.intern" inputs.nixpkgs-small;
+
   # private systems
-  finnsLaptop = mkSystem "x86_64-unknown-linux-gnu" "finnsLaptop" inputs.nixpkgs;
+  finnsLaptop = mkSystem "x86_64-unknown-linux-gnu" "finnsLaptop" inputs.nixpkgs-small;
 
   # home systems
   "finnsWorkstation.home.private" = mkSystem "x86_64-unknown-linux-gnu" "finnsWorkstation" inputs.nixpkgs;

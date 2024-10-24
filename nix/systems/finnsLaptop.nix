@@ -88,5 +88,5 @@
   # this defines the first version of NixOS that was installed on the machine so that programs with non-migratable data files are kept compatible
   home-manager.users.ftsell.home.stateVersion = "24.05";
   system.stateVersion = "24.05";
-  networking.hostId = "7b7a33ed";
+  networking.hostId = "1a091689";
 }
