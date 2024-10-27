@@ -25,5 +25,7 @@
     jetbrains.pycharm-professional
     jetbrains.datagrip
     jetbrains.idea-ultimate
+    rustup
+    pre-commit
   ];
 }
