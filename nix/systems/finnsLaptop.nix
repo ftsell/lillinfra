@@ -6,6 +6,7 @@
     ../modules/user_ftsell.nix
     ../modules/dev_env.nix
     ../modules/syncthing.nix
+    ../modules/vpn_client.nix
   ];
 
   # boot config

@@ -2,11 +2,6 @@
 let
   data.network = import ../data/hosting_network.nix;
   data.wg_vpn = import ../data/wg_vpn.nix;
-
-  vpnClients = (builtins.attrValues
-    (lib.filterAttrs
-      (peerName: iPeer: peerName != config.networking.fqdn)
-      data.wg_vpn.peers));
 in
 {
   imports = [
@@ -51,7 +46,7 @@ in
     enable = true;
     networks.enp1s0 = {
       matchConfig."Type" = "ether";
-      networkConfig."IPv6AcceptRA" = true;
+      networkConfig."IPv6AcceptRA" = false;
       DHCP = "yes";
     };
 
@@ -66,15 +61,15 @@ in
         PrivateKeyFile = "/run/secrets/wg_vpn/privkey";
       };
       wireguardPeers = (builtins.map
-        (iPeer: {
+        (iClient: {
           wireguardPeerConfig = {
-            PublicKey = iPeer.pub;
-            AllowedIPs = [ iPeer.ownIp4 iPeer.ownIp6 ] ++ iPeer.routedIp4 ++ iPeer.routedIp6;
-            Endpoint = lib.mkIf (iPeer.endpoint != null) iPeer.endpoint;
-            PersistentKeepalive = lib.mkIf iPeer.keepalive 25;
+            PublicKey = iClient.pubKey;
+            AllowedIPs = iClient.allowedIPs;
+            Endpoint = lib.mkIf (iClient.endpoint != null) iClient.endpoint;
+            PersistentKeepalive = lib.mkIf iClient.keepalive 25;
           };
         })
-        vpnClients);
+        (lib.attrValues data.wg_vpn.knownClients));
     };
 
     # wireguard Network config
@@ -83,49 +78,9 @@ in
         Name = "wgVpn";
       };
       address = [
-        data.wg_vpn.peers.${config.networking.fqdn}.ownIp4
-        data.wg_vpn.peers.${config.networking.fqdn}.ownIp6
+        "10.20.30.1/24"
+        "fc10:20:30::1/64"
       ];
-      routes = (lib.flatten
-        (builtins.map
-          (iPeer:
-            [
-              # ip4 route
-              {
-                routeConfig = {
-                  Destination = iPeer.ownIp4;
-                };
-              }
-              # ip6 route
-              {
-                routeConfig = {
-                  Destination = iPeer.ownIp6;
-                };
-              }
-            ] ++
-            # routed IPv4 via peers IPv4
-            (builtins.map
-              (iRoute: {
-                routeConfig = {
-                  Gateway = iPeer.ownIp4;
-                  Destination = iRoute;
-                };
-              })
-              iPeer.routedIp4
-            ) ++
-            # routed IPv6 via peers IPv6
-            (builtins.map
-              (iRoute: {
-                routeConfig = {
-                  Gateway = iPeer.ownIp6;
-                  Destination = iRoute;
-                };
-              })
-              iPeer.routedIp6
-            )
-          )
-          vpnClients
-        ));
     };
   };
 

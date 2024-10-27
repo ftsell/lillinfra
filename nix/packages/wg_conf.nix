@@ -1,17 +1,16 @@
 { inputs, pkgs, system }:
 let
   data.wg_vpn = import ../data/wg_vpn.nix;
+  lib = inputs.nixpkgs.lib;
 
-  vpnServer = data.wg_vpn.peers."vpn.srv.myroot.intern";
-
-  mkVpnConfigFilePackage = (systemName: vpnData: {
+  mkVpnConfigFilePackage = (systemName: selfClientConf: {
     name = "wg_vpn-config-${systemName}";
     value = pkgs.writeShellApplication {
       name = "show-wg-conf";
       runtimeInputs = with pkgs; [ qrencode sops ];
       text = ''
-        if [[ ! -d "$HOME/Projects/finnfrastructure" ]]; then
-          echo !!! "$HOME/Projects/finnfrastructure does not exist" !!!
+        if [[ ! -d "$HOME/Projects/lillinfra" ]]; then
+          echo !!! "$HOME/Projects/lillinfra does not exist" !!!
           exit 1
         fi
 
@@ -20,20 +19,31 @@ let
         }
 
         function make_conf() {
-          PRIVKEY=$(sops --decrypt --extract '["wg_vpn"]["privkey"]' "$HOME/Projects/finnfrastructure/data/secrets/${systemName}.yml")
+          PRIVKEY=$(sops --decrypt --extract '["wg_vpn"]["privkey"]' "$HOME/Projects/lillinfra/nix/data/secrets/${systemName}.yml")
           # See docs: https://man.archlinux.org/man/extra/wireguard-tools/wg-quick.8.en
           cat <<END
         [Interface]
         PrivateKey = $PRIVKEY
-        Address = ${vpnData.ownIp4}
-        Address = ${vpnData.ownIp6}
-        DNS = 10.20.30.1,fc10:20:30::1
+        DNS = ${lib.strings.concatStringsSep "," data.wg_vpn.network.dns}
+        ${
+          lib.strings.concatLines
+          (builtins.map 
+            (ip: "Address = ${ip}")
+            selfClientConf.allowedIPs)
+        }
 
-        [Peer]
-        PublicKey = ${vpnServer.pub}
-        AllowedIPs = ${builtins.concatStringsSep "," (vpnServer.routedIp4 ++ vpnServer.routedIp6)}
-        Endpoint = ${vpnServer.endpoint}
-        PersistentKeepalive = ${if vpnData.keepalive then "25" else "0"}
+        ${
+          lib.strings.concatLines
+          (builtins.map
+            (server: ''
+              [Peer]
+              PublicKey = ${server.pubKey}
+              AllowedIPs = ${lib.strings.concatStringsSep "," server.allowedIPs}
+              Endpoint = ${server.endpoint}
+              PersistentKeepalive = ${if selfClientConf.keepalive then "25" else "0"}
+              '')
+            (builtins.attrValues data.wg_vpn.knownServers))
+        }
         END
         }
 
@@ -64,4 +74,4 @@ let
     };
   });
 in
-(pkgs.lib.attrsets.mapAttrs' mkVpnConfigFilePackage data.wg_vpn.peers)
+(pkgs.lib.attrsets.mapAttrs' mkVpnConfigFilePackage data.wg_vpn.knownClients)
