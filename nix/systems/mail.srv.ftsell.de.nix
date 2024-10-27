@@ -1,6 +1,6 @@
 { modulesPath, config, lib, pkgs, ... }:
 let
-  data.network = import ../data/hosting_network.nix;
+  data.network = import ../data/hosting_network.nix { inherit lib; };
 in
 {
   imports = [
@@ -61,8 +61,9 @@ in
       4190 # mail sieve-manage
       80  # http
       443 # https
+      11334 # rspamd web port (since mailserver runs in hostNetwork kubernetes sometimes uses the node's ip address to connect to it)
     ];
-    allowedUDPPorts = [
+    interfaces."enp8s0".allowedUDPPorts = [
       8472 # k8s flannel vxlan
     ];
   };
