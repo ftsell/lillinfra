@@ -30,6 +30,7 @@ in
       repoPath = mkOption {
         description = "The path on rsync.net which holds the borg repository to which this host is backed up";
         type = types.str;
+        defaultText = "./backups/{config.networking.fqdnOrHostName}";
         default = "./backups/${config.networking.fqdnOrHostName}";
       };
       sourceDirectories = mkOption {

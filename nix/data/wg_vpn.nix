@@ -36,6 +36,7 @@ in rec
 
   network = {
     dns = [ "10.20.30.1" "fc10:20:30::1" ];
+    searchDomain = "vpn.intern.";
   };
 
   peers = {};

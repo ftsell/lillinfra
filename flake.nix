@@ -42,6 +42,12 @@
       url = "git+https://git.lix.systems/lix-project/nixos-module.git?ref=release-2.91";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # nm-file-secret-agent
+    nm-file-secret-agent = {
+      url = "path:/home/ftsell/Projects/nm-file-secret-agent";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{ self, nixpkgs, ... }: rec {

@@ -26,6 +26,8 @@
     jetbrains.datagrip
     jetbrains.idea-ultimate
     rustup
+    clang
+    pkg-config
     pre-commit
   ];
 }

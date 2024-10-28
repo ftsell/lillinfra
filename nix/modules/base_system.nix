@@ -49,6 +49,9 @@
 
   # software settings
   home-manager.useGlobalPkgs = lib.mkDefault true;
+  documentation.man.generateCaches = false;
+  documentation.nixos.includeAllModules = true;
+  documentation.nixos.options.warningsAreErrors = false;
 
   # derive sops key from ssh key if ssh is enable and configure host sepcific secrets
   sops.age.sshKeyPaths = lib.mkIf config.services.openssh.enable [ "/etc/ssh/ssh_host_ed25519_key" ];
