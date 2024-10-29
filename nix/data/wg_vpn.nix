@@ -21,10 +21,9 @@ in rec
 {
   # clients that are known to the VPN server
   knownClients = {
-    "nas-myroot" = mkRegistrationAdv "10.0.10.14:51820" [ "10.20.30.2/32" "fc10:20:30::2/128" ] "SRVfDEjWZCEcxynQoK1iibpzVeDN61ghTEQPps3pmSY=" false;
+    "nas.srv.myroot.intern" = mkRegistrationAdv "10.0.10.14:51820" [ "10.20.30.2/32" "fc10:20:30::2/128" ] "NASFYFuG6XOw+S/0Bu5prkrGrT8t86fJcZdpIEBjynU=" false;
     "home-proxy" = mkRegistrationAdv "home.lly.sh:51829" [ "10.20.30.3/32" "fc10:20:30::3/128" "10.20.30.103/32" "fc10:20:30::103/128" ] "GTWotNqG3way+5NacVVs9bDwbLXplo/afSwZzU2XzkU=" false;
     "nas-ole" = mkRegistrationAdv null [ "10.20.30.105/32" "fc10:20:30::105/128" ] "NASuIV3T8lYoE2VTnuu+GPqq8Pzh/NHTfL06puPZDTE=" true;
-    "lillyPc" = mkRegistration 101 "NASFYFuG6XOw+S/0Bu5prkrGrT8t86fJcZdpIEBjynU=";
     "lillyPhone" = mkRegistration 102 "PHN5Srlsv3x7+ehWF4SPz0eezcYlm7c0pIU5jXYuYG4=";
     "finnsLaptop" = mkRegistration 103 "LAPcOludjQrjfza0M+XA+fuwxpVfmqRKjBawAxWDyDY=";
     "finnsWorkstation" = mkRegistration 104 "WOrk7yTwmWilfWrOhF2EpmMvK/fC8L3IfGaOnZQnRyA=";
