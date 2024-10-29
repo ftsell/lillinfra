@@ -27,6 +27,7 @@ in rec
     "lillyPc" = mkRegistration 101 "NASFYFuG6XOw+S/0Bu5prkrGrT8t86fJcZdpIEBjynU=";
     "lillyPhone" = mkRegistration 102 "PHN5Srlsv3x7+ehWF4SPz0eezcYlm7c0pIU5jXYuYG4=";
     "finnsLaptop" = mkRegistration 103 "LAPcOludjQrjfza0M+XA+fuwxpVfmqRKjBawAxWDyDY=";
+    "finnsWorkstation" = mkRegistration 104 "WOrk7yTwmWilfWrOhF2EpmMvK/fC8L3IfGaOnZQnRyA=";
   };
 
   knownServers = {
