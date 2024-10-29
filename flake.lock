@@ -252,14 +252,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1730151887,
-        "narHash": "sha256-6S9GD9OmY6/sM2xv9uAy1s91xaojU3VarnNJAv1Soo0=",
-        "path": "/home/ftsell/Projects/nm-file-secret-agent",
-        "type": "path"
+        "lastModified": 1730193417,
+        "narHash": "sha256-tqO3H+6qyTCd6vu569X66YivYj/0Zt+j2+F/3KKVSMY=",
+        "ref": "refs/heads/main",
+        "rev": "d858339a3ffcb5b4dc07705f00b11cc29cfe06e5",
+        "revCount": 14,
+        "type": "git",
+        "url": "https://git.lly.sh/ftsell/nm-file-secret-agent.git"
       },
       "original": {
-        "path": "/home/ftsell/Projects/nm-file-secret-agent",
-        "type": "path"
+        "type": "git",
+        "url": "https://git.lly.sh/ftsell/nm-file-secret-agent.git"
       }
     },
     "root": {

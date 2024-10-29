@@ -45,7 +45,7 @@
 
     # nm-file-secret-agent
     nm-file-secret-agent = {
-      url = "path:/home/ftsell/Projects/nm-file-secret-agent";
+      url = "git+https://git.lly.sh/ftsell/nm-file-secret-agent.git";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
