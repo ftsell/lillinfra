@@ -10,8 +10,8 @@ in {
   };
 
   config = {
-    services.syncthing = {
-      enable = cfg.enable;
+    services.syncthing = lib.mkIf cfg.enable {
+      enable = true;
       group = "users";
       user = "ftsell";
       dataDir = "/home/ftsell/";

@@ -6,14 +6,13 @@
   ];
 
   # boot config
-  boot.supportedFilesystems.zfs = true;
   fileSystems = {
     "/" = {
-      device = "/dev/disk/by-uuid/1e6410b4-2756-4153-a210-df9ee4f12be4";
+      device = "/dev/disk/by-uuid/db0274b7-1d3a-4839-afcd-a4b662f52b79";
       fsType = "ext4";
     };
     "/boot" = {
-      device = "/dev/disk/by-uuid/6A78-AB7F";
+      device = "/dev/disk/by-uuid/53AA-C797";
       fsType = "vfat";
       options = [ "fmask=0077" "dmask=0077" ];
     };
@@ -29,26 +28,30 @@
     };
   };
 
-  # general hosting config
-  virtualisation.podman = {
+  # caddy web server config
+  services.caddy = {
     enable = true;
-    autoPrune.enable = true;
-    defaultNetwork.settings.dns_enabled = true;
-  };
+    enableReload =  true;
+    email = "li@lly.sh";
+    globalConfig = ''
+      grace_period 10s
+    '';
 
-  networking.firewall.allowedTCPPorts = [
-    8384 # syncthing gui
-  ];
+    virtualHosts = {
+      "sync.home.lly.sh" = {
+        serverAliases = [ "sync.home.ftsell.de" ];
+        extraConfig = ''
+          reverse_proxy http://priv.srv.home.intern:8384
+        '';
+      };
 
-  # syncthing service
-  services.syncthing = {
-    enable = true;
-    dataDir = "/srv/data/encrypted/syncthing";
-    settings.options.urAccepted = -1;
-    guiAddress = "0.0.0.0:8384";
-    openDefaultPorts = true;
-    overrideFolders = false;
-    overrideDevices = false;
+      "ha.home.lly.sh" = {
+        serverAliases = [ "ha.home.ftsell.de" ];
+        extraConfig = ''
+          reverse_proxy http://home-assistant.srv.home.intern:8123
+        '';
+      };
+    };
   };
 
   # DO NOT CHANGE

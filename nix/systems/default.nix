@@ -11,6 +11,7 @@ let
       inputs.nm-file-secret-agent.nixosModules.default
 
       ../modules/backup.nix
+      ../modules/syncthing.nix
       ./${name}.nix
 
       (
@@ -41,6 +42,7 @@ in
 
   # servers at home
   "priv.srv.home.intern" = mkSystem "aarch64-unknown-linux-gnu" "priv.srv.home.intern" inputs.nixpkgs-small;
+  "proxy.srv.home.intern" = mkSystem "aarch64-unknown-linux-gnu" "proxy.srv.home.intern" inputs.nixpkgs-small;
 
   # private systems
   finnsLaptop = mkSystem "x86_64-unknown-linux-gnu" "finnsLaptop" inputs.nixpkgs-small;
