@@ -25,6 +25,9 @@ in
     };
     home.file = {
       ".ssh/config".source = ../dotfiles/ftsell/ssh/config;
+      ".ssh/id_code_sign.pub".source = ../dotfiles/ftsell/ssh/id_code_sign.pub;
+      ".ssh/id_lilly@ccc.pub".source = ../dotfiles/ftsell/ssh/id_lilly_ccc.pub;
+      ".ssh/id_lilly@lly.sh.pub".source = ../dotfiles/ftsell/ssh/id_lilly_lly.sh.pub;
     };
     programs.direnv = import ../dotfiles/ftsell/direnv;
     programs.ssh.enable = true;
