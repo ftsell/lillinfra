@@ -1,8 +1,15 @@
-{ modulesPath, config, lib, pkgs, home-manager, ... }: {
+{ modulesPath, config, lib, pkgs, home-manager, ... }: 
+let
+  vhostDefaults = {
+    forceSSL = true;
+    enableACME = true;
+  };
+in {
   imports = [
     ../modules/base_system.nix
     ../modules/hosting_guest.nix
     ../modules/user_ftsell.nix
+    ../modules/vpn_client.nix
   ];
 
   # boot config
@@ -28,30 +35,47 @@
     };
   };
 
-  # caddy web server config
-  services.caddy = {
+  networking.firewall.allowedTCPPorts = [ 80 443 ];
+  networking.firewall.allowedUDPPorts = [ 80 443 ];
+
+  # web server config
+  security.acme = {
+    acceptTerms = true;
+    defaults.email = "webmaster@lly.sh";
+  };
+  
+  services.nginx = {
     enable = true;
-    enableReload =  true;
-    email = "li@lly.sh";
-    globalConfig = ''
-      grace_period 10s
-    '';
-
+    recommendedTlsSettings = true;
+    recommendedProxySettings = true;
+    recommendedOptimisation = true;
+    recommendedGzipSettings = true;
     virtualHosts = {
-      "sync.home.lly.sh" = {
+
+      "sync.home.lly.sh" = vhostDefaults // {
         serverAliases = [ "sync.home.ftsell.de" ];
-        extraConfig = ''
-          reverse_proxy http://priv.srv.home.intern:8384
-        '';
+        locations."/".proxyPass = "http://priv.srv.home.intern:8384";
       };
 
-      "ha.home.lly.sh" = {
+      "ha.home.lly.sh" = vhostDefaults // {
         serverAliases = [ "ha.home.ftsell.de" ];
-        extraConfig = ''
-          reverse_proxy http://home-assistant.srv.home.intern:8123
-        '';
+        locations."/" = {
+          proxyPass = "http://home-assistant.srv.home.intern:8123";
+          proxyWebsockets = true;
+        };
       };
-    };
+
+      "docs.home.lly.sh" = vhostDefaults // {
+        serverAliases = [ "docs.home.ftsell.de" ];
+        locations."/".proxyPass = "http://priv.srv.home.intern:8000";
+      };
+
+      "pics.home.lly.sh" = vhostDefaults // {
+        serverAliases = [ "pics.home.lly.sh" ];
+        locations."/".proxyPass = "http://priv.srv.home.intern:8001";
+      };
+      
+    };     
   };
 
   # DO NOT CHANGE
