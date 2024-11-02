@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: homepage
-          image: ghcr.io/ftsell/homepage
+          image: ghcr.io/lilly/homepage
           ports:
             - name: http
               containerPort: 8000
