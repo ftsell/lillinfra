@@ -8,7 +8,7 @@ spec:
   goTemplateOptions: ["missingkey=error"]
   generators:
     - git:
-        repoURL: "git@git.lly.sh:ftsell/lillinfra.git"
+        repoURL: "git@git.lly.sh:lilly/lillinfra.git"
         revision: main
         directories:
           - path: "k8s/*/*"
@@ -18,7 +18,7 @@ spec:
     spec:
       project: "{{ index .path.segments 1 }}"
       source:
-        repoURL: "git@git.lly.sh:ftsell/lillinfra.git"
+        repoURL: "git@git.lly.sh:lilly/lillinfra.git"
         targetRevision: main
         path: "{{ .path.path }}"
       destination:
