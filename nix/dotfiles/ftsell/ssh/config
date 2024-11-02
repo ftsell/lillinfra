@@ -115,6 +115,24 @@ Host netsec-teaching
 
 
 ####
+# Fux e.G.
+#
+
+Host cr01.fux.intern
+  User noc
+  HostName 172.16.2.1
+  PubkeyAuthentication no
+
+Host cs01.fux.intern
+  User noc
+  HostName 172.16.2.2
+  PubkeyAuthentication no
+  KexAlgorithms diffie-hellman-group-exchange-sha1,diffie-hellman-group1-sha1,diffie-hellman-group14-sha1
+  HostKeyAlgorithms +ssh-rsa
+
+
+
+####
 # Viva con Agua
 #
 
