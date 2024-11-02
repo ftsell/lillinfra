@@ -24,7 +24,7 @@ patches:
 
 images:
   - name: quay.io/argoproj/argocd
-    newName: ghcr.io/lilly/argocd-git-crypt
+    newName: ghcr.io/lilioid/argocd-git-crypt
 
 replicas:
   - name: argocd-dex-server
