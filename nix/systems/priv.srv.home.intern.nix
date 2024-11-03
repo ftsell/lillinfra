@@ -37,6 +37,7 @@
   };
 
   networking.firewall.allowedTCPPorts = [
+    8000 # paperless web
     8384 # syncthing gui
   ];
 
@@ -49,6 +50,77 @@
     openDefaultPorts = true;
     overrideFolders = false;
     overrideDevices = false;
+  };
+
+  # postgres service
+  services.postgresql = {
+    enable = true;
+    ensureDatabases = [ "root" "ftsell" "paperless" ];
+    ensureUsers = [
+      {
+        name = "ftsell";
+        ensureDBOwnership = true;
+        ensureClauses.superuser = true;
+      }
+      {
+        name = "root";
+        ensureDBOwnership = true;
+        ensureClauses.superuser = true;
+      }
+      {
+        name = "paperless";
+        ensureDBOwnership = true;
+      }
+    ];
+  };
+
+  # paperless webserver
+  virtualisation.oci-containers.containers."paperless-web" = {
+    image = "ghcr.io/paperless-ngx/paperless-ngx";
+    dependsOn = [ "paperless-broker" "paperless-gotenberg" "paperless-tika" ];
+    volumes = [
+      "/srv/data/encrypted/paperless/webserver/data:/usr/src/paperless/data"
+      "/srv/data/encrypted/paperless/webserver/media:/usr/src/paperless/media"
+      "/srv/data/encrypted/paperless/consume:/usr/src/paperless/consume"
+      "/srv/data/encrypted/paperless/export:/usr/src/paperless/export"
+    ];
+    environment = {
+      "PAPERLESS_URL" = "https://docs.home.lly.sh";
+      "PAPERLESS_TRUSTED_PROXIES" = "192.168.20.102";
+      "PAPERLESS_REDIS" = "redis://localhost:6379";
+      "PAPERLESS_DBENGINE" = "postgresql";
+      "PAPERLESS_DBHOST" = "localhost";
+      "PAPERLESS_TIKA_ENABLED" = "1";
+      "PAPERLESS_TIKA_GOTENBERG_ENDPOINT" = "http://localhost:3000";
+      "PAPERLESS_TIKA_ENDPOINT" = "http://localhost:9998";
+    };
+    extraOptions = [ "--net=host" ];
+  };
+
+  # paperless redis broker
+  virtualisation.oci-containers.containers."paperless-broker" = {
+    image = "docker.io/library/redis:7";
+    volumes = [
+      "/srv/data/encrypted/paperless/redis:/data"
+    ];
+    extraOptions = [ "--net=host" ];
+  };
+
+  # paperless gotenberg
+  virtualisation.oci-containers.containers."paperless-gotenberg" = {
+    image = "docker.io/gotenberg/gotenberg:8.7";
+    cmd = [
+      "gotenberg"
+      "--chromium-disable-javascript=true"
+      "--chromium-allow-list=file:///tmp/.*"
+    ];
+    extraOptions = [ "--net=host" ];
+  };
+
+  # paperless tika
+  virtualisation.oci-containers.containers."paperless-tika" = {
+    image = "docker.io/apache/tika:latest";
+    extraOptions = [ "--net=host" ];
   };
 
   # DO NOT CHANGE
