@@ -45,6 +45,18 @@ in
         Name = "wgVpn";
       };
       address = selfClientConf.allowedIPs;
+      routes =
+        (lib.flatten
+          (builtins.map
+            (iServer: 
+              builtins.map 
+              (iIP: {
+                routeConfig = {
+                  Destination = iIP;
+                };
+              })
+              iServer.allowedIPs)
+            (lib.attrValues data.wg_vpn.knownServers)));
     };
   };
 
