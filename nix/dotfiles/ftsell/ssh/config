@@ -130,6 +130,16 @@ Host cs01.fux.intern
   KexAlgorithms diffie-hellman-group-exchange-sha1,diffie-hellman-group1-sha1,diffie-hellman-group14-sha1
   HostKeyAlgorithms +ssh-rsa
 
+Host netbox.fux-eg.net 185.161.128.4
+  User noc
+  HostName netbox.fux-eg.net
+  IdentityFile ~/.ssh/id_lilly@fux.pub
+
+Host dhcp01.fux-eg.net 172.16.2.20
+  User noc
+  HostName 172.16.2.20
+  IdentityFile ~/.ssh/id_lilly@fux.pub
+
 
 
 ####
