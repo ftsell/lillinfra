@@ -7,6 +7,14 @@ let
 
   vImmich = "v1.117.0";
   vImmichRedis = "6.2-alpine";
+
+  vHomeAssistant = "stable";
+
+  mosquittoConf = pkgs.writeText "mosquitto.conf" ''
+    listener 1883 0.0.0.0
+    listener 1883 ::
+    allow_anonymous true
+  '';
 in {
   imports = [
     ../modules/base_system.nix
@@ -49,6 +57,8 @@ in {
     8000 # paperless web
     8384 # syncthing gui
     3001 # immich server
+    8123 # home assistant
+    1883 # mqtt server (exposed so that tasmota devices can access it)
   ];
 
   systemd.targets."encrypted-services" = {
@@ -187,6 +197,33 @@ in {
     cmd = [
       "--port"
       "6380"
+    ];
+    extraOptions = [ "--net=host" ];
+  };
+
+  # home assistant
+  systemd.services."podman-home-assistant".wantedBy = lib.mkForce [ "encrypted-services.target" ];
+  virtualisation.oci-containers.containers."home-assistant" = {
+    image = "ghcr.io/home-assistant/home-assistant:${vHomeAssistant}";
+    volumes = [
+      "/srv/data/encrypted/homeassistant:/config"
+      "/run/dbus:/run/dbus:ro"
+    ];
+    environment = {
+      TZ = "Europe/Berlin";
+    };
+    extraOptions = [ 
+      "--net=host" 
+      "--privileged"
+      "--device=/dev/ttyUSB0:/dev/ttyUSB0"
+    ];
+  };
+
+  # home assistant mqtt server
+  virtualisation.oci-containers.containers."mosquitto" = {
+    image = "docker.io/eclipse-mosquitto";
+    volumes = [
+      "${mosquittoConf}:/mosquitto/config/mosquitto.conf:ro"
     ];
     extraOptions = [ "--net=host" ];
   };

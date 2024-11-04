@@ -57,13 +57,13 @@ in {
         locations."/".proxyPass = "http://priv.srv.home.intern:8384";
       };
 
-      #"ha.home.lly.sh" = vhostDefaults // {
-      #  serverAliases = [ "ha.home.ftsell.de" ];
-      #  locations."/" = {
-      #    proxyPass = "http://home-assistant.srv.home.intern:8123";
-      #    proxyWebsockets = true;
-      #  };
-      #};
+      "ha.home.lly.sh" = vhostDefaults // {
+        serverAliases = [ "ha.home.ftsell.de" ];
+        locations."/" = {
+          proxyPass = "http://priv.srv.home.intern:8123";
+          proxyWebsockets = true;
+        };
+      };
 
       "docs.home.lly.sh" = vhostDefaults // {
         serverAliases = [ "docs.home.ftsell.de" ];
