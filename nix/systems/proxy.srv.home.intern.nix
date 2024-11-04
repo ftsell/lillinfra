@@ -72,7 +72,7 @@ in {
 
       "pics.home.lly.sh" = vhostDefaults // {
         serverAliases = [ "pics.home.lly.sh" ];
-        locations."/".proxyPass = "http://priv.srv.home.intern:8001";
+        locations."/".proxyPass = "http://priv.srv.home.intern:3001";
       };
       
     };     
