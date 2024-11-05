@@ -50,7 +50,7 @@ in {
     recommendedProxySettings = true;
     recommendedOptimisation = true;
     recommendedGzipSettings = true;
-    clientMaxBodySize = "200m";
+    clientMaxBodySize = "1g";
     virtualHosts = {
 
       "sync.home.lly.sh" = vhostDefaults // {
