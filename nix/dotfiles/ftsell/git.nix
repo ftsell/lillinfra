@@ -85,5 +85,9 @@
         condition = "hasconfig:remote.origin.url:https://git.hamburg.ccc.de/**";
         contents = cccConfig;
       }
+      {
+        condition = "gitdir:~/Projects/b1/**";
+        contents = b1Config;
+      }
     ];
 }
