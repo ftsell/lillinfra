@@ -85,6 +85,7 @@ in
   # DO NOT CHANGE
   # this defines the first version of NixOS that was installed on the machine so that programs with non-migratable data files are kept compatible
   system.stateVersion = "24.05";
+  home-manager.users.ftsell.home.stateVersion = "24.05";
 
   # actual factorio config
   services.factorio = {
