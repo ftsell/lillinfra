@@ -65,6 +65,32 @@ in {
     unitConfig."AssertPathIsMountPoint" = "/srv/data/encrypted";
   };
 
+  # samba server config
+  services.samba = {
+    enable = true;
+    openFirewall = true;
+    shares = {
+      SyncPictures = {
+        path = "/srv/data/encrypted/syncthing/SyncPictures";
+        comment = "Camera folder";
+        "read only" = true;
+        browseable = true;
+        "guest ok" = false;
+        "force group" = "syncthing";
+        "force user" = "syncthing";
+      };
+      "Paperless Consume" = {
+        "path" = "/srv/data/encrypted/paperless/consume";
+        "comment" = "Paperless Consume";
+        "read only" = false;
+        "browseable" = true;
+        "guest ok" = false;
+        "force group" = "root";
+        "force user" = "root";
+      };
+    };
+  };
+  
   # syncthing service
   systemd.services."syncthing".wantedBy = lib.mkForce [ "encrypted-services.target" ];
   services.syncthing = {
