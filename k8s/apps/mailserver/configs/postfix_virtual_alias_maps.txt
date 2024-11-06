@@ -26,14 +26,10 @@ sponsoring@bit-bots.de          bitbots-sponsoring;
     valerie@bit-bots.de
 press@bit-bots.de               info@bit-bots.de
 presse@bit-bots.de              info@bit-bots.de
-info@bit-bots.de                finn@bit-bots.de;
-    bestmann@informatik.uni-hamburg.de;
-    jan@bit-bots.de;
-    7engelke@informatik.uni-hamburg.de;
+info@bit-bots.de                jan@bit-bots.de;
     jasper.gueldenstein@uni-hamburg.de;
     baz1652@studium.uni-hamburg.de
     valerie@bit-bots.de
-finn@bit-bots.de                bit-bots@ftsell.de
 jasper@bit-bots.de              bitbots-jasper
 jessica.jobski@bit-bots.de      Jessica.jobski.rc@dualj.de
 valerie@bit-bots.de             bitbots-valerie
