@@ -11,10 +11,11 @@ spec:
   tls:
     - secretName: tls-budget.ftsell.de
       hosts:
+        - budget.lly.sh
         - budget.ftsell.de
   rules:
-    - host: budget.ftsell.de
-      http:
+    - host: budget.lly.sh
+      http: &httpConfig
         paths:
           - path: /
             pathType: Prefix
@@ -23,3 +24,6 @@ spec:
                 name: actual-budget
                 port:
                   name: http
+
+    - host: budget.ftsell.de
+      http: *httpConfig
