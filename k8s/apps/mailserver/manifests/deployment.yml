@@ -45,7 +45,7 @@ spec:
 
       containers:
         - name: mailcalf
-          image: ghcr.io/ftsell/mailcalf
+          image: ghcr.io/lilioid/mailcalf
           imagePullPolicy: Always
           stdin: true
           securityContext:
