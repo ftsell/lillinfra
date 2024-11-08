@@ -32,7 +32,14 @@
         focus-mode = "mouse";
       };
       "org/gnome/shell" = {
-        favorite-apps = [ "org.gnome.Nautilus.desktop" "org.keepassxc.KeePassXC.desktop" "thunderbird.desktop" "firefox.desktop" "org.gnome.Console.desktop" ];
+        favorite-apps = [ 
+          "org.gnome.Nautilus.desktop" 
+          "org.keepassxc.KeePassXC.desktop" 
+          "thunderbird.desktop" 
+          "signal-desktop.desktop" 
+          "firefox.desktop"
+          "org.wezfurlong.wezterm.desktop"
+        ];
       };
       "org/gnome/Console" = {
         theme = "auto";
