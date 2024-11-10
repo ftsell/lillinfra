@@ -258,11 +258,11 @@
         "rev": "5a01e55a66c60bc17af40ab977c3afda4babefc2",
         "revCount": 18,
         "type": "git",
-        "url": "https://git.lly.sh/ftsell/nm-file-secret-agent.git"
+        "url": "https://git.lly.sh/lilly/nm-file-secret-agent.git"
       },
       "original": {
         "type": "git",
-        "url": "https://git.lly.sh/ftsell/nm-file-secret-agent.git"
+        "url": "https://git.lly.sh/lilly/nm-file-secret-agent.git"
       }
     },
     "root": {
