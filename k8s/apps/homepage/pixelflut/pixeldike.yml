@@ -68,7 +68,7 @@ items:
                 claimName: pixmap
           containers:
             - name: pixeldike
-              image: ghcr.io/ftsell/pixeldike
+              image: ghcr.io/lilioid/pixeldike
               args:
                 - --verbose
                 - server
