@@ -18,6 +18,8 @@
     uv
     sshfs
     kubectl
+    krew
+    kubernetes-helm
     pass
     sshuttle
     jetbrains.webstorm
@@ -30,4 +32,8 @@
     pkg-config
     pre-commit
   ];
+
+  programs.fish.shellInit = ''
+    fish_add_path $HOME/.krew/bin
+  '';
 }
