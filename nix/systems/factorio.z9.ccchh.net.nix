@@ -37,14 +37,15 @@ in
   };
 
   # actual factorio config
-  #services.factorio = {
-  #  enable = true;
-  #  game-name = "CCCHH Factorio";
-  #  lan = true;
-  #  saveName = "default-no-mods";
-  #  requireUserVerification = false;
-  #  openFirewall = true;
-  #};
+  services.factorio = {
+    enable = true;
+    package = pkgs.factorio_2-headless;
+    game-name = "CCCHH Factorio";
+    lan = true;
+    saveName = "default-no-mods";
+    requireUserVerification = false;
+    openFirewall = true;
+  };
   
   # DO NOT CHANGE
   # this defines the first version of NixOS that was installed on the machine so that programs with non-migratable data files are kept compatible
