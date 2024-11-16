@@ -10,9 +10,10 @@
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" "sr_mod" ];
   boot.kernelModules = [ "kvm-intel" ];
-  boot.loader.grub = {
+  boot.loader.systemd-boot = {
     enable = true;
-    device = "/dev/disk/by-id/ata-WDC_WD120EFBX-68B0EN0_D7HE49WN";
+    configurationLimit = 25;
+    editor = false;
   };
 
   fileSystems = {
@@ -32,6 +33,23 @@
 
   # networking config
   networking.useDHCP = false;
+  systemd.network = {
+    enable = true;
+    networks.enp1s0 = {
+      matchConfig.MACAddress = "98:b7:85:1f:a3:7a";
+      bridge = [ "brLAN" ];
+    };
+    netdevs.brLAN = {
+      netdevConfig = {
+        Kind = "bridge";
+        Name = "brLAN";
+      };
+    };
+    networks.brLAN = {
+      matchConfig.Name = "brLAN";
+      DHCP = "yes";
+    };
+  };
 
   services.openssh = {
     enable = true;
@@ -63,5 +81,5 @@
   # this defines the first version of NixOS that was installed on the machine so that programs with non-migratable data files are kept compatible
   home-manager.users.ftsell.home.stateVersion = "24.05";
   system.stateVersion = "23.11";
-  networking.hostId = "eaad9974";
+  networking.hostId = "eaad9976";
 }

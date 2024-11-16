@@ -52,5 +52,5 @@ in
 
   # others
   "factorio.z9.ccchh.net" = mkSystem "x86_64-unknown-linux-gnu" "factorio.z9.ccchh.net" inputs.nixpkgs;
-  "lan-server" = mkSystem "x86_64-unknown-linux-gnu" "lan-server.intern" inputs.nixpkgs;
+  "lan-server.intern" = mkSystem "x86_64-unknown-linux-gnu" "lan-server.intern" inputs.nixpkgs;
 }
