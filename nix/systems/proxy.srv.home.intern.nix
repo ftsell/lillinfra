@@ -38,6 +38,16 @@ in {
   networking.firewall.allowedTCPPorts = [ 80 443 ];
   networking.firewall.allowedUDPPorts = [ 80 443 ];
 
+  # dyndns for home.lly.sh
+  services.ddclient = {
+    enable = true;
+    use = "web, web=https://checkipv4.dedyn.io/";
+    server = "update.dedyn.io";
+    username = "lly.sh";
+    domains = [ "home.lly.sh" ];
+    passwordFile = "/run/secrets/ddclient/desec_token";
+  };
+
   # web server config
   security.acme = {
     acceptTerms = true;
@@ -78,6 +88,9 @@ in {
       
     };     
   };
+
+  # decrypted sops secrets
+  sops.secrets."ddclient/desec_token" = {};
 
   # DO NOT CHANGE
   # this defines the first version of NixOS that was installed on the machine so that programs with non-migratable data files are kept compatible
