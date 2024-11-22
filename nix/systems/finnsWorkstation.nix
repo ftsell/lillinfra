@@ -77,6 +77,7 @@
     teams-for-linux
     openssl
     tree
+    kicad
   ];
 
   # backup settings
