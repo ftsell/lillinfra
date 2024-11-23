@@ -34,6 +34,7 @@
     pkg-config
     pre-commit
     uucp
+    openssl
   ];
 
   programs.fish.shellInit = ''
