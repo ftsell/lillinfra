@@ -10,6 +10,8 @@
   };
 
   environment.systemPackages = with pkgs; [
+    ansible
+    ansible-lint
     nodejs
     nodePackages.pnpm
     python3
