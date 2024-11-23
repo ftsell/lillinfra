@@ -1,5 +1,6 @@
 { modulesPath, config, lib, pkgs, ... }: {
   environment.systemPackages = with pkgs; [
+    chromium
     element-desktop
     telegram-desktop
     signal-desktop

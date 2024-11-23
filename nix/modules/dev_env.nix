@@ -31,6 +31,7 @@
     clang
     pkg-config
     pre-commit
+    uucp
   ];
 
   programs.fish.shellInit = ''
