@@ -35,6 +35,8 @@
     pre-commit
     uucp
     openssl
+    gleam
+    erlang
   ];
 
   programs.fish.shellInit = ''
