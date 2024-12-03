@@ -107,7 +107,7 @@
   hardware.sane = {
     enable = true;
     extraConfig."epson2" = ''
-      net EPSON79DA90.home.private
+      net EPSON79DA90.home.intern
     '';
   };
   custom.user-syncthing.enable = true;
