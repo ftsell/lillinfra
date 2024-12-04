@@ -45,7 +45,7 @@ in
   "proxy.srv.home.intern" = mkSystem "aarch64-unknown-linux-gnu" "proxy.srv.home.intern" inputs.nixpkgs-small;
 
   # private systems
-  finnsLaptop = mkSystem "x86_64-unknown-linux-gnu" "finnsLaptop" inputs.nixpkgs-small;
+  finnsLaptop = mkSystem "x86_64-unknown-linux-gnu" "finnsLaptop" inputs.nixpkgs;
 
   # home systems
   "finnsWorkstation.home.private" = mkSystem "x86_64-unknown-linux-gnu" "finnsWorkstation" inputs.nixpkgs;
