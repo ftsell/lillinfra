@@ -36,6 +36,9 @@
       autocrlf = "input";
       fscache = true;
     };
+    alias = {
+      ldog = "log --all --decorate --oneline --graph";
+    };
     pull.rebase = true;
     color.ui = "auto";
     init.defaultBranch = true;
