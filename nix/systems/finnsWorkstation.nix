@@ -74,7 +74,6 @@
     git-crypt
     gnupg
     mumble
-    teams-for-linux
     openssl
     tree
     kicad
