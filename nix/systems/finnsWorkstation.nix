@@ -12,7 +12,7 @@
 
   # boot config
   boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" "hid_roccat_isku" ];
-  boot.kernelModules = [ "kvm-intel" ];
+  boot.kernelModules = [ "kvm-intel" "sg" ];
   boot.zfs.extraPools = [ "lillyPc" ];
   fileSystems = {
     "/" = {
@@ -77,6 +77,7 @@
     openssl
     tree
     kicad
+    makemkv
   ];
 
   # backup settings
