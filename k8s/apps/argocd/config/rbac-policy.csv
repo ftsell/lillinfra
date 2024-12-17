@@ -1,8 +1,8 @@
 # https://argo-cd.readthedocs.io/en/stable/operator-manual/argocd-rbac-cm-yaml/
 
-# ftsell
-g,25d077f2-35e5-4b5b-b640-d21d3ed841df,role:admin
-g,hi@ftsell.de,role:admin
-
 # lilly
-g,ce9f9907-d077-4be1-aa63-9d9e89bc4b72,role:admin
+g,li@lly.sh,role:admin
+
+# group argocd-admins
+g,argocd-admins,role:admin
+
