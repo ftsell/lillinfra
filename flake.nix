@@ -1,10 +1,17 @@
 {
   description = "lillinfra - lillys infrastructure configuration";
 
-  inputs = {
+  inputs = rec {
+    # nixpkgs
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.11";
     nixpkgs-small.url = "github:nixos/nixpkgs?ref=nixos-24.11-small";
-    nixpkgs-release.url = "github:nixos/nixpkgs?ref=release-24.11";
+
+    # version-specific nixpkgs
+    nixpkgs2405.url = "github:nixos/nixpkgs?ref=nixos-24.05";
+    nixpkgs2405-small.url = "github:nixos/nixpkgs?ref=nixos-24.05-small";
+    nixpkgs2411.url = "github:nixos/nixpkgs?ref=nixos-24.11";
+    nixpkgs2411-small.url = "github:nixos/nixpkgs?ref=nixos-24.11-small";
+
     nixpkgs-local.url = "/home/ftsell/Projects/nixpkgs";
 
     # some helpers for writing flakes with less repitition
