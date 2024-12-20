@@ -16,6 +16,7 @@
 
     # some helpers for writing flakes with less repitition
     flake-utils.url = "github:numtide/flake-utils";
+    systems.url = "github:nix-systems/default-linux";
 
     # support for special hardware quirks
     nixos-hardware.url = "github:NixOS/nixos-hardware";
@@ -51,6 +52,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # treeformat for specifying how to properly format files in this repo
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # nm-file-secret-agent
     nm-file-secret-agent = {
       url = "git+https://git.lly.sh/lilly/nm-file-secret-agent.git";
@@ -58,15 +65,21 @@
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, ... }: rec {
+  outputs = inputs@{ self, nixpkgs, systems, treefmt-nix, ... }: 
+  let
+    # helper to iterate over all supported systems along with the corresponding nixpkgs set
+    eachSystem = f: nixpkgs.lib.genAttrs (import systems) (system: f system (import nixpkgs { inherit system; }));
+    treefmtEval = pkgs: treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
+  in
+  {
     nixosConfigurations = import ./nix/systems { inherit inputs; };
     packages = nixpkgs.lib.attrsets.genAttrs nixpkgs.lib.systems.flakeExposed (system: import ./nix/packages {
       inherit system inputs;
       pkgs = nixpkgs.legacyPackages.${system};
     });
 
-    devShells.x86_64-linux.default = nixpkgs.legacyPackages.x86_64-linux.mkShell {
-      packages = with nixpkgs.legacyPackages.x86_64-linux; [
+    devShells = eachSystem (system: pkgs: { default = pkgs.mkShell {
+            packages = with pkgs; [
         fluxcd
         kubectl
         kustomize
@@ -81,6 +94,13 @@
         python311Packages.ipython
         pre-commit
       ];
-    };
+    };}
+    );
+
+    # maintenance
+    formatter = eachSystem (system: pkgs: (treefmtEval pkgs).config.build.wrapper);
+    checks = eachSystem (system: pkgs: {
+        formatting = (treefmtEval pkgs).config.build.check self;
+      });
   };
 }
