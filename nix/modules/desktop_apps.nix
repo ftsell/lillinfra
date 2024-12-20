@@ -13,6 +13,7 @@
     drawio
     discord
     vlc
+    obsidian
   ];
 
   programs.firefox = {

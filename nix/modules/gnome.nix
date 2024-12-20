@@ -51,7 +51,7 @@
   };
 
   environment.systemPackages = with pkgs; [
-    gnome.gnome-tweaks
+    gnome-tweaks
     gnomeExtensions.appindicator
     gnomeExtensions.caffeine
     gnomeExtensions.vitals
@@ -60,7 +60,6 @@
   environment.gnome.excludePackages = (with pkgs; [
     gnome-photos
     gnome-tour
-  ]) ++ (with pkgs.gnome; [
     cheese
     gnome-music
     gnome-terminal
@@ -75,7 +74,7 @@
     atomix
   ]);
 
-  services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
+  services.udev.packages = with pkgs; [ gnome-settings-daemon ];
 
   services.displayManager.enable = true;
 

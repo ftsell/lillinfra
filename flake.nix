@@ -2,9 +2,10 @@
   description = "lillinfra - lillys infrastructure configuration";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.05";
-    nixpkgs-small.url = "github:nixos/nixpkgs?ref=nixos-24.05-small";
-    nixpkgs-release.url = "github:nixos/nixpkgs?ref=release-24.05";
+    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.11";
+    nixpkgs-small.url = "github:nixos/nixpkgs?ref=nixos-24.11-small";
+    nixpkgs-release.url = "github:nixos/nixpkgs?ref=release-24.11";
+    nixpkgs-local.url = "/home/ftsell/Projects/nixpkgs";
 
     # some helpers for writing flakes with less repitition
     flake-utils.url = "github:numtide/flake-utils";
@@ -14,7 +15,7 @@
 
     # dotfile (and user package) manager
     home-manager = {
-      url = "github:nix-community/home-manager?ref=release-24.05";
+      url = "github:nix-community/home-manager?ref=release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
