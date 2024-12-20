@@ -5,6 +5,7 @@
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-24.11";
     nixpkgs-small.url = "github:nixos/nixpkgs?ref=nixos-24.11-small";
     nixpkgs-release.url = "github:nixos/nixpkgs?ref=release-24.11";
+    nixpkgs-local.url = "/home/ftsell/Projects/nixpkgs";
 
     # some helpers for writing flakes with less repitition
     flake-utils.url = "github:numtide/flake-utils";
