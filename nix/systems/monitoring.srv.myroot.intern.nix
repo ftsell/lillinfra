@@ -1,4 +1,11 @@
-{ modulesPath, config, lib, pkgs, ... }: {
+{
+  modulesPath,
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
   imports = [
     ../modules/hosting_guest.nix
     ../modules/base_system.nix
@@ -10,7 +17,10 @@
     "/boot" = {
       device = "/dev/disk/by-uuid/750D-0A80";
       fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
+      options = [
+        "fmask=0077"
+        "dmask=0077"
+      ];
     };
     "/" = {
       device = "/dev/disk/by-uuid/99ac28a7-a3c1-4c8f-9c02-a7f03c30168f";

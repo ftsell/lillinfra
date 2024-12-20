@@ -1,4 +1,11 @@
-{ modulesPath, config, lib, pkgs, ... }: {
+{
+  modulesPath,
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
   imports = [
     ../modules/hosting_guest.nix
     ../modules/base_system.nix
@@ -10,7 +17,10 @@
     "/boot" = {
       device = "/dev/disk/by-uuid/A38E-17CC";
       fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
+      options = [
+        "fmask=0077"
+        "dmask=0077"
+      ];
     };
     "/" = {
       device = "/dev/disk/by-uuid/2802674f-bd98-44b8-ab13-3292515e21e1";
@@ -33,9 +43,27 @@
         Type = "ether";
         MACAddress = "52:54:00:43:ff:c6";
       };
-      address = [ "37.153.156.169/32" "2a10:9902:111:10:42:42:42:42/64" "2a10:9902:111:10:5054:ff:fe43:ffc6/64" ];
-      gateway = [ "37.153.156.168" "fe80::1" ];
-      routes = [ { routeConfig = { Destination = "37.153.156.168"; }; } { routeConfig = { Destination = "37.153.156.170"; }; } ];
+      address = [
+        "37.153.156.169/32"
+        "2a10:9902:111:10:42:42:42:42/64"
+        "2a10:9902:111:10:5054:ff:fe43:ffc6/64"
+      ];
+      gateway = [
+        "37.153.156.168"
+        "fe80::1"
+      ];
+      routes = [
+        {
+          routeConfig = {
+            Destination = "37.153.156.168";
+          };
+        }
+        {
+          routeConfig = {
+            Destination = "37.153.156.170";
+          };
+        }
+      ];
       networkConfig = {
         DHCP = "no";
         IPv6AcceptRA = false;
@@ -89,7 +117,10 @@
     ];
   };
 
-  networking.firewall.allowedTCPPorts = [ 80 443 ];
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
 
   # haproxy
   services.haproxy = {

@@ -1,4 +1,5 @@
-{ lib, pkgs }: {
+{ lib, pkgs }:
+{
   enable = true;
   defaultEditor = true;
   extraPackages = with pkgs; [

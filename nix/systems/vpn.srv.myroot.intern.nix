@@ -1,4 +1,10 @@
-{ modulesPath, config, lib, pkgs, ... }:
+{
+  modulesPath,
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   data.network = import ../data/hosting_network.nix;
   data.wg_vpn = import ../data/wg_vpn.nix;
@@ -15,7 +21,10 @@ in
     "/boot" = {
       device = "/dev/disk/by-uuid/9124-3481";
       fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
+      options = [
+        "fmask=0077"
+        "dmask=0077"
+      ];
     };
     "/" = {
       device = "/dev/disk/by-uuid/0ea6f61b-84b7-4903-8ba9-7dba9adba39a";
@@ -60,16 +69,16 @@ in
         ListenPort = 51820;
         PrivateKeyFile = "/run/secrets/wg_vpn/privkey";
       };
-      wireguardPeers = (builtins.map
-        (iClient: {
+      wireguardPeers = (
+        builtins.map (iClient: {
           wireguardPeerConfig = {
             PublicKey = iClient.pubKey;
             AllowedIPs = iClient.allowedIPs;
             Endpoint = lib.mkIf (iClient.endpoint != null) iClient.endpoint;
             PersistentKeepalive = lib.mkIf iClient.keepalive 25;
           };
-        })
-        (lib.attrValues data.wg_vpn.knownClients));
+        }) (lib.attrValues data.wg_vpn.knownClients)
+      );
     };
 
     # wireguard Network config
@@ -91,13 +100,17 @@ in
       server = {
         listen = "127.0.0.1@8053";
       };
-      template = [{
-        id = "default";
-        storage = "/etc/knot/zones";
-      }];
-      zone = [{
-        domain = "vpn.intern";
-      }];
+      template = [
+        {
+          id = "default";
+          storage = "/etc/knot/zones";
+        }
+      ];
+      zone = [
+        {
+          domain = "vpn.intern";
+        }
+      ];
     };
   };
   environment.etc."knot/zones/vpn.intern.zone".text = builtins.readFile ../data/zones/vpn.intern.zone;
@@ -113,7 +126,10 @@ in
     in
     {
       enable = true;
-      listenPlain = [ "10.20.30.1:53" "[fc10:20:30::1]:53" ];
+      listenPlain = [
+        "10.20.30.1:53"
+        "[fc10:20:30::1]:53"
+      ];
       extraConfig = ''
         -- forward queries belonging to internal domains to the authorative vpn.intern. server
         policy.add(policy.suffix(

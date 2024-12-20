@@ -65,42 +65,58 @@
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, systems, treefmt-nix, ... }: 
-  let
-    # helper to iterate over all supported systems along with the corresponding nixpkgs set
-    eachSystem = f: nixpkgs.lib.genAttrs (import systems) (system: f system (import nixpkgs { inherit system; }));
-    treefmtEval = pkgs: treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
-  in
-  {
-    nixosConfigurations = import ./nix/systems { inherit inputs; };
-    packages = nixpkgs.lib.attrsets.genAttrs nixpkgs.lib.systems.flakeExposed (system: import ./nix/packages {
-      inherit system inputs;
-      pkgs = nixpkgs.legacyPackages.${system};
-    });
+  outputs =
+    inputs@{
+      self,
+      nixpkgs,
+      systems,
+      treefmt-nix,
+      ...
+    }:
+    let
+      # helper to iterate over all supported systems along with the corresponding nixpkgs set
+      eachSystem =
+        f: nixpkgs.lib.genAttrs (import systems) (system: f system (import nixpkgs { inherit system; }));
+      treefmtEval = pkgs: treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
+    in
+    {
+      nixosConfigurations = import ./nix/systems { inherit inputs; };
+      packages = nixpkgs.lib.attrsets.genAttrs nixpkgs.lib.systems.flakeExposed (
+        system:
+        import ./nix/packages {
+          inherit system inputs;
+          pkgs = nixpkgs.legacyPackages.${system};
+        }
+      );
 
-    devShells = eachSystem (system: pkgs: { default = pkgs.mkShell {
+      devShells = eachSystem (
+        system: pkgs: {
+          default = pkgs.mkShell {
             packages = with pkgs; [
-        fluxcd
-        kubectl
-        kustomize
-        kubernetes-helm
-        jq
-        cmctl
-        age
-        ssh-to-age
-        woodpecker-cli
-        python311
-        python311Packages.pynetbox
-        python311Packages.ipython
-        pre-commit
-      ];
-    };}
-    );
+              fluxcd
+              kubectl
+              kustomize
+              kubernetes-helm
+              jq
+              cmctl
+              age
+              ssh-to-age
+              woodpecker-cli
+              python311
+              python311Packages.pynetbox
+              python311Packages.ipython
+              pre-commit
+            ];
+          };
+        }
+      );
 
-    # maintenance
-    formatter = eachSystem (system: pkgs: (treefmtEval pkgs).config.build.wrapper);
-    checks = eachSystem (system: pkgs: {
-        formatting = (treefmtEval pkgs).config.build.check self;
-      });
-  };
+      # maintenance
+      formatter = eachSystem (system: pkgs: (treefmtEval pkgs).config.build.wrapper);
+      checks = eachSystem (
+        system: pkgs: {
+          formatting = (treefmtEval pkgs).config.build.check self;
+        }
+      );
+    };
 }

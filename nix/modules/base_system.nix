@@ -1,10 +1,20 @@
-{ modulesPath, config, lib, pkgs, ... }: {
+{
+  modulesPath,
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
   # settings for nix and nixos
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.nvidia.acceptLicense = true;
   nix.settings = {
     tarball-ttl = 60;
-    trusted-users = [ "root" "@wheel" ];
+    trusted-users = [
+      "root"
+      "@wheel"
+    ];
     experimental-features = [
       "nix-command"
       "flakes"
@@ -34,8 +44,7 @@
       "LC_TELEPHONE"
       "LC_MEASUREMENT"
       "LC_IDENTIFICATION"
-    ]
-      (key: "de_DE.UTF-8");
+    ] (key: "de_DE.UTF-8");
   };
   services.xserver.xkb.layout = lib.mkDefault "de";
 

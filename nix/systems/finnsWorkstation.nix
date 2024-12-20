@@ -1,4 +1,12 @@
-{ modulesPath, config, lib, pkgs, home-manager, ... }: {
+{
+  modulesPath,
+  config,
+  lib,
+  pkgs,
+  home-manager,
+  ...
+}:
+{
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ../modules/sane_extra_config.nix
@@ -11,8 +19,18 @@
   ];
 
   # boot config
-  boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" "hid_roccat_isku" ];
-  boot.kernelModules = [ "kvm-intel" "sg" ];
+  boot.initrd.availableKernelModules = [
+    "xhci_pci"
+    "nvme"
+    "usb_storage"
+    "sd_mod"
+    "rtsx_pci_sdmmc"
+    "hid_roccat_isku"
+  ];
+  boot.kernelModules = [
+    "kvm-intel"
+    "sg"
+  ];
   boot.zfs.extraPools = [ "lillyPc" ];
   fileSystems = {
     "/" = {
@@ -33,13 +51,18 @@
     "/boot" = {
       device = "/dev/disk/by-uuid/5620-B429";
       fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
+      options = [
+        "fmask=0077"
+        "dmask=0077"
+      ];
     };
   };
-  swapDevices = [{
-    device = "/dev/disk/by-partuuid/56505436-7b17-4613-8a53-0ce1cbcfb000";
-    randomEncryption.enable = true;
-  }];
+  swapDevices = [
+    {
+      device = "/dev/disk/by-partuuid/56505436-7b17-4613-8a53-0ce1cbcfb000";
+      randomEncryption.enable = true;
+    }
+  ];
   hardware.cpu.intel.updateMicrocode = config.hardware.enableRedistributableFirmware;
   nixpkgs.hostPlatform = "x86_64-linux";
   boot.loader.grub = {

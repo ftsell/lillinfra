@@ -1,4 +1,12 @@
-{ modulesPath, config, lib, pkgs, home-manager, ... }: {
+{
+  modulesPath,
+  config,
+  lib,
+  pkgs,
+  home-manager,
+  ...
+}:
+{
   sops.secrets = {
     "ftsell/kubeconfig.yml" = {
       owner = "ftsell";

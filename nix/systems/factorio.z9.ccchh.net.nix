@@ -1,4 +1,10 @@
-{ modulesPath, config, lib, pkgs, ... }:
+{
+  modulesPath,
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   myLib = import ../lib.nix { inherit lib pkgs; };
 in
@@ -17,12 +23,17 @@ in
     "/boot" = {
       device = "/dev/disk/by-uuid/7159-8B6F";
       fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
+      options = [
+        "fmask=0077"
+        "dmask=0077"
+      ];
     };
   };
-  swapDevices = [{ 
-    device = "/dev/disk/by-uuid/3a8d7425-6cef-4025-92a0-bad0b73dcf4e";
-  }];
+  swapDevices = [
+    {
+      device = "/dev/disk/by-uuid/3a8d7425-6cef-4025-92a0-bad0b73dcf4e";
+    }
+  ];
 
   networking.useDHCP = false;
   systemd.network = {
@@ -46,7 +57,7 @@ in
     requireUserVerification = false;
     openFirewall = true;
   };
-  
+
   # DO NOT CHANGE
   # this defines the first version of NixOS that was installed on the machine so that programs with non-migratable data files are kept compatible
   system.stateVersion = "24.05";

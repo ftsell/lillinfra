@@ -1,8 +1,14 @@
-{lib, pkgs, config, ... }: 
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 with lib;
 let
   cfg = config.custom.user-syncthing;
-in {
+in
+{
   options = {
     custom.user-syncthing = {
       enable = mkEnableOption "this host to be a syncthing peer";

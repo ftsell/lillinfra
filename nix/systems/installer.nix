@@ -1,4 +1,14 @@
-{ config, modulesPath, lib, pkgs, home-manager, sops-nix, lix, ... }: {
+{
+  config,
+  modulesPath,
+  lib,
+  pkgs,
+  home-manager,
+  sops-nix,
+  lix,
+  ...
+}:
+{
   imports = [
     (modulesPath + "/installer/cd-dvd/installation-cd-minimal.nix")
     home-manager.nixosModules.default
@@ -8,7 +18,12 @@
     ../modules/user_ftsell.nix
   ];
 
-  environment.systemPackages = with pkgs; [ curl git bcachefs-tools keyutils ];
+  environment.systemPackages = with pkgs; [
+    curl
+    git
+    bcachefs-tools
+    keyutils
+  ];
 
   networking.hostName = "nixos-installer";
   system.installer.channel.enable = true;

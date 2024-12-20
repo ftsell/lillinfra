@@ -1,6 +1,12 @@
-{ inputs, pkgs, system }: let
+{
+  inputs,
+  pkgs,
+  system,
+}:
+let
   python3 = pkgs.python3;
-in {
+in
+{
   hetzner-ddns = python3.pkgs.buildPythonApplication rec {
     name = "hetzner-ddns";
     version = "1.0.0";

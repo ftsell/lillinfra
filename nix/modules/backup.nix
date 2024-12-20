@@ -1,4 +1,9 @@
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 with lib;
 let
   cfg = config.custom.backup;
@@ -47,11 +52,11 @@ in
       hooks = {
         beforeBackup = mkOption {
           type = types.listOf types.str;
-          default = [];
+          default = [ ];
         };
         afterBackup = mkOption {
           type = types.listOf types.str;
-          default = [];
+          default = [ ];
         };
       };
     };
@@ -96,12 +101,14 @@ in
       ssh_command = "ssh -i /run/secrets/${cfg.rsync-net.sshKeyPath} -o StrictHostKeyChecking=no";
       extra_borg_options.create = "--list --filter=AME";
       exclude_if_present = [ ".nobackup" ];
-      postgresql_databases = lib.mkIf cfg.rsync-net.backupPostgres [{
-        name = "all";
-        format = "directory";
-        psql_command = with pkgs; "${postgresql}/bin/psql";
-        pg_dump_command = with pkgs; "${postgresql}/bin/pg_dump";
-      }];
+      postgresql_databases = lib.mkIf cfg.rsync-net.backupPostgres [
+        {
+          name = "all";
+          format = "directory";
+          psql_command = with pkgs; "${postgresql}/bin/psql";
+          pg_dump_command = with pkgs; "${postgresql}/bin/pg_dump";
+        }
+      ];
       before_backup = cfg.rsync-net.hooks.beforeBackup;
       after_backup = cfg.rsync-net.hooks.afterBackup;
     };

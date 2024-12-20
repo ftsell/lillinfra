@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   data.wg_vpn = import ../data/wg_vpn.nix;
 
@@ -8,9 +13,13 @@ let
   isIp6Addr = addr: lib.strings.hasInfix ":" addr;
 
   # decide how the wireguard connection is managed based on which other software is enabled
-  implMode = if config.systemd.network.enable then "systemd-networkd"
-    else if config.networking.networkmanager.enable then "network-manager"
-    else "wg-quick";
+  implMode =
+    if config.systemd.network.enable then
+      "systemd-networkd"
+    else if config.networking.networkmanager.enable then
+      "network-manager"
+    else
+      "wg-quick";
 in
 {
   environment.systemPackages = with pkgs; [
@@ -28,16 +37,16 @@ in
         ListenPort = 51820;
         PrivateKeyFile = "/run/secrets/wg_vpn/privkey";
       };
-      wireguardPeers = (builtins.map
-        (iServer: {
+      wireguardPeers = (
+        builtins.map (iServer: {
           wireguardPeerConfig = {
             PublicKey = iServer.pubKey;
             AllowedIPs = iServer.allowedIPs;
             Endpoint = iServer.endpoint;
             PersistentKeepalive = lib.mkIf selfClientConf.keepalive 25;
           };
-        })
-        (lib.attrValues data.wg_vpn.knownServers));
+        }) (lib.attrValues data.wg_vpn.knownServers)
+      );
     };
 
     networks.wgVpn = {
@@ -45,78 +54,89 @@ in
         Name = "wgVpn";
       };
       address = selfClientConf.allowedIPs;
-      routes =
-        (lib.flatten
-          (builtins.map
-            (iServer: 
-              builtins.map 
-              (iIP: {
-                routeConfig = {
-                  Destination = iIP;
-                };
-              })
-              iServer.allowedIPs)
-            (lib.attrValues data.wg_vpn.knownServers)));
+      routes = (
+        lib.flatten (
+          builtins.map (
+            iServer:
+            builtins.map (iIP: {
+              routeConfig = {
+                Destination = iIP;
+              };
+            }) iServer.allowedIPs
+          ) (lib.attrValues data.wg_vpn.knownServers)
+        )
+      );
     };
   };
 
   # network-manager based implementation
   networking.networkmanager = lib.mkIf (implMode == "network-manager") {
-    ensureProfiles.profiles."wgVpn" = lib.mergeAttrs 
-      {
-        connection = {
-          id = "wgVpn";
-          type = "wireguard";
-          autoconnect = true;
-          interface-name = "wgVpn";
-          permissions = "user:ftsell:;";
-        };
-        wireguard = {
-          private-key-flags = 1;
-        };
-        ipv4 = lib.mergeAttrs
-          {
-            method = "manual";
-            dns = builtins.head (builtins.filter isIp4Addr data.wg_vpn.network.dns);
-            dns-search = data.wg_vpn.network.searchDomain;
-          }
-          (lib.attrsets.listToAttrs
-            (lib.imap1
-              (i: addr: { name = "address${builtins.toString i}"; value = addr; })
-              (builtins.filter isIp4Addr selfClientConf.allowedIPs)));
-        ipv6 = lib.mergeAttrs 
-          {
-            method = "manual";
-            dns = builtins.head (builtins.filter isIp6Addr data.wg_vpn.network.dns);
-            dns-search = data.wg_vpn.network.searchDomain;
-          }
-          (lib.attrsets.listToAttrs
-            (lib.imap1
-              (i: addr: { name = "address${builtins.toString i}"; value = addr; })
-              (builtins.filter isIp6Addr selfClientConf.allowedIPs)));
-      }
-      (lib.attrsets.listToAttrs
-        (builtins.map
-          (iServer: {
-            name = "wireguard-peer.${iServer.pubKey}";
-            value = {
-              endpoint = iServer.endpoint;
-              allowed-ips = (builtins.concatStringsSep ";" iServer.allowedIPs) + ";";
-            };
-          })
-          (builtins.attrValues data.wg_vpn.knownServers)));
-
-      ensureProfiles.secrets.entries = [
+    ensureProfiles.profiles."wgVpn" =
+      lib.mergeAttrs
         {
-          matchId = config.networking.networkmanager.ensureProfiles.profiles."wgVpn".connection.id;
-          matchType = config.networking.networkmanager.ensureProfiles.profiles."wgVpn".connection.type;
-          matchSetting = "wireguard";
-          key = "private-key";
-          file = "/run/secrets/wg_vpn/privkey";
+          connection = {
+            id = "wgVpn";
+            type = "wireguard";
+            autoconnect = true;
+            interface-name = "wgVpn";
+            permissions = "user:ftsell:;";
+          };
+          wireguard = {
+            private-key-flags = 1;
+          };
+          ipv4 =
+            lib.mergeAttrs
+              {
+                method = "manual";
+                dns = builtins.head (builtins.filter isIp4Addr data.wg_vpn.network.dns);
+                dns-search = data.wg_vpn.network.searchDomain;
+              }
+              (
+                lib.attrsets.listToAttrs (
+                  lib.imap1 (i: addr: {
+                    name = "address${builtins.toString i}";
+                    value = addr;
+                  }) (builtins.filter isIp4Addr selfClientConf.allowedIPs)
+                )
+              );
+          ipv6 =
+            lib.mergeAttrs
+              {
+                method = "manual";
+                dns = builtins.head (builtins.filter isIp6Addr data.wg_vpn.network.dns);
+                dns-search = data.wg_vpn.network.searchDomain;
+              }
+              (
+                lib.attrsets.listToAttrs (
+                  lib.imap1 (i: addr: {
+                    name = "address${builtins.toString i}";
+                    value = addr;
+                  }) (builtins.filter isIp6Addr selfClientConf.allowedIPs)
+                )
+              );
         }
-      ];
+        (
+          lib.attrsets.listToAttrs (
+            builtins.map (iServer: {
+              name = "wireguard-peer.${iServer.pubKey}";
+              value = {
+                endpoint = iServer.endpoint;
+                allowed-ips = (builtins.concatStringsSep ";" iServer.allowedIPs) + ";";
+              };
+            }) (builtins.attrValues data.wg_vpn.knownServers)
+          )
+        );
+
+    ensureProfiles.secrets.entries = [
+      {
+        matchId = config.networking.networkmanager.ensureProfiles.profiles."wgVpn".connection.id;
+        matchType = config.networking.networkmanager.ensureProfiles.profiles."wgVpn".connection.type;
+        matchSetting = "wireguard";
+        key = "private-key";
+        file = "/run/secrets/wg_vpn/privkey";
+      }
+    ];
   };
-  
 
   # wg-quick based implementation (the fallback)
   networking.wg-quick.interfaces.wgVpn = lib.mkIf (implMode == "wg-quick") {
@@ -124,14 +144,13 @@ in
     address = selfClientConf.allowedIPs;
     dns = data.wg_vpn.network.dns;
     peers = (
-      builtins.map
-        (iServer: {
-          publicKey = iServer.pubKey;
-          endpoint = iServer.endpoint;
-          allowedIPs = iServer.allowedIPs;
-          persistentKeepalive = (lib.mkIf selfClientConf.keepalive 25);
-        })
-        (builtins.attrValues data.wg_vpn.knownServers));
+      builtins.map (iServer: {
+        publicKey = iServer.pubKey;
+        endpoint = iServer.endpoint;
+        allowedIPs = iServer.allowedIPs;
+        persistentKeepalive = (lib.mkIf selfClientConf.keepalive 25);
+      }) (builtins.attrValues data.wg_vpn.knownServers)
+    );
   };
 
   sops.secrets = {

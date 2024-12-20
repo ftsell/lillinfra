@@ -1,10 +1,18 @@
-{ modulesPath, config, lib, pkgs, home-manager, ... }: 
+{
+  modulesPath,
+  config,
+  lib,
+  pkgs,
+  home-manager,
+  ...
+}:
 let
   vhostDefaults = {
     forceSSL = true;
     enableACME = true;
   };
-in {
+in
+{
   imports = [
     ../modules/base_system.nix
     ../modules/hosting_guest.nix
@@ -21,7 +29,10 @@ in {
     "/boot" = {
       device = "/dev/disk/by-uuid/53AA-C797";
       fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
+      options = [
+        "fmask=0077"
+        "dmask=0077"
+      ];
     };
   };
 
@@ -35,8 +46,14 @@ in {
     };
   };
 
-  networking.firewall.allowedTCPPorts = [ 80 443 ];
-  networking.firewall.allowedUDPPorts = [ 80 443 ];
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
+  networking.firewall.allowedUDPPorts = [
+    80
+    443
+  ];
 
   # dyndns for home.lly.sh
   services.ddclient = {
@@ -53,7 +70,7 @@ in {
     acceptTerms = true;
     defaults.email = "webmaster@lly.sh";
   };
-  
+
   services.nginx = {
     enable = true;
     recommendedTlsSettings = true;
@@ -85,12 +102,12 @@ in {
         serverAliases = [ "pics.home.lly.sh" ];
         locations."/".proxyPass = "http://priv.srv.home.intern:3001";
       };
-      
-    };     
+
+    };
   };
 
   # decrypted sops secrets
-  sops.secrets."ddclient/desec_token" = {};
+  sops.secrets."ddclient/desec_token" = { };
 
   # DO NOT CHANGE
   # this defines the first version of NixOS that was installed on the machine so that programs with non-migratable data files are kept compatible

@@ -1,4 +1,10 @@
-{ modulesPath, config, lib, pkgs, ... }:
+{
+  modulesPath,
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   data.network = import ../data/hosting_network.nix { inherit lib; };
 in
@@ -14,7 +20,10 @@ in
     "/boot" = {
       device = "/dev/disk/by-uuid/9A1C-8830";
       fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
+      options = [
+        "fmask=0077"
+        "dmask=0077"
+      ];
     };
     "/" = {
       device = "/dev/disk/by-uuid/55cc058d-7b2b-4a01-ac2c-59ba6261bc8c";
@@ -23,7 +32,10 @@ in
     "/srv/data/k8s" = {
       device = "10.0.10.14:/srv/data/k8s";
       fsType = "nfs";
-      options = [ "defaults" "_netdev" ];
+      options = [
+        "defaults"
+        "_netdev"
+      ];
     };
   };
 
@@ -59,7 +71,7 @@ in
       587 # mail submission
       993 # mail imap
       4190 # mail sieve-manage
-      80  # http
+      80 # http
       443 # https
       11334 # rspamd web port (since mailserver runs in hostNetwork kubernetes sometimes uses the node's ip address to connect to it)
     ];

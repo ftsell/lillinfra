@@ -1,4 +1,10 @@
-{ modulesPath, config, lib, pkgs, ... }:
+{
+  modulesPath,
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   data.network = import ../data/hosting_network.nix;
 in
@@ -14,7 +20,10 @@ in
     "/boot" = {
       device = "/dev/disk/by-uuid/94A7-6995";
       fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
+      options = [
+        "fmask=0077"
+        "dmask=0077"
+      ];
     };
     "/" = {
       device = "/dev/disk/by-uuid/4e0b7ea5-8c74-478f-a4e3-ddc5691e4065";
@@ -23,7 +32,10 @@ in
     "/srv/data/k8s" = {
       device = "10.0.10.14:/srv/data/k8s";
       fsType = "nfs";
-      options = [ "defaults" "_netdev" ];
+      options = [
+        "defaults"
+        "_netdev"
+      ];
     };
   };
 

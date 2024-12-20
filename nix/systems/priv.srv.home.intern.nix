@@ -1,4 +1,11 @@
-{ modulesPath, config, lib, pkgs, home-manager, ... }:
+{
+  modulesPath,
+  config,
+  lib,
+  pkgs,
+  home-manager,
+  ...
+}:
 let
   vPaperless = "latest";
   vPaperlessRedis = "7";
@@ -15,7 +22,8 @@ let
     listener 1883 ::
     allow_anonymous true
   '';
-in {
+in
+{
   imports = [
     ../modules/base_system.nix
     ../modules/hosting_guest.nix
@@ -32,7 +40,10 @@ in {
     "/boot" = {
       device = "/dev/disk/by-uuid/6A78-AB7F";
       fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
+      options = [
+        "fmask=0077"
+        "dmask=0077"
+      ];
     };
   };
 
@@ -90,7 +101,7 @@ in {
       };
     };
   };
-  
+
   # syncthing service
   systemd.services."syncthing".wantedBy = lib.mkForce [ "encrypted-services.target" ];
   services.syncthing = {
@@ -108,7 +119,12 @@ in {
   services.postgresql = {
     enable = true;
     extraPlugins = ps: with ps; [ pgvector ];
-    ensureDatabases = [ "root" "ftsell" "paperless" "immich" ];
+    ensureDatabases = [
+      "root"
+      "ftsell"
+      "paperless"
+      "immich"
+    ];
     ensureUsers = [
       {
         name = "ftsell";
@@ -135,7 +151,11 @@ in {
   systemd.services."podman-paperless-web".wantedBy = lib.mkForce [ "encrypted-services.target" ];
   virtualisation.oci-containers.containers."paperless-web" = {
     image = "ghcr.io/paperless-ngx/paperless-ngx:${vPaperless}";
-    dependsOn = [ "paperless-broker" "paperless-gotenberg" "paperless-tika" ];
+    dependsOn = [
+      "paperless-broker"
+      "paperless-gotenberg"
+      "paperless-tika"
+    ];
     volumes = [
       "/srv/data/encrypted/paperless/webserver/data:/usr/src/paperless/data"
       "/srv/data/encrypted/paperless/webserver/media:/usr/src/paperless/media"
@@ -203,7 +223,10 @@ in {
       REDIS_HOSTNAME = "localhost";
       REDIS_PORT = "6380";
     };
-    extraOptions = [ "--net=host" "--group-add=237" ];
+    extraOptions = [
+      "--net=host"
+      "--group-add=237"
+    ];
   };
 
   # immich machine-learning
@@ -238,8 +261,8 @@ in {
     environment = {
       TZ = "Europe/Berlin";
     };
-    extraOptions = [ 
-      "--net=host" 
+    extraOptions = [
+      "--net=host"
       "--privileged"
       "--device=/dev/ttyUSB0:/dev/ttyUSB0"
     ];

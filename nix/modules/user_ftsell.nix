@@ -1,10 +1,20 @@
-{ modulesPath, config, lib, pkgs, home-manager, ... }: {
+{
+  modulesPath,
+  config,
+  lib,
+  pkgs,
+  home-manager,
+  ...
+}:
+{
   programs.fish.enable = true;
 
   users.users.ftsell = {
     createHome = true;
-    extraGroups = [ "wheel" "networkmanager" ]
-      ++ (if config.virtualisation.podman.dockerSocket.enable then [ "podman" ] else [ ]);
+    extraGroups = [
+      "wheel"
+      "networkmanager"
+    ] ++ (if config.virtualisation.podman.dockerSocket.enable then [ "podman" ] else [ ]);
     home = "/home/ftsell";
     shell = pkgs.fish;
     openssh.authorizedKeys.keys = [

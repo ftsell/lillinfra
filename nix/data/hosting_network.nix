@@ -1,4 +1,5 @@
-{ lib }: let
+{ lib }:
+let
   mkExposed = macAddress: ipv4: {
     _type = "exposedGuest";
     ipv4 = ipv4;
@@ -23,7 +24,12 @@
 
   mkDhcp4Lease = tenant: hostname: macAddr: ipAddr: {
     _type = "dhcp4Lease";
-    inherit tenant hostname macAddr ipAddr;
+    inherit
+      tenant
+      hostname
+      macAddr
+      ipAddr
+      ;
   };
 in
 rec {
@@ -43,9 +49,7 @@ rec {
 
   # contains the IP address range from 37.153.156.168 to 37.153.156.179
   # https://netbox.ftsell.de/ipam/ip-ranges/1/
-  guestIPs = builtins.map
-    (i: "37.153.156.${builtins.toString i}")
-    (lib.range 169 179);
+  guestIPs = builtins.map (i: "37.153.156.${builtins.toString i}") (lib.range 169 179);
 
   # https://netbox.ftsell.de/tenancy/tenants/?group_id=1
   tenants = {
@@ -70,16 +74,14 @@ rec {
     isabell-srv = mkRouted "52:54:00:2d:2a:26" "37.153.156.175";
     # nat guests
     vpn-srv = mkNat "52:54:00:8e:97:05" "10.0.0.101" [
-      { proto = "udp"; src = 51820; dst = 51820; }
+      {
+        proto = "udp";
+        src = 51820;
+        dst = 51820;
+      }
     ];
   };
 
-  routedGuests = (
-    builtins.filter (i: i._type == "routedGuest")
-      (builtins.attrValues guests)
-  );
-  natGuests = (
-    builtins.filter (i: i._type == "natGuest")
-      (builtins.attrValues guests)
-  );
+  routedGuests = (builtins.filter (i: i._type == "routedGuest") (builtins.attrValues guests));
+  natGuests = (builtins.filter (i: i._type == "natGuest") (builtins.attrValues guests));
 }

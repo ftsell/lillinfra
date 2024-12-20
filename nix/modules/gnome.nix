@@ -1,4 +1,11 @@
-{ modulesPath, config, lib, pkgs, ... }: {
+{
+  modulesPath,
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
   imports = [
     ./desktop_apps.nix
   ];
@@ -30,7 +37,16 @@
         automount-open = false;
       };
       "org/gnome/desktop/input-sources" = {
-        sources = [ (mkTuple [ "xkb" "de" ]) (mkTuple [ "xkb" "de+neo" ]) ];
+        sources = [
+          (mkTuple [
+            "xkb"
+            "de"
+          ])
+          (mkTuple [
+            "xkb"
+            "de+neo"
+          ])
+        ];
       };
       "org/gnome/mutter" = {
         edge-tiling = true;
@@ -41,11 +57,11 @@
         focus-mode = "mouse";
       };
       "org/gnome/shell" = {
-        favorite-apps = [ 
-          "org.gnome.Nautilus.desktop" 
-          "org.keepassxc.KeePassXC.desktop" 
-          "thunderbird.desktop" 
-          "signal-desktop.desktop" 
+        favorite-apps = [
+          "org.gnome.Nautilus.desktop"
+          "org.keepassxc.KeePassXC.desktop"
+          "thunderbird.desktop"
+          "signal-desktop.desktop"
           "firefox.desktop"
           "org.wezfurlong.wezterm.desktop"
         ];
@@ -66,22 +82,25 @@
     gnomeExtensions.vitals
   ];
 
-  environment.gnome.excludePackages = (with pkgs; [
-    gnome-photos
-    gnome-tour
-    cheese
-    gnome-music
-    gnome-terminal
-    gnome-calendar
-    epiphany
-    geary
-    gnome-characters
-    totem
-    tali
-    iagno
-    hitori
-    atomix
-  ]);
+  environment.gnome.excludePackages = (
+    with pkgs;
+    [
+      gnome-photos
+      gnome-tour
+      cheese
+      gnome-music
+      gnome-terminal
+      gnome-calendar
+      epiphany
+      geary
+      gnome-characters
+      totem
+      tali
+      iagno
+      hitori
+      atomix
+    ]
+  );
 
   services.udev.packages = with pkgs; [ gnome-settings-daemon ];
 

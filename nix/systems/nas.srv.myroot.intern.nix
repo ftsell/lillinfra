@@ -1,4 +1,11 @@
-{ modulesPath, config, lib, pkgs, ... }: {
+{
+  modulesPath,
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
   imports = [
     ../modules/hosting_guest.nix
     ../modules/base_system.nix
@@ -14,7 +21,10 @@
     "/boot" = {
       device = "/dev/disk/by-uuid/C669-0126";
       fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
+      options = [
+        "fmask=0077"
+        "dmask=0077"
+      ];
     };
     "/" = {
       device = "/dev/disk/by-uuid/9ce95a64-55d6-442d-a41f-8bbbb3332269";
@@ -46,7 +56,10 @@
   services.postgresql = {
     enable = true;
     enableTCPIP = true;
-    ensureDatabases = [ "ftsell" "root" ];
+    ensureDatabases = [
+      "ftsell"
+      "root"
+    ];
     ensureUsers = [
       {
         name = "ftsell";
@@ -95,10 +108,14 @@
     ];
   };
 
-   # backup config
+  # backup config
   custom.backup.rsync-net = {
     enable = true;
-    sourceDirectories = [ "/root" "/home/ftsell" "/srv/data/k8s/" ];
+    sourceDirectories = [
+      "/root"
+      "/home/ftsell"
+      "/srv/data/k8s/"
+    ];
     backupPostgres = true;
     #hooks.beforeBackup = with pkgs; [
     #  "${zfs}/bin/zfs snapshot server-myroot-hdd/postgres@pre-backup"

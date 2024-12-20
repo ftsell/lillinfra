@@ -1,4 +1,12 @@
-{ modulesPath, config, lib, pkgs, home-manager, ... }: {
+{
+  modulesPath,
+  config,
+  lib,
+  pkgs,
+  home-manager,
+  ...
+}:
+{
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ../modules/base_system.nix
@@ -11,7 +19,13 @@
 
   # boot config
   #boot.initrd.systemd.enable = true;
-  boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" ];
+  boot.initrd.availableKernelModules = [
+    "xhci_pci"
+    "nvme"
+    "usb_storage"
+    "sd_mod"
+    "rtsx_pci_sdmmc"
+  ];
   boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_6;
   boot.kernelModules = [ "kvm-intel" ];
   boot.zfs.extraPools = [ "nvme" ];
@@ -34,13 +48,18 @@
     "/boot" = {
       device = "/dev/disk/by-uuid/5C6D-BE54";
       fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
+      options = [
+        "fmask=0077"
+        "dmask=0077"
+      ];
     };
   };
-  swapDevices = [{
-    device = "/dev/nvme0n1p2";
-    randomEncryption.enable = true;
-  }];
+  swapDevices = [
+    {
+      device = "/dev/nvme0n1p2";
+      randomEncryption.enable = true;
+    }
+  ];
   hardware.cpu.intel.updateMicrocode = config.hardware.enableRedistributableFirmware;
   nixpkgs.hostPlatform = "x86_64-linux";
   boot.loader.efi.canTouchEfiVariables = true;
@@ -52,8 +71,8 @@
 
   # backup settings
   custom.backup.rsync-net = {
-   enable = true;
-   repoPath = "./backups/private-systems";
+    enable = true;
+    repoPath = "./backups/private-systems";
   };
 
   # additional packages

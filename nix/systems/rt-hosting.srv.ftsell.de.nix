@@ -1,8 +1,15 @@
-{ modulesPath, config, lib, pkgs, ... }:
+{
+  modulesPath,
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   data.network = import ../data/hosting_network.nix { inherit lib; };
 
-  capitalize = str:
+  capitalize =
+    str:
     lib.concatStrings [
       (lib.strings.toUpper (builtins.substring 0 1 str))
       (builtins.substring 1 (lib.stringLength str) str)
@@ -24,20 +31,25 @@ let
       Kind = "vlan";
     };
     networkConfig = {
-      Address = [ "10.0.${builtins.toString vlan}.1/24" "fe80::1/64" ];
+      Address = [
+        "10.0.${builtins.toString vlan}.1/24"
+        "fe80::1/64"
+      ];
       IPv6AcceptRA = false;
     };
-    routes = (builtins.map
-      (ip4: {
+    routes =
+      (builtins.map (ip4: {
         routeConfig = {
           Destination = ip4;
         };
-      })
-      routedIp4s) ++ [{
-      routeConfig = {
-        Destination = "2a10:9902:111:${builtins.toString vlan}::/64";
-      };
-    }];
+      }) routedIp4s)
+      ++ [
+        {
+          routeConfig = {
+            Destination = "2a10:9902:111:${builtins.toString vlan}::/64";
+          };
+        }
+      ];
   };
 
 in
@@ -53,7 +65,10 @@ in
     "/boot" = {
       device = "/dev/disk/by-uuid/83DB-8B4E";
       fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
+      options = [
+        "fmask=0077"
+        "dmask=0077"
+      ];
     };
     "/" = {
       device = "/dev/disk/by-uuid/ac4a51da-dea7-4c32-b949-073dd9fbc592";
@@ -69,15 +84,16 @@ in
   systemd.network = {
     enable = true;
 
-    netdevs = lib.mergeAttrs
-      # statically defined netdevs
-      {}
-      # netdevs derived from hosting_network.nix
-      (lib.attrsets.concatMapAttrs
-        (name: data: {
-          "vlan${capitalize name}" = mkVlanNetdev "vlan${capitalize name}" data.tenantId;
-        })
-        data.network.tenants);
+    netdevs =
+      lib.mergeAttrs
+        # statically defined netdevs
+        { }
+        # netdevs derived from hosting_network.nix
+        (
+          lib.attrsets.concatMapAttrs (name: data: {
+            "vlan${capitalize name}" = mkVlanNetdev "vlan${capitalize name}" data.tenantId;
+          }) data.network.tenants
+        );
 
     networks.ethMyRoot = {
       matchConfig = {
@@ -114,11 +130,21 @@ in
       };
       networkConfig = {
         LinkLocalAddressing = false;
-        VLAN = [ "vlanLilly" "vlanBene" "vlanPolygon" "vlanVieta" "vlanTimon" "vlanIsabell" ];
+        VLAN = [
+          "vlanLilly"
+          "vlanBene"
+          "vlanPolygon"
+          "vlanVieta"
+          "vlanTimon"
+          "vlanIsabell"
+        ];
       };
     };
 
-    networks."vlanLilly" = mkVlanNetwork "vlanLilly" 10 [ "37.153.156.169" "37.153.156.170" ];
+    networks."vlanLilly" = mkVlanNetwork "vlanLilly" 10 [
+      "37.153.156.169"
+      "37.153.156.170"
+    ];
     networks."vlanBene" = mkVlanNetwork "vlanBene" 11 [ "37.153.156.172" ];
     networks."vlanPolygon" = mkVlanNetwork "vlanPolygon" 12 [ "37.153.156.174" ];
     networks."vlanVieta" = mkVlanNetwork "vlanVieta" 13 [ "37.153.156.173" ];
@@ -130,7 +156,12 @@ in
   networking.nat = {
     enable = true;
     externalInterface = "enp1s0";
-    internalIPs = [ "10.0.10.0/24" "10.0.11.0/24" "10.0.12.0/24" "10.0.13.0/24" ];
+    internalIPs = [
+      "10.0.10.0/24"
+      "10.0.11.0/24"
+      "10.0.12.0/24"
+      "10.0.13.0/24"
+    ];
   };
 
   services.openssh = {
@@ -178,7 +209,14 @@ in
     enable = true;
     settings = {
       interfaces-config = {
-        interfaces = [ "vlanLilly" "vlanBene" "vlanPolygon" "vlanVieta" "vlanTimon" "vlanIsabell" ];
+        interfaces = [
+          "vlanLilly"
+          "vlanBene"
+          "vlanPolygon"
+          "vlanVieta"
+          "vlanTimon"
+          "vlanIsabell"
+        ];
       };
       lease-database = {
         name = "/var/lib/kea/dhcp4.leases";
@@ -207,7 +245,7 @@ in
           subnet4 = [
             {
               subnet = "37.153.156.169/30";
-              pools = [{ pool = "37.153.156.169 - 37.153.156.170"; }];
+              pools = [ { pool = "37.153.156.169 - 37.153.156.170"; } ];
               reservations = [
                 {
                   # gtw.srv.ftsell.de
@@ -223,7 +261,7 @@ in
             }
             {
               subnet = "10.0.10.0/24";
-              pools = [{ pool = "10.0.10.10 - 10.0.10.254"; }];
+              pools = [ { pool = "10.0.10.10 - 10.0.10.254"; } ];
               reservations = [
                 {
                   # gtw.srv.myroot.intern
@@ -261,10 +299,12 @@ in
                   ip-address = "10.0.10.16";
                 }
               ];
-              option-data = [{
-                name = "routers";
-                data = "10.0.10.2";
-              }];
+              option-data = [
+                {
+                  name = "routers";
+                  data = "10.0.10.2";
+                }
+              ];
             }
           ];
         }
@@ -276,7 +316,7 @@ in
           subnet4 = [
             {
               subnet = "37.153.156.172/32";
-              pools = [{ pool = "37.153.156.172 - 37.153.156.172"; }];
+              pools = [ { pool = "37.153.156.172 - 37.153.156.172"; } ];
               reservations = [
                 {
                   # bene-server
@@ -287,7 +327,7 @@ in
             }
             {
               subnet = "10.0.11.0/24";
-              pools = [{ pool = "10.0.11.10 - 10.0.11.254"; }];
+              pools = [ { pool = "10.0.11.10 - 10.0.11.254"; } ];
             }
           ];
         }
@@ -299,7 +339,7 @@ in
           subnet4 = [
             {
               subnet = "37.153.156.174/32";
-              pools = [{ pool = "37.153.156.174 - 37.153.156.174"; }];
+              pools = [ { pool = "37.153.156.174 - 37.153.156.174"; } ];
               reservations = [
                 {
                   # polygon-server
@@ -310,7 +350,7 @@ in
             }
             {
               subnet = "10.0.12.0/24";
-              pools = [{ pool = "10.0.12.10 - 10.0.12.254"; }];
+              pools = [ { pool = "10.0.12.10 - 10.0.12.254"; } ];
             }
           ];
         }
@@ -322,7 +362,7 @@ in
           subnet4 = [
             {
               subnet = "37.153.156.173/32";
-              pools = [{ pool = "37.153.156.173 - 37.153.156.173"; }];
+              pools = [ { pool = "37.153.156.173 - 37.153.156.173"; } ];
               reservations = [
                 {
                   # polygon-server
@@ -333,7 +373,7 @@ in
             }
             {
               subnet = "10.0.13.0/24";
-              pools = [{ pool = "10.0.13.10 - 10.0.13.254"; }];
+              pools = [ { pool = "10.0.13.10 - 10.0.13.254"; } ];
             }
           ];
         }
@@ -345,7 +385,7 @@ in
           subnet4 = [
             {
               subnet = "37.153.156.171/32";
-              pools = [{ pool = "37.153.156.171 - 37.153.156.171"; }];
+              pools = [ { pool = "37.153.156.171 - 37.153.156.171"; } ];
               reservations = [
                 {
                   # timon-server
@@ -356,7 +396,7 @@ in
             }
             {
               subnet = "10.0.14.0/24";
-              pools = [{ pool = "10.0.14.10 - 10.0.14.254"; }];
+              pools = [ { pool = "10.0.14.10 - 10.0.14.254"; } ];
             }
           ];
         }
@@ -368,7 +408,7 @@ in
           subnet4 = [
             {
               subnet = "37.153.156.175/32";
-              pools = [{ pool = "37.153.156.175 - 37.153.156.175"; }];
+              pools = [ { pool = "37.153.156.175 - 37.153.156.175"; } ];
               reservations = [
                 {
                   # isabell-server
@@ -379,7 +419,7 @@ in
             }
             {
               subnet = "10.0.15.0/24";
-              pools = [{ pool = "10.0.15.10 - 10.0.15.254"; }];
+              pools = [ { pool = "10.0.15.10 - 10.0.15.254"; } ];
             }
           ];
         }

@@ -1,5 +1,6 @@
 # Configuration for Home-Managers programs.git options
-{ lib, pkgs }: {
+{ lib, pkgs }:
+{
   enable = true;
   ignores = [
     "**/.*.swp"
