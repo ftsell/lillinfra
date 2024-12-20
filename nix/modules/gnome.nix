@@ -9,12 +9,21 @@
     desktopManager.gnome.enable = true;
   };
 
+  fonts = {
+    packages = with pkgs; [ inter ];
+    fontconfig.defaultFonts = {
+      sansSerif = [ "Inter" ];
+    };
+  };
+
   home-manager.users.ftsell.dconf = with lib.gvariant; {
     enable = true;
     settings = {
       "org/gnome/desktop/interface" = {
         enable-hot-corners = true;
         show-battery-percentage = true;
+        font-name = "Inter 11";
+        document-font-name = "Inter 11";
       };
       "org/gnome/desktop/media-handling" = {
         automount = false;
